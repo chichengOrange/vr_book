@@ -1,4 +1,0 @@
-fyapp.driver=com.mysql.jdbc.Driver
-fyapp.url=jdbc:mysql://121.40.115.231:3306/vr_book?useUnicode=true&characterEncoding=utf-8
-fyapp.user=root
-fyapp.password=onway2018
