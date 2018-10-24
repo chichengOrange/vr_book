@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_book_chapter">
+
+	<operation name="loadAllchapter" multiplicity="many">
+		<sql>
+			<![CDATA[
+				SELECT 
+				 ID,BOOK_ID,CHAPTER_ID,CHAPTER_NAME,GMT_CREATE,GMT_MODIFIED
+				 FROM vr_book_chapter
+        	]]>
+		</sql>
+	</operation>
+	
+	<operation name="selectChapterByBookId" multiplicity="many">
+		<extraparams>
+			<param name="bookId" javatype="java.lang.String" />
+			<param name="offset" javatype="java.lang.Integer" />
+			<param name="limit" javatype="java.lang.Integer" />
+		</extraparams>
+		<sql>select * from vr_book_chapter</sql>
+		<sqlmap>
+			<![CDATA[
+				SELECT * FROM vr_book_chapter
+				where 1=1 
+				<isNotEmpty property="bookId">
+	    			AND BOOK_ID = '$bookId$'
+	    		</isNotEmpty>
+	    		order by GMT_CREATE desc 
+	    		LIMIT $offset$, $limit$
+        	]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectCountChapterByBookId"  resultClass="int">
+		<extraparams>
+			<param name="bookId" javatype="java.lang.String" />
+		</extraparams>
+		<sql>select count(1) from vr_book_chapter</sql>
+		<sqlmap>
+			<![CDATA[
+				SELECT count(1) FROM vr_book_chapter
+				where 1=1 
+				<isNotEmpty property="bookId">
+	    			AND BOOK_ID = '$bookId$'
+	    		</isNotEmpty>
+        	]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="updateChapterById">
+		<sql>
+			update vr_book_chapter set CHAPTER_NAME=?,GMT_MODIFIED=? where ID= ? 
+		</sql>
+	</operation>
+	<operation name="insertChapter">
+		<sql>
+			insert into vr_book_chapter (BOOK_ID,CHAPTER_ID,CHAPTER_NAME,GMT_CREATE) values (?,?,?,?)
+		</sql>
+	</operation>
+	<operation name="deleteById">
+		<sql>
+			delete from vr_book_chapter where ID=?
+		</sql>
+	</operation>
+</table>

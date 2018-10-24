@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_book">
+	<column name="PRICE" javatype="com.onway.common.lang.Money" />
+	<operation name="loadAllBook" multiplicity="many">
+		<sql>
+			<![CDATA[
+				SELECT 
+				   ID,BOOK_ID,BOOK_NAME,BOOK_IMG,BOOK_AUTHOR,
+				   BOOK_PUBLISH,BOOK_SIZE,BOOK_HEAT,NOW_NETWORK,
+				   DOWNLOAD_URL,DOWNLOAD_COUNT,CAN_DOWNLOAD,PRICE,SORT,
+				   DISTRIBUTOR,GMT_CREATE,GMT_MODIFIED 
+				   FROM vr_book
+        	]]>
+		</sql>
+	</operation>
+	
+	<operation name="selectAllBook" multiplicity="many">
+		<extraparams>
+			<param name="bookId" javatype="java.lang.String" />
+			<param name="bookName" javatype="java.lang.String" />
+			<param name="bookPublish" javatype="java.lang.String" />
+			<param name="bookAuthor" javatype="java.lang.String" />
+			<param name="distributor" javatype="java.lang.String" />
+			<param name="offset" javatype="java.lang.Integer" />
+			<param name="limit" javatype="java.lang.Integer" />
+		</extraparams>
+		<sql>select * from vr_book</sql>
+		<sqlmap>
+			<![CDATA[
+				SELECT * FROM vr_book
+				where 1=1 
+				<isNotEmpty property="bookId">
+	    			AND BOOK_ID like '%$bookId$%'
+	    		</isNotEmpty>
+				<isNotEmpty property="bookName">
+	    			AND BOOK_NAME like '%$bookName$%'
+	    		</isNotEmpty>
+				<isNotEmpty property="bookPublish">
+	    			AND BOOK_PUBLISH like '%$bookPublish$%'
+	    		</isNotEmpty>
+				<isNotEmpty property="bookAuthor">
+	    			AND BOOK_AUTHOR like '%$bookAuthor$%'
+	    		</isNotEmpty>
+	    		<isNotEmpty property="distributor">
+	    			AND DISTRIBUTOR = '$distributor$'
+	    		</isNotEmpty>
+	    		order by GMT_CREATE desc 
+	    		LIMIT $offset$, $limit$
+        	]]>
+		</sqlmap>
+	</operation>
+	
+	<operation name="selectallbookcount" resultClass="int">
+		<extraparams>
+			<param name="bookId" javatype="java.lang.String" />
+			<param name="bookName" javatype="java.lang.String" />
+			<param name="bookPublish" javatype="java.lang.String" />
+			<param name="bookAuthor" javatype="java.lang.String" />
+			<param name="distributor" javatype="java.lang.String" />
+		</extraparams>
+		<sql>select count(1) from vr_book</sql>
+		<sqlmap>
+			<![CDATA[
+				SELECT count(1) FROM vr_book
+				where 1=1 
+				<isNotEmpty property="bookId">
+	    			AND BOOK_ID like '%$bookId$%'
+	    		</isNotEmpty>
+				<isNotEmpty property="bookName">
+	    			AND BOOK_NAME like '%$bookName$%'
+	    		</isNotEmpty>
+				<isNotEmpty property="bookPublish">
+	    			AND BOOK_PUBLISH like '%$bookPublish$%'
+	    		</isNotEmpty>
+				<isNotEmpty property="bookAuthor">
+	    			AND BOOK_AUTHOR like '%$bookAuthor$%'
+	    		</isNotEmpty>
+	    		<isNotEmpty property="distributor">
+	    			AND DISTRIBUTOR = '$distributor$'
+	    		</isNotEmpty>
+        	]]>
+		</sqlmap>
+	</operation>
+	<operation name="deletbookbyid">
+		<sql>
+			delete from vr_book where ID=?
+		</sql>
+	</operation>
+	<operation name="insertbook">
+		<sql>
+			insert into vr_book (BOOK_ID,BOOK_NAME,BOOK_IMG,BOOK_AUTHOR,
+			BOOK_PUBLISH,BOOK_SIZE,BOOK_HEAT,DOWNLOAD_URL,DOWNLOAD_COUNT,CAN_DOWNLOAD,PRICE,SORT,DISTRIBUTOR,
+			GMT_CREATE,GMT_MODIFIED) values (?,?,?,?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
+		</sql>
+	</operation>
+	
+	<operation name="selectBookById">
+		<sql>
+			SELECT
+			 ID,BOOK_ID,BOOK_NAME,BOOK_IMG,BOOK_AUTHOR,
+			 BOOK_PUBLISH,BOOK_SIZE,BOOK_HEAT,NOW_NETWORK,
+			 DOWNLOAD_URL,DOWNLOAD_COUNT,CAN_DOWNLOAD,PRICE,SORT,
+			 GMT_CREATE,GMT_MODIFIED 
+			 FROM vr_book	
+			WHERE ID = ?
+		</sql>
+	</operation>
+	<operation name="updatBookNoImg">
+		<sql>
+			update vr_book set BOOK_NAME = ? ,BOOK_AUTHOR=?,BOOK_PUBLISH=? ,BOOK_SIZE=?,DOWNLOAD_URL=?,CAN_DOWNLOAD=?,PRICE=?,SORT=?,DOWNLOAD_COUNT=?,GMT_MODIFIED = CURRENT_TIMESTAMP where ID= ? 
+		</sql>
+	</operation>
+	<operation name="updatBookNofile">
+		<sql>
+			update vr_book set BOOK_NAME = ? ,BOOK_AUTHOR=?,BOOK_PUBLISH=? ,BOOK_IMG=?,CAN_DOWNLOAD=?,PRICE=?,SORT=?,DOWNLOAD_COUNT=?,GMT_MODIFIED = CURRENT_TIMESTAMP where ID= ? 
+		</sql>
+	</operation>
+	<operation name="updatBookNoTwo">
+		<sql>
+			update vr_book set BOOK_NAME = ? ,BOOK_AUTHOR=?,BOOK_PUBLISH=? ,CAN_DOWNLOAD=?,PRICE=?,SORT=?,DOWNLOAD_COUNT=?,GMT_MODIFIED = CURRENT_TIMESTAMP where ID= ? 
+		</sql>
+	</operation>
+	<operation name="updatBook">
+		<sql>
+			update vr_book set BOOK_NAME = ? ,BOOK_AUTHOR=?,BOOK_PUBLISH=? ,BOOK_IMG=?,BOOK_SIZE=?,DOWNLOAD_URL=?,CAN_DOWNLOAD=?,PRICE=?,SORT=?,DOWNLOAD_COUNT=?,GMT_MODIFIED = CURRENT_TIMESTAMP where ID= ? 
+		</sql>
+	</operation>
+	<operation name="updatBookUrl">
+		<sql>
+			update vr_book set BOOK_SIZE=?,DOWNLOAD_URL=?,GMT_MODIFIED = CURRENT_TIMESTAMP where BOOK_ID= ? 
+		</sql>
+	</operation>
+</table>

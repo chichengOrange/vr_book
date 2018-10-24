@@ -1,0 +1,522 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+#parse("content/importBase.vm")
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<style type="text/css">
+	#preview > img{
+		width:100%;
+		height:170px;
+	}
+</style>
+</head>
+<body style="width: 100%; height: 100%;">
+	<div id="page-wrapper">
+		<!--BEGIN TITLE & BREADCRUMB PAGE-->
+		<div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
+			<div class="page-header pull-left">
+				<div class="page-title">分答管理</div>
+			</div>
+			<ol class="breadcrumb page-breadcrumb pull-right">
+				<li><i class="fa fa-home"></i>&nbsp;<a href="#">分答管理</a></li>
+			</ol>
+			
+			<div class="clearfix"></div>
+		</div>
+	
+
+			<div style="margin-top: 2%;" id="a">
+				<div class="row">
+    				<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px">提问者姓名：</label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    						<input type="text" id="SELECTASKUSERNAME" class="form-control"/>
+    						<br />
+    					</div>
+    				</div>
+    				<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px">被提问者姓名：</label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    						<input type="text" id="SELECTANSWERUSERNAME" class="form-control"/>
+    						<br />
+    					</div>
+    				</div>
+    				<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px">标题：</label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    						<input type="text" id="SELECTASK_TITLE" class="form-control"/>
+    						<br />
+    					</div>
+    				</div>
+    				<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px">状态：</label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    						<select class="form-control" id="SELECTSTATUS" name="SELECTSTATUS">
+          						<option value="">请选择</option>
+          						<option value="0">未答</option>
+          						<option value="1">已答</option>
+    							<option value="2">已过期</option>
+          					</select>
+    						<br />
+    					</div>
+    				</div>
+				</div>
+				<div class="row">
+					<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px">##热门：
+					</label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    					#*	 <select class="form-control" id="SELECTTYPE" name="SELECTTYPE">
+          						<option value="">请选择</option>
+								<option value="0">否</option>
+								<option value="1">是</option>
+          					</select> *#
+    						<br />
+    					</div>
+    				</div>
+					<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px"></label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    						
+    						<br />
+    					</div>
+    				</div>
+					<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px"></label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    						
+    						<br />
+    					</div>
+    				</div>
+					<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px"></label>
+					<div class="col-sm-2">
+    					<div class="control-group">
+    						<div >
+                                <button onclick="clean()"  class="btn btn-danger" name="Name" id="search_tel" value="清空" style="float: right;margin-right: 2%;">清空</button>
+            				</div>
+            				<div >
+                                <button onclick="sorce()"   class="btn btn-info" name="Name" id="search_tel" value="查询" style="float: right;margin-right: 2%;">查询</button>
+            				</div>
+    					</div>
+    				</div>
+                </div>
+			</div>
+				
+				
+		<!--END TITLE & BREADCRUMB PAGE-->
+		<!--BEGIN CONTENT-->
+		<table id="mytab" class="table table-hover"></table>
+		#parse("content/bigimg.vm")
+		<div class="modal fade" id="myModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog" style="width:50%">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                		<h4 class="modal-title" id="myModalLabel">详情信息</h4>
+            		</div>
+            		<div class="modal-body">
+            			<form class="form-horizontal" role="form" name="noticeform"  method="post" id="PROBLEM_INFO">
+            					<input  type="hidden" id="PROBLEM_ID" value="" name="PROBLEM_ID" class="form-control"/>
+      							<div class="row">
+    								<div class="form-group col-md-6">
+            							<label for="lastname" class="col-sm-4 control-label">提问者姓名：</label>
+                						<div class="col-sm-8">
+    										<input  type="text"   id="ASKUSERNAME" value="" name="ASKUSERNAME" class="form-control" readonly  />
+            							</div>
+    								</div>
+    								<div class="form-group col-md-6">
+            							<label for="lastname" class="col-sm-4 control-label">被提问者姓名：</label>
+                						<div class="col-sm-8">
+            								<input  type="text"   id="ANSWERUSERNAME" value="" name="ANSWERUSERNAME" class="form-control" readonly  />
+            							</div>
+    								</div>
+								 </div>
+								<div class="row">
+    								<div class="form-group col-md-6">
+            							<label for="lastname" class="col-sm-4 control-label">标题：</label>
+                						<div class="col-sm-8">
+    										<input  type="text"   id="ASK_TITLE" value="" name="ASK_TITLE" class="form-control"/>
+            							</div>
+    								</div>
+    								<div class="form-group col-md-6">
+            							<label for="lastname" class="col-sm-4 control-label">得到学分：</label>
+                						<div class="col-sm-8">
+    										<input  type="text"   id="REWARD_POINT" value="" name="REWARD_POINT" readonly class="form-control" />
+            							</div>
+									</div>
+								 </div>
+								<div class="row">
+    								<div class="form-group col-md-6">
+            							<label for="lastname" class="col-sm-4 control-label">提问时间：</label>
+                						<div class="col-sm-8">
+    										<input  type="text"  id="ASK_DATE" value="" name="ASK_DATE" readonly class="form-control" />
+            							</div>
+    								</div>
+    								<div class="form-group col-md-6">
+            							<label for="lastname" class="col-sm-4 control-label">回答时间：</label>
+                						<div class="col-sm-8">
+    										<input  type="text"   id="ANSWER_DATE" value="" name="ANSWER_DATE" readonly class="form-control" />
+            							</div>
+    								</div>
+								</div>
+								<div class="row">
+    								<div class="form-group col-md-6">
+            							<label for="lastname" class="col-sm-4 control-label">问答状态：</label>
+                						<div class="col-sm-8">
+											<select class="form-control" id="STATUS" name="STATUS" disabled="disabled">
+                          						<option value="">请选择</option>
+                          						<option value="0">未答</option>
+                          						<option value="1">已答</option>
+                    							<option value="2">已过期</option>
+                          					</select>
+    									</div>
+    								</div>
+    								<div class="form-group col-md-6">
+            							<label for="lastname" class="col-sm-4 control-label">评论数：</label>
+                						<div class="col-sm-8">
+    										<input  type="text"   id="COMMENT_COUNT" value="" name="COMMENT_COUNT"  class="form-control" />
+            							</div>
+    								</div>
+								</div>
+								<div class="row">
+    								<div class="form-group col-md-6">
+            							<label for="lastname" class="col-sm-4 control-label">赞数量：</label>
+                						<div class="col-sm-8">
+											<input  type="text"   id="ZAN_COUNT" value="" name="ZAN_COUNT"  class="form-control" />
+    									</div>
+    								</div>
+    								<div class="form-group col-md-6">
+            							<label for="lastname" class="col-sm-4 control-label">转发数：</label>
+                						<div class="col-sm-8">
+    										<input  type="text"   id="SHARE_COUNT" value="" name="SHARE_COUNT"  class="form-control" />
+            							</div>
+    								</div>
+								</div>
+								<div class="row">
+    								<div class="form-group col-md-6">
+            							<label for="lastname" class="col-sm-4 control-label">礼物数量：</label>
+                						<div class="col-sm-8">
+											<input  type="text"   id="GIFT_COUNT" value="" name="GIFT_COUNT"  class="form-control" />
+    									</div>
+    								</div>
+    								<div class="form-group col-md-6">
+            							<label for="lastname" class="col-sm-4 control-label">围观人数：</label>
+                						<div class="col-sm-8">
+    										<input  type="text"   id="ONLOOK_COUNT" value="" name="ONLOOK_COUNT"  class="form-control" />
+            							</div>
+    								</div>
+								</div>
+								
+								<div class="row">
+									<div class="form-group col-md-12">
+            							<label for="lastname" class="col-sm-2 control-label">问题描述：</label>
+                						<div class="col-sm-10">
+    										<textarea class="form-control" id="ASK_CONTENT" name="ASK_CONTENT" class="form-control" >
+                                            </textarea>
+            							</div>
+    								</div>
+                                </div>
+								<div class="row">
+    								<div class="form-group col-md-12">
+            							<label for="lastname" class="col-sm-2 control-label">回答内容：</label>
+                						<div class="col-sm-10">
+    										<textarea class="form-control" id="ANSWER_CONTENT" name="ANSWER_CONTENT"  class="form-control">
+                                            </textarea>
+            							</div>
+    								</div>
+                                </div>
+								<div class="row">
+    								<div class="form-group col-md-12">
+            							<label for="lastname" class="col-sm-2 control-label">备注：</label>
+                						<div class="col-sm-10">
+    										<textarea class="form-control" id="MEMO" name="MEMO"  class="form-control"></textarea>
+            							</div>
+    								</div>
+                                </div>
+						</form>
+            		</div>
+            		<div class="modal-footer">
+            		     <button type="button" onclick="changeProblemInfo()">修改信息</button>
+                		<button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+            		</div>
+        		</div>
+    		</div>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript">
+
+//保存
+function submitnotice(){
+	$("form[name='noticeform']").ajaxSubmit({
+	        type:"post",
+	        url:($("#id").val()=="0") ? "addnotice.do" : "updatenotice.do",
+	        dataType:"json",
+	        beforeSubmit:function(){
+	        },
+	        success:function(data){
+	            if(!data.bizSucc){
+	                alert(data.err_msg);
+	                return false;
+	            }else{
+					alert(data.data);
+					//做一次缓存清除 防止多次修改出现的BUG
+					claenmyModal();
+	            	window.location.reload(true);
+	            }
+	            
+	        },
+	        error:function(e){
+	            alert("异常!");
+	            //$(".loading").css("display","none");
+	        }
+
+	    });
+}
+function claenmyModal(){
+	$("#myModal input").val("");
+}
+
+function clean(){
+	$("#a input").val("");
+	$("#a select").val("");
+}
+function sorce(){
+	$('#mytab').bootstrapTable("selectPage",1);	
+}
+var all;
+//生成用户数据
+$('#mytab').bootstrapTable({
+    method: 'post',
+    contentType: "application/x-www-form-urlencoded",//必须要有！！！！
+    url:"selectproblem.do",//要请求数据的文件路径
+    dataType : 'json',
+    striped: true, //是否显示行间隔色
+  	pageNumber: 1, //初始化加载第一页，默认第一页
+    pageSize:10,//单页记录数
+    pageList:[5,10,20,30],//分页步进值
+    pagination:true,//是否分页
+    queryParamsType:'limit',//查询参数组织方式
+    sidePagination:'server',//指定服务器端分页
+    queryParams: function(p){
+    	 return params(p);
+    },
+  	
+    clickToSelect: true,//是否启用点击选中行
+    toolbarAlign:'right',//工具栏对齐方式
+    buttonsAlign:'right',//按钮对齐方式
+    toolbar:'#toolbar',//指定工作栏
+    columns:[
+        {
+            title:'提问者姓名',
+            field:'ASKUSER_NAME'
+        },
+        {
+            title:'被提问者姓名',
+            field:'ANSWER_USER_NAME'
+        },
+        {
+            title:'标题',
+            field:'ASK_TITLE'
+        },
+		 {
+            title:'问题描述',
+            field:'ASK_CONTENT',
+			formatter:function (value,row,index){
+				if(value!=null){
+					return value.substr(0,5)+"...";
+				}
+			}
+        },
+		{
+            title:'回答内容',
+            field:'ANSWER_CONTENT',
+			formatter:function (value,row,index){
+				if(value!=null){
+					return value.substr(0,5)+"...";
+				}
+			}
+        },
+		{
+            title:'奖励学分',
+            field:'REWARD_POINT'
+        },
+        {
+            title:'提问时间',
+            field:'ASK_DATE',
+			formatter :function (value,row,index){
+				return format(value);
+			}
+        },
+		{
+            title:'回答时间',
+            field:'ANSWER_DATE',
+			formatter :function (value,row,index){
+				if(value == '' || value == null)
+					return "----"
+				return format(value);
+			}
+        },
+		{
+            title:'问答状态',
+            field:'STATUS',
+			formatter : function (value,row,index){
+				if(value=="0") return "未答";
+				if(value=="1") return "已答";
+				if(value=="2") return "已过期";
+			}
+        },
+		/* 
+		 {
+            title:'图片',
+            field:'ASK_IMG',
+			formatter:function (value,row,index){
+				return "<img src='"+value+"' width='100px' height='60px' onclick=imgbig('"+value+"') />" ;
+			}
+        }, */
+		{
+            title:'评论数',
+            field:'COMMENT_COUNT'
+        },
+		{
+            title:'转发数',
+            field:'SHARE_COUNT'
+        },
+		{
+            title:'赞数量',
+            field:'ZAN_COUNT'
+        },
+		{
+            title:'礼物数量',
+            field:'GIFT_COUNT'
+        },
+		{
+            title:'围观人数',
+            field:'ONLOOK_COUNT'
+        },
+	
+        {
+            title:'操作',
+            field:'ID',
+            formatter: function (value,row,index){
+				var type = "";
+				
+                if(row.TYPE=="1") type="<a href='#' onclick=updateproblem('"+value+"','TYPE','0')>取消热门</a>" ;
+				if(row.TYPE=="0") type="<a href='#' onclick=updateproblem('"+value+"','TYPE','1')>成为热门</a>" ;
+                return "<a href='#' onclick=updateshownotice('"+index+"')>查看详情</a> "+
+				" | <a href='#' onclick=updateproblem('"+value+"','DEL_FLG','0')>删除</a> ";
+            }
+        }
+    ],
+    locale:'zh-CN',//中文支持,
+    responseHandler:function(res){
+        //在ajax获取到数据，渲染表格之前，修改数据源
+		all = res.rows;
+        return res;
+    }
+})
+function updateproblem(id,filed,value){
+	jQuery.ajax({
+				 url : "updateproblem.do",
+				 type : 'post',
+				 data:{"id":id,"filed":filed,"value":value},
+				 dataType : 'json',
+				 success : function(data) {
+				 if(!data.bizSucc){
+	                alert(data.err_msg);
+	                return false;
+	             }else{
+					alert(data.data);
+	            	window.location.reload(true);
+	             }
+				 },
+				 error : function() {  
+				            alert("异常！");  
+				     }  
+		});
+}
+
+//显示添加框
+function showallmodal(id,type){
+	$("#"+id).modal(type);
+}
+
+//显示修改框
+function updateshownotice(number){
+	$("#PROBLEM_ID").val(all[number].PROBLEM_ID);
+	$("#ASKUSERNAME").val(all[number].ASKUSER_NAME);
+	$("#ANSWERUSERNAME").val(all[number].ANSWER_USER_NAME);
+	$("#ASK_TITLE").val(all[number].ASK_TITLE);
+	$("#ASK_CONTENT").val(all[number].ASK_CONTENT);
+	$("#ANSWER_CONTENT").val(all[number].ANSWER_CONTENT);
+	
+	$("#REWARD_POINT").val(all[number].REWARD_POINT);
+	$("#ASK_DATE").val(format(all[number].ASK_DATE));
+	
+	$("#ANSWER_DATE").val(format(all[number].ANSWER_DATE));
+	if(null == all[number].ANSWER_DATE || '' == all[number].ANSWER_DATE){
+		$("#ANSWER_DATE").val("----");
+	}
+	
+	$("#STATUS").val(all[number].STATUS);
+	$("#COMMENT_COUNT").val(all[number].COMMENT_COUNT);
+	$("#SHARE_COUNT").val(all[number].SHARE_COUNT);
+	
+	$("#ZAN_COUNT").val(all[number].ZAN_COUNT);
+	$("#GIFT_COUNT").val(all[number].GIFT_COUNT);
+	$("#ONLOOK_COUNT").val(all[number].ONLOOK_COUNT);
+	$("#MEMO").val(all[number].MEMO);
+	showallmodal('myModal','show');
+}
+
+//获取搜索的所有值
+function params(params){
+	 $("#a input[type='text']").each(function(){
+		    params[$(this).attr("id")] = $(this).val();
+	 });
+	 $("#a select").each(function(){
+		    params[$(this).attr("id")] = $(this).val();
+	 });
+	 return params;
+}
+
+//修改数据
+function changeProblemInfo() {
+	if (confirm("确定修改该分答信息？")) {
+		jQuery.ajax({
+			url : "changeProblemInfo.do",
+			type : 'post',
+			data : $('#PROBLEM_INFO').serialize(),
+			dataType : 'json',
+			cache: true,
+			success : function(json) {
+				if (!json.bizSucc) {
+					alert(json.err_msg);
+					return false;
+				} else {
+					showallmodal('myModal', 'hide');
+					$("#mytab").bootstrapTable('refresh');
+				}
+			},
+			error : function() {
+				alert("异常！");
+			}
+		});
+	} else {
+		return;
+	}
+}
+</script>
+</html>

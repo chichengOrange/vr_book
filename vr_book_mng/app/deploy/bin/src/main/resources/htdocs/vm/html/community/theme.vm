@@ -1,0 +1,361 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+#parse("content/importBase.vm")
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<style type="text/css">
+	#preview > img{
+		width:50%;
+		height:170px;
+	}
+</style>
+</head>
+<body style="width: 100%; height: 100%;">
+	<div id="page-wrapper">
+		<!--BEGIN TITLE & BREADCRUMB PAGE-->
+		<div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
+			<div class="page-header pull-left">
+				<div class="page-title">社区管理</div>
+			</div>
+			<ol class="breadcrumb page-breadcrumb pull-right">
+				<li><i class="fa fa-home"></i>&nbsp;<a href="#">社区管理</a>&nbsp;&nbsp;<i
+					class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+				<li class="hidden"><a href="#">社区主题管理</a>&nbsp;&nbsp;<i
+					class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+					<li class="active">社区主题管理</li>
+			</ol>
+			
+			<div class="clearfix"></div>
+		</div>
+
+			<div style="margin-top: 2%;" id="a">
+				<label class="col-sm-1 control-label"
+					style="text-align: right; margin-top: 5px">圈子名称：</label>
+				<div class="col-sm-2">
+					<div class="control-group">
+						<input  type="text" class="form-control" id="THEME_NAME" />
+					</div>
+				</div>
+				<label class="col-sm-1 control-label"
+					style="text-align: right; margin-top: 5px">状态：</label>
+				<div class="col-sm-2">
+					<div class="control-group">
+						<select name="delflg" id="delflg" class="form-control">
+							<option value="">请选择</option>
+							<option value="0">已删除</option>
+							<option value="1">未删除</option>
+						</select> <br />
+					</div>
+				</div>
+			</div>
+			
+				<div >
+					<input type="button"  onclick="clean()"  class="btn btn-danger" name="Name" id="search_tel" value="清空" style="float: right;margin-right: 2%;"/>
+				</div>
+				<div >
+					<input type="button"  onclick="sorce()"   class="btn btn-info" name="Name" id="search_tel" value="查询" style="float: right;margin-right: 2%;"/>
+				</div>
+				<div >
+					<input type="button"  onclick="showallmodal('myModal','show')"   class="btn btn-success" name="Name" id="search_tel" value="添加" style="float: right;margin-right: 2%;"/>
+				</div>
+				
+		<!--END TITLE & BREADCRUMB PAGE-->
+		<!--BEGIN CONTENT-->
+		<table id="mytab" class="table table-hover"></table>
+		<div class="modal fade" id="myModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                		<h4 class="modal-title" id="myModalLabel">添加主题</h4>
+            		</div>
+            		<div class="modal-body">
+            			<form class="form-horizontal" role="form" id="themeform"  name="themeform" enctype="multipart/form-data" method="post" >
+      							<div class="form-group">
+        							<label for="lastname" class="col-sm-2 control-label">圈子名称：</label>
+            						<div class="col-sm-10">
+										<input  type="hidden"  id="id" name="id" value="0" />
+        								<input  type="hidden"  id="oldurl" name="oldurl" value="" />
+										<input type="text" name="themeName" id="themeName" class="form-control" value=""/>
+        							</div>
+								</div>
+								
+      							<div class="form-group">
+        							<label for="lastname" class="col-sm-2 control-label">图片：</label>
+            						<div class="col-sm-10">
+        								<input type="file" id="themefile" name="themefile" onchange="preview(this)"  > 
+        							</div>
+								</div>
+								<div class="form-group">
+        							<label for="lastname" class="col-sm-2 control-label"></label>
+            						<div class="col-sm-10">
+        								<div id="preview" style="display: none" class=""></div>
+        							</div>
+								</div>
+								<div class="form-group">
+        							<label for="lastname" class="col-sm-2 control-label">排列顺序：</label>
+            						<div class="col-sm-10">
+        								<input type="number" id="rank" name="rank" class="form-control" min="1" 
+											onkeyup="this.value=this.value.replace(/\D/g,'')"   
+											onafterpaste="this.value=this.value.replace(/\D/g,'')" value="1"/> 
+        							</div>
+								</div>
+								<div class="form-group">
+        							<label for="lastname" class="col-sm-2 control-label">圈子热度：</label>
+            						<div class="col-sm-10">
+        								<input type="number" id="themeHot" name="themeHot" class="form-control" min="1" 
+											onkeyup="this.value=this.value.replace(/\D/g,'')"   
+											onafterpaste="this.value=this.value.replace(/\D/g,'')" value="0"/> 
+        							</div>
+								</div>
+								<div class="form-group">
+        							<label for="lastname" class="col-sm-2 control-label">简介：</label>
+            						<div class="col-sm-10">
+										<textarea class="form-control" id="profile" name="profile">
+                                        </textarea>
+        							</div>
+								</div>
+								<div class="form-group">
+        							<label for="lastname" class="col-sm-2 control-label">备注：</label>
+            						<div class="col-sm-10">
+										<textarea class="form-control" id="memo" name="memo"></textarea>
+        							</div>
+								</div>
+                          
+						</form>
+            		</div>
+            		<div class="modal-footer">
+                		<button type="button" id="submitReply" class="btn btn-primary" onclick="submittheme()">确定</button>
+                		<button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+            		</div>
+        		</div>
+    		</div>
+		</div>
+		<div class="modal fade" id="imgbig"  data-backdrop="static"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal"  aria-hidden="true">&times;</button>
+                		<h4 class="modal-title"  id="myModalLabel">查看图片</h4>
+            		</div>
+            		<div class="modal-body">
+            			<img alt="" src="" id="bigbis" style="width: 100%;height: 100%;"/>
+            		</div>
+        		</div>
+    		</div>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript">
+
+//保存
+function submittheme(){
+	 var themefile = $("#themefile").val();
+	 if($("#id").val()==""){
+    	if (themefile == "") {
+           alert("请选择上传图片！");
+           return;
+        }
+		var strExtension = themefile.substr(themefile.lastIndexOf('.') + 1);
+         strExtension = strExtension.toLocaleLowerCase();
+         if (strExtension != 'jpg' && strExtension != 'gif'
+         && strExtension != 'png' && strExtension != 'bmp') {
+             alert("请选择图片文件！");
+             return;
+         }
+	 }
+ 	
+	$("form[name='themeform']").ajaxSubmit({
+	        type:"post",
+	        url:($("#id").val()=="0") ? "addtheme.do" : "updatetheme.do",
+	        dataType:"json",
+	        beforeSubmit:function(){
+	        },
+	        success:function(data){
+	            if(!data.bizSucc){
+	                alert(data.err_msg);
+	                return false;
+	            }else{
+					alert(data.data);
+					//做一次缓存清除 防止多次修改出现的BUG
+					claenmyModal();
+	            	window.location.reload(true);
+	            }
+	            
+	        },
+	        error:function(e){
+	            alert("异常!");
+	            //$(".loading").css("display","none");
+	        }
+
+	    });
+}
+function claenmyModal(){
+	$("#myModal input").val("");
+}
+//图片预览
+function preview(file)  {  
+		var prevDiv = document.getElementById('preview'); 
+		prevDiv.style.display="block";
+		if (file.files && file.files[0])  {  
+			var reader = new FileReader();  
+			reader.onload = function(evt){  
+				prevDiv.innerHTML = '<img src="' + evt.target.result + '" />';  
+			}    
+			reader.readAsDataURL(file.files[0]);  
+		}else{  
+			prevDiv.innerHTML = '<div class="img" style="filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale,src=\'' + file.value + '\'"></div>';  
+		}  
+	}  
+function clean(){
+	$("#a input").val("");
+	$("#a select").val("");
+}
+function sorce(){
+	$('#mytab').bootstrapTable("selectPage",1);	
+}
+var all;
+//生成用户数据
+$('#mytab').bootstrapTable({
+    method: 'post',
+    contentType: "application/x-www-form-urlencoded",//必须要有！！！！
+    url:"selecttheme.do",//要请求数据的文件路径
+    dataType : 'json',
+    striped: true, //是否显示行间隔色
+  	pageNumber: 1, //初始化加载第一页，默认第一页
+    pageSize:10,//单页记录数
+    pageList:[5,10,20,30],//分页步进值
+    pagination:true,//是否分页
+    queryParamsType:'limit',//查询参数组织方式
+    sidePagination:'server',//指定服务器端分页
+    queryParams: function(p){
+    	 return params(p);
+    },
+  	
+    clickToSelect: true,//是否启用点击选中行
+    toolbarAlign:'right',//工具栏对齐方式
+    buttonsAlign:'right',//按钮对齐方式
+    toolbar:'#toolbar',//指定工作栏
+    columns:[
+		{
+		    title:'圈子编号',
+		    field:'THEME_ID'
+		},	
+        {
+            title:'圈子名称',
+            field:'THEME_NAME'
+		},	
+        {
+            title:'圈子图片',
+            field:'THEME_URL',
+			formatter:function (value,row,index){
+				return "<img src='"+value+"' width='40px' height='40px' onclick=imgbig('"+value+"') />" ;
+			}
+        },
+        {
+            title:'圈子热度',
+            field:'THEME_HOT',
+        },
+		 {
+            title:'帖子数量',
+            field:'DYNAMIC_COUNT',
+        },
+		
+		{
+            title:'排序',
+            field:'RANK',
+        },
+        {
+            title:'操作',
+            field:'ID',
+            formatter: function (value,row,index){
+                return "<a href='#' onclick=updateshowbanner('"+index+"')>修改</a>";
+            }
+        },
+        {
+            title:'显示操作',
+            field:'ID',
+            formatter: function (value,row,index){
+            	if(row.DEL_FLG == '0')
+            		return "<a href='#' onclick=changeThemeDel('"+row.THEME_ID+"','1')>恢复</a>";
+            	if(row.DEL_FLG == '1')
+            		return "<a href='#' onclick=changeThemeDel('"+row.THEME_ID+"','0')>删除</a>";
+            }
+        }
+    ],
+    locale:'zh-CN',//中文支持,
+    responseHandler:function(res){
+        //在ajax获取到数据，渲染表格之前，修改数据源
+		all = res.rows;
+        return res;
+    }
+})
+
+//显示添加框
+function showallmodal(id,type){
+	$("#myModal input").val("");
+	$("#myModal textarea").val("");
+	$("#preview").html("");
+	$("#id").val("0");
+	$("#"+id).modal(type);
+}
+//显示放大图片
+function imgbig(url){
+	$('#imgbig').modal('show');
+	$("#bigbis").attr('src',url);
+}
+//显示修改框
+function updateshowbanner(number){
+	$("#id").val(all[number].ID);
+	$("#preview").html("<img src="+all[number].THEME_URL+" />");
+	$("#preview").css("display","block");
+	$("#rank").val(all[number].RANK);
+	$("#themeHot").val(all[number].THEME_HOT);
+	$("#profile").val(all[number].PROFILE);
+	$("#memo").val(all[number].MEMO);
+	$("#themeName").val(all[number].THEME_NAME);
+	$("#oldurl").val(all[number].THEME_URL);
+	$("#myModal").modal("show");
+}
+//获取搜索的所有值
+function params(params){
+	 $("#a input[type='text']").each(function(){
+		    params[$(this).attr("id")] = $(this).val();
+	 });
+	 $("#a select").each(function() {
+			params[$(this).attr("id")] = $(this).val();
+	 });
+	 return params;
+}
+
+function changeThemeDel(themeId,type) {
+	if(confirm("确认删除该主题？")){
+		jQuery.ajax({
+			url : "changeThemeDel.do",
+			type : 'post',
+			data : {
+				"themeId" : themeId,
+				"type" : type
+			},
+			dataType : 'json',
+			success : function(json) {
+				if (!json.bizSucc) {
+					alert(json.err_msg);
+					return false;
+				} else {
+					alert("操作成功！");
+					$("#mytab").bootstrapTable('refresh');
+				}
+			},
+			error : function() {
+				alert("异常！");
+			}
+		});
+	}
+}
+</script>
+</html>

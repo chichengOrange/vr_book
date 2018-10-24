@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="sys_menu">
+
+	<operation name="selectallmenu" resultClass="java.util.List&lt; Map&lt;String,Object&gt; &gt;">
+		
+		<sql>
+			select * from sys_menu
+		</sql>
+		<sqlmap>
+			<![CDATA[
+				select id,PID pId,name,url file,rank  from sys_menu  order by rank asc
+			]]>	
+		</sqlmap>
+	</operation>
+	<operation name="updatemenu">
+		<sql>
+			update sys_menu set name=? ,url = ? ,rank=?,MODIFIER=? ,GMT_MODIFIED = ? where id= ? 
+		</sql>
+	</operation>
+	<operation name="selectmaxid" resultClass="int">
+		<sql>
+			select max(id) from sys_menu
+		</sql>
+	</operation>
+	<operation name="addmenu">
+		<sql>
+			insert into sys_menu(ID,PID,NAME,URL,RANK,CREATER,GMT_CREATE) 
+			values (?,?,?,?,?,?,?)
+		</sql>
+	</operation>
+	<operation name="deletemenubyid">
+		<sql>
+			delete from sys_menu where id=?
+		</sql>
+	</operation>
+	<operation name="deletemenubypid">
+		<sql>
+			delete from sys_menu where pid=? 
+		</sql>
+	</operation>
+	<operation name="selectmenubypid" resultClass="java.util.List&lt; Map&lt;String,Object&gt; &gt;">
+		<sql>
+			select * from sys_menu where pid =?
+		</sql>
+	</operation>
+</table>

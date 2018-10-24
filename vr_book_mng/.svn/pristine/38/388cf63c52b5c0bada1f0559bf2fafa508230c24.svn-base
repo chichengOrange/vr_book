@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_book_handle">
+<operation name="selectHandle" resultClass="java.util.HashMap" multiplicity="many">
+	<sql>
+		select * from vr_book_handle where 1 = 1
+	</sql>
+	<sqlmap>
+		<![CDATA[
+		SELECT TYPE  name ,sum(HAND_COUNT) value FROM vr_book_handle  GROUP BY TYPE
+		]]>
+	</sqlmap>
+</operation>
+
+	<operation name="selectByQuery" multiplicity="many" resultClass="com.onway.fyapp.common.dal.vo.BookHandleVO">
+		<extraparams>
+			<param name="userName" javatype="java.lang.String" />
+			<param name="bookName" javatype="java.lang.String" />
+			<param name="offset" javatype="java.lang.Integer" />
+			<param name="limit" javatype="java.lang.Integer" />
+		</extraparams>
+		<sql>select * from vr_book_handle</sql>
+		<sqlmap>
+			<![CDATA[
+				SELECT
+					vbu.ID 			id,
+					vbu.USER_ID 	userId,
+					vbu.BOOK_ID 	bookId,
+					vbu.TYPE 		type,
+					vbu.HAND_COUNT 	handleCount,
+					vbu.GMT_CREATE gmtCreate,
+					vbu.GMT_MODIFIED gmtModified,
+					vb.BOOK_NAME 	bookName,
+					vb.BOOK_IMG 	bookImg,
+					vb.BOOK_AUTHOR 	bookAuthor,
+					vb.BOOK_PUBLISH bookPublish,
+					vb.BOOK_SIZE 	bookSize, 
+					vb.BOOK_HEAT 	bookHeat,
+					vb.DOWNLOAD_URL downloadUrl,
+					vb.DOWNLOAD_COUNT downloadCount,
+					vb.CAN_DOWNLOAD	canDownload,
+					vb.PRICE		price,
+					vb.DISTRIBUTOR	distributor,
+					vu.USER_NAME	userName,
+					vu.CELL			cell
+					
+				FROM
+					vr_book_handle vbu
+				LEFT JOIN
+					vr_book	vb
+				ON
+					vbu.BOOK_ID = vb.BOOK_ID
+				LEFT JOIN
+					vr_user vu
+				ON
+					vbu.USER_ID = vu.USER_ID
+					
+
+				where 1=1 
+				
+				<isNotEmpty prepend="and" property="userName"> 
+	    			 vu.USER_NAME like '%$userName$%'
+	    		</isNotEmpty>
+	    		
+	    		<isNotEmpty prepend="and" property="bookName"> 
+	    			 vb.BOOK_NAME like '%$bookName$%'
+	    		</isNotEmpty>
+	    		
+	    		
+	    		order by vbu.GMT_CREATE desc 
+	    		
+	    		LIMIT $offset$, $limit$
+        	]]>
+		</sqlmap>
+	</operation>
+	
+	<operation name="selectCountByQuery" resultClass="int">
+		<extraparams>
+			<param name="userName" javatype="java.lang.String" />
+			<param name="bookName" javatype="java.lang.String" />
+		</extraparams>
+		<sql>select count(1) from vr_book_handle</sql>
+		<sqlmap>
+			<![CDATA[
+				SELECT count(1) 
+				FROM
+					vr_book_handle vbu
+				LEFT JOIN
+					vr_book	vb
+				ON
+					vbu.BOOK_ID = vb.BOOK_ID
+				LEFT JOIN
+					vr_user vu
+				ON
+					vbu.USER_ID = vu.USER_ID
+
+				where 1=1 
+				
+				<isNotEmpty prepend="and" property="userName"> 
+	    			 vu.USER_NAME like '%$userName$%'
+	    		</isNotEmpty>
+	    		
+	    		<isNotEmpty prepend="and" property="bookName"> 
+	    			 vb.BOOK_NAME like '%$bookName$%'
+	    		</isNotEmpty>
+	    		
+        	]]>
+		</sqlmap>
+	</operation>
+</table>

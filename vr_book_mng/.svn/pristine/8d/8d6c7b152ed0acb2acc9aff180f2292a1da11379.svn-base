@@ -1,0 +1,1214 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+#parse("content/importBase.vm")
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style type="text/css">
+#preview>img {
+	width: 50%;
+	height: 170px;
+}
+.speed_box {
+	width:400px;
+	height:20px;
+	display:none;
+	margin-top:7px;
+	border:1px solid #0091f2;
+	border-radius:10px;
+	overflow:hidden;
+}
+.speed_box1 {
+	width:400px;
+	height:20px;
+	display:none;
+	margin-top:7px;
+	border:1px solid #0091f2;
+	border-radius:10px;
+	overflow:hidden;
+}
+#speed {
+	width:0;
+	height:100%;
+	background:#0091f2;
+	color:white;
+	text-align:center;
+	line-height:20px;
+	font-size:16px;
+}
+#speed1 {
+	width:0;
+	height:100%;
+	background:#0091f2;
+	color:white;
+	text-align:center;
+	line-height:20px;
+	font-size:16px;
+}
+</style>
+</head>
+<body style="width: 100%; height: 100%;">
+	<div id="page-wrapper">
+		<!--BEGIN TITLE & BREADCRUMB PAGE-->
+		<div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
+			<div class="page-header pull-left">
+				<div class="page-title">AR书籍管理</div>
+			</div>
+			<ol class="breadcrumb page-breadcrumb pull-right">
+				<li><i class="fa fa-home"></i>&nbsp;<a href="#">AR书籍管理</a>&nbsp;&nbsp;<i
+					class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+				<li class="hidden"><a href="#">AR书籍管理</a>&nbsp;&nbsp;<i
+					class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+				<li class="active">AR书籍管理</li>
+			</ol>
+
+			<div class="clearfix"></div>
+		</div>
+
+		<div style="margin-top: 2%;" id="a">
+			<label class="col-sm-1 control-label"
+				style="text-align: right; margin-top: 5px">书籍ID：</label>
+			<div class="col-sm-1">
+				<div class="control-group">
+					<input type="text" class="form-control" id="_BOOK_ID" maxlength="32"/>
+				</div>
+			</div>
+			<label class="col-sm-1 control-label"
+				style="text-align: right; margin-top: 5px">书籍名称：</label>
+			<div class="col-sm-1">
+				<div class="control-group">
+					<input type="text" class="form-control" id="_BOOK_NAME" maxlength="32"/>
+				</div>
+			</div>
+			<label class="col-sm-1 control-label"
+				style="text-align: right; margin-top: 5px">出版社：</label>
+			<div class="col-sm-1">
+				<div class="control-group">
+					<input type="text" class="form-control" id="_BOOK_PUBLISH" maxlength="32"/>
+				</div>
+			</div>
+			<label class="col-sm-1 control-label"
+				style="text-align: right; margin-top: 5px">作者：</label>
+			<div class="col-sm-1">
+				<div class="control-group">
+					<input type="text" class="form-control" id="_BOOK_AUTHOR" maxlength="32"/>
+				</div>
+				<br />
+			</div>
+		</div>
+
+		<div>
+			<button id="exportBtn" style="float: right; margin-right: 2%;" class="export-excel btn btn-default" data-table="#mytab">导出表格</button>
+		</div>
+		<div>
+			<input type="button" onclick="clean()" class="btn btn-danger"
+				name="Name" id="search_tel" value="清空"
+				style="float: right; margin-right: 2%;" />
+		</div>
+		<div>
+			<input type="button" onclick="sorce()" class="btn btn-info"
+				name="Name" id="search_tel" value="查询"
+				style="float: right; margin-right: 2%;" />
+		</div>
+		<div>
+			<input type="button" onclick="showallmodal('myModal','show')"
+				class="btn btn-success" name="Name" id="search_tel" value="添加"
+				style="float: right; margin-right: 2%;" />
+		</div>
+
+		<!--END TITLE & BREADCRUMB PAGE-->
+		<!--BEGIN CONTENT-->
+		<table id="mytab" class="table table-hover">
+		</table>
+		<div class="modal fade" id="myModal" data-backdrop="static"
+			tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="myModalLabel">添加书籍</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal" role="form" id="themeform"
+							name="themeform" enctype="multipart/form-data" method="post">
+							<div class="form-group">
+								<label for="lastname" class="col-sm-2 control-label">书籍名称：</label>
+								<div class="col-sm-10">
+									<input type="hidden" id="id" name="id" value="0" /> <input
+										type="text" name="BOOK_NAME" id="BOOK_NAME"
+										class="form-control" value="" maxlength="32"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="lastname" class="col-sm-2 control-label">出版社：</label>
+								<div class="col-sm-10">
+									<input type="text" name="BOOK_PUBLISH" id="BOOK_PUBLISH"
+										class="form-control" value="" maxlength="32"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="lastname" class="col-sm-2 control-label">作者：</label>
+								<div class="col-sm-10">
+									<input type="text" name="BOOK_AUTHOR" id="BOOK_AUTHOR"
+										class="form-control" value="" maxlength="32"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="lastname" class="col-sm-2 control-label">图片：</label>
+								<div class="col-sm-10">
+									<input type="file" id="themefile" name="themefile"
+										onchange="preview(this)">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="lastname" class="col-sm-2 control-label"></label>
+								<div class="col-sm-10">
+									<div id="preview" style="display: none" class=""></div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="lastname" class="col-sm-2 control-label">书籍附件：</label>
+								<div class="col-sm-10">
+									<input type="file" id="bookfile" name="bookfile">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="lastname" class="col-sm-2 control-label">价格：</label>
+								<div class="col-sm-10">
+									<input type="number" name="PRICE" id="PRICE"
+										class="form-control" value="" onBlur="noFue(this.value)"
+										onchange="noFue(this.value)"
+										oninput="if(value.length>9)value=value.slice(0,9)" />
+								</div>
+							</div>
+							<div class="form-group">
+        							<label for="lastname" class="col-sm-2 control-label">推荐度：</label>
+            						<div class="col-sm-10">
+        								<input type="number" id="SORT" name="SORT" class="form-control" min="1" 
+											onkeyup="this.value=this.value.replace(/\D/g,'')"   
+											onafterpaste="this.value=this.value.replace(/\D/g,'')" value="1"/> 
+        							</div>
+								</div>
+							<div class="form-group">
+        							<label for="lastname" class="col-sm-2 control-label">下载量：</label>
+            						<div class="col-sm-10">
+        								<input type="number" id="downloadCount" name="downloadCount" class="form-control" min="1" 
+											onkeyup="this.value=this.value.replace(/\D/g,'')"   
+											onafterpaste="this.value=this.value.replace(/\D/g,'')" value="1"/> 
+        							</div>
+								</div>
+							<div class="form-group">
+								<label for="lastname" class="col-sm-2 control-label">允许下载：</label>
+								<div class="col-sm-10">
+									<input type="radio" name="radio" id="yes" value="0"
+										checked="checked">是 <input type="radio" name="radio"
+										id="no" value="1">否 <input type="hidden"
+										name="canDownloadValue" id="canDownloadValue" value="0">
+								</div>
+							</div>
+							<div class="form-group" id="jindu"  style="display: none" >
+								<label for="lastname"  class="col-sm-2 control-label">上传进度：</label>
+								<div class="col-sm-10">
+								<div class="speed_box">
+        							<div id="speed">0%</div>
+    							</div>
+<!-- 								<input id="btnUpload" type="text" style="width:60;overflow-x:visible;overflow-y:visible;" class="btn btn-success" /> -->
+			                   <!--  <input id="btnUpload" class="btn btn-success" value=" " /> -->
+			                    </div>
+			               </div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" id="submitReply" class="btn btn-primary"
+							onclick="submittheme()">确定</button>
+						<button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="reviseBook" data-backdrop="static"
+			tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" style="width: 1000px">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="reviseBookLabel">书籍修订</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal" role="form" id="reviseform"
+							name="themeform" enctype="multipart/form-data" method="post">
+							<div class="form-group">
+								<label for="lastname" class="col-sm-2 control-label">第几次修订：</label>
+								<div class="col-sm-10">
+									<input type="hidden" id="bookID" name="bookID" value="0" /> <input
+										type="hidden" id="versionId" name="versionId" value="-1" /> <input
+										type="text" name="REVISE_NUM" id="REVISE_NUM"
+										class="form-control" value="" maxlength="32"/>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="lastname" class="col-sm-2 control-label">更新说明：</label>
+								<div class="col-sm-10">
+									<textarea rows="3" cols="30" name="EXPLAIN" id="EXPLAIN"
+										class="form-control" maxlength="255"></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="lastname" class="col-sm-2 control-label">备注：</label>
+								<div class="col-sm-10">
+									<textarea rows="3" cols="30" name="MEMO" id="MEMO"
+										class="form-control" maxlength="255"></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="lastname" class="col-sm-2 control-label">书籍附件：</label>
+								<div class="col-sm-10">
+									<input type="file" id="revisefile" name="revisefile">
+								</div>
+							</div>
+							<div class="form-group" id="jindu1"  style="display: none" >
+								<label for="lastname"  class="col-sm-2 control-label">上传进度：</label>
+								<div class="col-sm-10">
+								<div class="speed_box1">
+        							<div id="speed1">0%</div>
+    							</div>
+			                    </div>
+			               </div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" id="submitRevise" class="btn btn-primary"
+							onclick="submitRevise()">确定</button>
+						<button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="chapter" data-backdrop="static"
+			tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" style="width: 1000px">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="reviseBookLabel">章节信息</h4>
+					</div>
+					<label for="lastname" class="col-sm-2 control-label">章名称：</label>
+					<div class="col-sm-7" id="b">
+						<input type="hidden" id="bookIdForChapter" name="bookIdForChapter"
+							value="0" /> <input type="text" name="chapterId" id="chapterId"
+							class="form-control" value="" maxlength="128" />
+					</div>
+					<input type="button" onclick="addchapter()" class="btn btn-success"
+						name="Name" id="addchapter" value="添加章"
+						style="float: right; margin-right: 2%;" />
+					<table id="chaptertab" class="table table-hover"></table>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="sections" data-backdrop="static"
+			tabindex="1" role="dialog" aria-labelledby="myModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" style="width: 1000px">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="BookSections">添加节</h4>
+					</div>
+					<label for="lastname" class="col-sm-1 control-label">节名称：</label>
+					<div class="col-sm-4" id="b">
+						<input type="hidden" id="chapterIdfor" name="chapterIdfor"
+							value="0" /> <input type="text" name="sectionsName"
+							id="sectionsName" class="form-control" value="" maxlength="128"/>
+					</div>
+					<label for="lastname" class="col-sm-1 control-label">模型ID：</label>
+					<div class="col-sm-4" id="b1">
+						 <input type="text" name="modelId"	id="modelId" class="form-control" value="" maxlength="32"/>
+					</div>
+					<input type="button" onclick="addsections()"
+						class="btn btn-success" name="Name" id="addsections" value="添加节"
+						style="float: right; margin-right: 2%;" />
+					<table id="sectionstab" class="table table-hover"></table>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="modal fade" id="updateChapter" data-backdrop="static"
+			tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" style="width: 800px">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="updateChapterLabel">修改章</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal" role="form" id="updateChapterform"
+							name="themeform" enctype="multipart/form-data" method="post">
+							<div class="form-group">
+								<label for="lastname" class="col-sm-2 control-label">章名称：</label>
+								<div class="col-sm-10">
+									<input type="hidden" id="updateChapterId"
+										name="updateChapterId" value="0" /> <input type="text"
+										name="updateChapterName" id="updateChapterName"
+										class="form-control" value="" maxlength="128"/>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" id="submitUpdateChapter"
+							class="btn btn-primary" onclick="submitUpdateChapter()">确定</button>
+						<button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="modal fade" id="updateSections" data-backdrop="static"
+			tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" style="width: 800px">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="updateSectionsLabel">修改节</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal" role="form" id="updateSectionsform"
+							name="themeform" enctype="multipart/form-data" method="post">
+							<div class="form-group">
+								<label for="lastname" class="col-sm-2 control-label">节名称：</label>
+								<div class="col-sm-10">
+									<input type="hidden" id="updateSectionId"
+										name="updateSectionId" value="0" /> <input type="text"
+										name="updateSectionName" id="updateSectionName"
+										class="form-control" value="" maxlength="128"/>
+								</div>
+								<label for="lastname" class="col-sm-2 control-label">模型ID：</label>
+								<div class="col-sm-10">
+									<input type="text"name="updateModelId" id="updateModelId"
+										class="form-control" value="" maxlength="32"/>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer" >
+						<button type="button" id="submitUpdateSections"
+							class="btn btn-primary" onclick="submitUpdateSections()">确定</button>
+						<button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="imgbig" data-backdrop="static"
+			tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="myModalLabel">查看图片</h4>
+					</div>
+					<div class="modal-body">
+						<img alt="" src="" id="bigbis" style="width: 100%; height: 100%;" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript">
+	$("#no").click(function() {
+		$("#no").attr("checked", "checked");
+		$("#yes").removeAttr("checked");
+		$("#canDownloadValue").val("1");
+	});
+	$("#yes").click(function() {
+		$("#yes").attr("checked", "checked");
+		$("#no").removeAttr("checked");
+		$("#canDownloadValue").val("0");
+	});
+	//价格框校验
+	function noFue(val) {
+		document.getElementById('PRICE').value = val >= 0 ? val : 0;
+	}
+	//修改——转换日期格式(时间戳转换为datetime格式)
+	function formatDateTime(inputTime) {
+		var date = new Date(inputTime);
+		var y = date.getFullYear();
+		var m = date.getMonth() + 1;
+		m = m < 10 ? ('0' + m) : m;
+		var d = date.getDate();
+		d = d < 10 ? ('0' + d) : d;
+		var h = date.getHours();
+		h = h < 10 ? ('0' + h) : h;
+		var minute = date.getMinutes();
+		var second = date.getSeconds();
+		minute = minute < 10 ? ('0' + minute) : minute;
+		second = second < 10 ? ('0' + second) : second;
+		return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
+	}
+
+	//修订书籍 
+	function submitRevise() {
+		var revisefile = $("#revisefile").val();
+		if (revisefile == "") {
+			alert("请选择上传书籍！");
+			return;
+		}
+
+		$("#reviseform").ajaxSubmit({
+			type : "post",
+			url : "revise.do",
+			dataType : "json",
+			contentType : "multipart/form-data; charset=utf-8",
+			beforeSubmit : function() {
+				$("#submitRevise").attr("disabled", "disabled");
+			},
+			xhr: function(){ //获取ajaxSettings中的xhr对象，为它的upload属性绑定progress事件的处理函数
+                 myXhr = jQuery.ajaxSettings.xhr();
+                 if(progressFunction && myXhr.upload) { //检查进度函数和upload属性是否存在
+                     //绑定progress事件的回调函数
+                     myXhr.upload.addEventListener("progress",progressFunction, false);
+                 }
+                 return myXhr; //xhr对象返回给jQuery使用
+            },
+			success : function(data) {
+				$("#submitRevise").removeAttr("disabled");
+				if (!data.success) {
+					alert(data.message);
+					return false;
+				} else {
+					alert(data.message);
+					$("#reviseBook").modal("hide");
+					window.location.reload(true);
+				}
+
+			},
+			error : function(e) {
+				$("#submitRevise").removeAttr("disabled");
+				alert("异常!");
+				//$(".loading").css("display","none");
+			}
+		});
+	}
+	//修改章名称 
+	function submitUpdateChapter() {
+		var updateChapterId = $("#updateChapterId").val();
+		var updateChapterName = $("#updateChapterName").val();
+		if (updateChapterName == "") {
+			alert("请输入章名称！");
+			return;
+		}
+
+		$("#updateChapterform").ajaxSubmit({
+			type : "post",
+			url : "updateChapter.do",
+			dataType : "json",
+			contentType : "multipart/form-data; charset=utf-8",
+			success : function(data) {
+				if (!data.success) {
+					alert(data.message);
+					return false;
+				} else {
+					alert(data.message);
+					$("#updateChapter").modal("hide");
+					$("#chaptertab").bootstrapTable('refresh');
+				}
+
+			},
+			error : function(e) {
+				alert("异常!");
+			}
+		});
+	}
+	//修改节名称 
+	function submitUpdateSections() {
+
+		var updateSectionName = $("#updateSectionName").val();
+		var updateModelId = $("#updateModelId").val();
+		if (updateSectionName == ""||updateModelId=="") {
+			alert("节名称和模型ID均不能为空！");
+			return;
+		}
+
+		$("#updateSectionsform").ajaxSubmit({
+			type : "post",
+			url : "updateSections.do",
+			dataType : "json",
+			contentType : "multipart/form-data; charset=utf-8",
+			success : function(data) {
+				if (!data.success) {
+					alert(data.message);
+					return false;
+				} else {
+					alert(data.message);
+					$("#updateSections").modal("hide");
+					$("#sectionstab").bootstrapTable('refresh');
+				}
+
+			},
+			error : function(e) {
+				alert("异常!");
+				//$(".loading").css("display","none");
+			}
+		});
+	}
+	//添加章
+	function addchapter() {
+		var chapterId = $("#chapterId").val();
+		var bookIdForChapter = $("#bookIdForChapter").val();
+		if (chapterId == "") {
+			alert("输入章名称！");
+			return;
+		}
+
+		jQuery.ajax({
+			url : "addchapter.do",
+			type : 'post',
+			data : {
+				"chapterId" : chapterId,
+				"bookIdForChapter" : bookIdForChapter
+			},
+			dataType : 'json',
+			success : function(result) {
+				if (!result.success) {
+					alert(result.message);
+					return false;
+				} else {
+					alert(result.message);
+					$("#chapterId").val("");
+					$("#chaptertab").bootstrapTable('refresh');
+				}
+			},
+			error : function() {
+				alert("异常！");
+			}
+		});
+	}
+	//添加节 
+	function addsections() {
+		var sectionsName = $("#sectionsName").val();
+		var chapterIdfor = $("#chapterIdfor").val();
+		var modelId = $("#modelId").val();
+		if (sectionsName == ""||modelId=="") {
+			alert("节名称和模型ID均不能为空！");
+			return;
+		}
+
+		jQuery.ajax({
+			url : "addSection.do",
+			type : 'post',
+			data : {
+				"sectionsName" : sectionsName,
+				"chapterIdfor" : chapterIdfor,
+				"modelId" : modelId
+			},
+			dataType : 'json',
+			success : function(result) {
+				if (!result.success) {
+					alert(result.message);
+					return false;
+				} else {
+					alert(result.message);
+					$("#sectionsName").val("");
+					$("#modelId").val("");
+					$("#sectionstab").bootstrapTable('refresh');
+				}
+			},
+			error : function() {
+				alert("异常！");
+			}
+		});
+	}
+	//新建或更新书籍 
+	function submittheme() {
+		
+		var themefile = $("#themefile").val();
+		var bookfile = $("#bookfile").val();
+
+		if ($("#id").val() == 0) {
+			if (themefile == "") {
+				alert("请选择上传图片！");
+				return;
+			}
+			if (bookfile == "") {
+				alert("请选择上传书籍！");
+				return;
+			}
+			var strExtension = themefile.substr(themefile.lastIndexOf('.') + 1);
+			strExtension = strExtension.toLocaleLowerCase();
+			if (strExtension != 'jpg' && strExtension != 'gif'
+					&& strExtension != 'png' && strExtension != 'bmp') {
+				alert("请选择图片文件！");
+				return;
+			}
+		}
+		if (document.getElementById('PRICE').value == ""||document.getElementById('SORT').value == ""||document.getElementById('downloadCount').value == "") {
+			alert("金额,下载量,推荐度均不能为空！");
+			return;
+		}
+		$("form[name='themeform']").ajaxSubmit({
+			type : "post",
+			url : ($("#id").val() == "0") ? "addbook.do" : "updatebook.do",
+			dataType : "json",
+			contentType : "multipart/form-data; charset=utf-8",
+			beforeSubmit : function() {
+				$("#submitReply").attr("disabled", "disabled");
+			},
+			xhr: function(){ //获取ajaxSettings中的xhr对象，为它的upload属性绑定progress事件的处理函数
+                 myXhr = jQuery.ajaxSettings.xhr();
+                 if(progressFunction && myXhr.upload) { //检查进度函数和upload属性是否存在
+                     //绑定progress事件的回调函数
+                     myXhr.upload.addEventListener("progress",progressFunction, false);
+                 }
+                 return myXhr; //xhr对象返回给jQuery使用
+             },
+			success : function(data) {
+				if (!data.success) {
+					$("#submitReply").removeAttr("disabled");
+					alert(data.message);
+					return false;
+				} else {
+					$("#speed").html("上传成功");
+					alert(data.message);
+					//做一次缓存清除 防止多次修改出现的BUG
+					claenmyModal();
+					window.location.reload(true);
+				}
+
+			},
+			error : function(e) {
+				alert("异常!");
+				$("#submitReply").removeAttr("disabled");
+				//$(".loading").css("display","none");
+			}
+
+		});
+	}
+	//进度条控制
+    function progressFunction(evt) {
+        if (evt.lengthComputable) {
+            var completePercent = Math.round(evt.loaded / evt.total * 100);
+            $("#jindu").show();
+            $("#jindu1").show();
+            $('.speed_box').show();
+            $('.speed_box1').show();
+            $("#speed").html(completePercent + "%").css("width", completePercent + "%");
+            $("#speed1").html(completePercent + "%").css("width", completePercent + "%");
+        }
+    }
+	function claenmyModal() {
+		$("#myModal input").val("");
+	}
+	//图片预览
+	function preview(file) {
+		var prevDiv = document.getElementById('preview');
+		prevDiv.style.display = "block";
+		if (file.files && file.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function(evt) {
+				prevDiv.innerHTML = '<img src="' + evt.target.result + '" />';
+			}
+			reader.readAsDataURL(file.files[0]);
+		} else {
+			prevDiv.innerHTML = '<div class="img" style="filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale,src=\'' + file.value + '\'"></div>';
+		}
+	}
+	function clean() {
+		$("#a input").val("");
+	}
+	function sorce() {
+		$('#mytab').bootstrapTable("selectPage", 1);
+	}
+	var all;
+	//生成用户数据
+	$('#mytab')
+			.bootstrapTable(
+					{
+						method : 'post',
+						contentType : "application/x-www-form-urlencoded",//必须要有！！！！
+						url : "selectallbook.do",//要请求数据的文件路径
+						dataType : 'json',
+						striped : true, //是否显示行间隔色
+						pageNumber : 1, //初始化加载第一页，默认第一页
+						pageSize : 10,//单页记录数
+						pageList : [-1, 10, 30,50,100 ],//分页步进值
+						pagination : true,//是否分页
+						queryParamsType : 'limit',//查询参数组织方式
+						sidePagination : 'server',//指定服务器端分页
+						queryParams : function(p) {
+							return params(p);
+						},
+			            exportDataType: "all",
+			            exportTypes:['excel'],  //导出文件类型
+			            Icons:'glyphicon-export',
+						clickToSelect : true,//是否启用点击选中行
+						toolbarAlign : 'right',//工具栏对齐方式
+						buttonsAlign : 'right',//按钮对齐方式
+						toolbar : '#toolbar',//指定工作栏
+						columns : [
+								{
+									title : '书籍ID',
+									field : 'bookId'
+								},
+								{
+									title : '书籍名称',
+									field : 'bookName'
+								},
+								{
+									title : '书籍图片',
+									field : 'bookImg',
+									formatter : function(value, row, index) {
+										return "<img src='"
+												+ value
+												+ "' width='40px' height='40px' onclick=imgbig('"
+												+ value + "') />";
+									}
+								},
+								{
+									title : '作者',
+									field : 'bookAuthor',
+								},
+								{
+									title : '出版社',
+									field : 'bookPublish',
+								},
+
+								{
+									title : '包体大小(字节)',
+									field : 'bookSize',
+									sortable:true,
+								},
+								{
+									title : '下载链接',
+									field : 'downloadUrl',
+									formatter : function(value, row, index) {
+										return "<a href='#' onclick=downloadBook('"
+												+ index + "')>下载书籍</a>";
+									}
+								},
+								{
+									title : '下载量',
+									field : 'downloadCount',
+								},
+								{
+									title : '价格',
+									field : 'price.amount',
+								},
+								{
+									title : '推荐度',
+									field : 'sort',
+								},
+								{
+									title : '更新时间',
+									field : 'gmtModified',
+									formatter:function (value,row,index){
+										return formatDateTime(value);
+						            }
+								},
+								{
+									title : '能否下载',
+									field : 'canDownload',
+									formatter:function (value,row,index){
+						            	if(value=="0")
+											return "是";
+										
+						            	if(value!="0")
+											return "否";
+						            }
+								},
+								{
+									title : '上传者',
+									field : 'distributor',
+								},
+								{
+									title : '操作',
+									field : 'id',
+									formatter : function(value, row, index) {
+										return "<a href='#' onclick=updateshowbanner('"
+												+ index
+												+ "')>修改</a>   |  "
+												+ "<a href='#' onclick=deleteBook('"
+												+ row.id + "')>删除</a>";
+									}
+								},
+								{
+									title : '高级',
+									field : 'bookId',
+									formatter : function(value, row, index) {
+										return "<a href='#' onclick=revise('"
+												+ value + "')>书籍修订</a></br>";
+									}
+								},
+								{
+									title : '设定章节',
+									field : 'bookId',
+									formatter : function(value, row, index) {
+										return "<a href='#' onclick=chapterSet('"
+												+ value + "')>设定章节</a></br>";
+									}
+								} ],
+						locale : 'zh-CN',//中文支持,
+						responseHandler : function(res) {
+							//在ajax获取到数据，渲染表格之前，修改数据源
+							all = res.rows;
+							return res;
+						}
+					})
+	
+	//显示书籍添加框
+	function showallmodal(id, type) {
+		document.getElementById('myModalLabel').innerHTML = "添加书籍";
+		$("#myModal input").val("");
+		$("#myModal textarea").val("");
+		$("#preview").html("");
+		$("#id").val("0");
+		$("#yes").attr("checked", "checked");
+		$("#canDownloadValue").val("0");
+		$("#" + id).modal(type);
+	}
+	//显示修订框
+	function revise(bookId) {
+
+		jQuery
+				.ajax({
+					url : "selectrevise.do",
+					type : 'post',
+					data : {
+						"bookId" : bookId
+					},
+					dataType : 'json',
+					success : function(result) {
+						if (result.data != null) {
+							$("#bookID").val(result.bookId);
+							$("#versionId").val(result.data.id);
+							$("#REVISE_NUM")
+									.val(
+											result.data.reviseNum != null ? result.data.reviseNum
+													: "");
+							$("#EXPLAIN")
+									.val(
+											result.data.changeLog != null ? result.data.changeLog
+													: "");
+							$("#MEMO").val(
+									result.data.memo != null ? result.data.memo
+											: "");
+							$("#revisefile").val("");
+						} else {
+							$("#bookID").val(result.bookId);
+							$("#versionId").val("-1");
+							$("#REVISE_NUM").val("");
+							$("#EXPLAIN").val("");
+							$("#MEMO").val("");
+							$("#revisefile").val("");
+						}
+
+					},
+					error : function() {
+						alert("异常！");
+					}
+				});
+		$("#reviseBook").modal("show");
+	}
+	//显示放大图片
+	function imgbig(url) {
+		$('#imgbig').modal('show');
+		$("#bigbis").attr('src', url);
+	}
+	//显示书籍修改框 
+	function updateshowbanner(number) {
+		document.getElementById('myModalLabel').innerHTML = "修改书籍";
+		// 		$("#myModalLabel").innerHTML="修改书籍";
+		$("#id").val(all[number].id);
+		$("#BOOK_NAME").val(all[number].bookName);
+		$("#BOOK_PUBLISH").val(all[number].bookPublish);
+		$("#BOOK_AUTHOR").val(all[number].bookAuthor);
+		$("#PRICE").val(all[number].price.amount);
+		$("#SORT").val(all[number].sort);
+		$("#downloadCount").val(all[number].downloadCount);
+		$("#preview").html("<img src="+all[number].bookImg+" />");
+		$("#preview").css("display", "block");
+		var can = all[number].canDownload;
+		if (can == '否') {
+			$("#no").attr("checked", "checked");
+			$("#yes").removeAttr("checked");
+			$("#canDownloadValue").val("1");
+		}
+		$("#myModal").modal("show");
+	}
+	//获取搜索的所有值
+	function params(params) {
+		$("input[type='text']").each(function() {
+			params[$(this).attr("id")] = $(this).val();
+		});
+		$("select").each(function() {
+			params[$(this).attr("id")] = $(this).val();
+		});
+		return params;
+	}
+	//获取章节隐藏域的所有值 
+	function paramschapter(params) {
+		$("#b input[type='hidden']").each(function() {
+			params[$(this).attr("id")] = $(this).val();
+		});
+		return params;
+	}
+	//删除书籍 
+	function deleteBook(id) {
+		if (confirm("确认删除该书籍？")) {
+			jQuery.ajax({
+				url : "deleteBook.do",
+				type : 'post',
+				data : {
+					"id" : id
+				},
+				dataType : 'json',
+				success : function(json) {
+					if (!json.success) {
+						alert(json.message);
+						return false;
+					} else {
+						alert(json.message);
+						$("#mytab").bootstrapTable('refresh');
+					}
+				},
+				error : function() {
+					alert("异常！");
+				}
+			});
+		}
+	}
+	//显示章
+	var allChapter;
+	function chapterSet(bookId) {
+		$("#chapter").modal("show");
+		$("#bookIdForChapter").val(bookId);
+		$("#chaptertab").bootstrapTable('refresh');
+		//生成用户数据
+		$('#chaptertab')
+				.bootstrapTable(
+						{
+							method : 'post',
+							contentType : "application/x-www-form-urlencoded",//必须要有！！！！
+							url : "selectallchapter.do",//要请求数据的文件路径
+							dataType : 'json',
+							striped : true, //是否显示行间隔色
+							pageNumber : 1, //初始化加载第一页，默认第一页
+							pageSize : 10,//单页记录数
+							pageList : [ 5, 10, 20, 30 ],//分页步进值
+							pagination : true,//是否分页
+							queryParamsType : 'limit',//查询参数组织方式
+							sidePagination : 'server',//指定服务器端分页
+							queryParams : function(p) {
+								return paramschapter(p);
+							},
+							clickToSelect : true,//是否启用点击选中行
+							toolbarAlign : 'right',//工具栏对齐方式
+							buttonsAlign : 'right',//按钮对齐方式
+							toolbar : '#toolbar',//指定工作栏
+							columns : [
+									{
+										title : '章编号',
+										field : 'chapterId'
+									},
+									{
+										title : '章名称',
+										field : 'chapterName'
+									},
+									{
+										title : '操作',
+										field : 'id',
+
+										formatter : function(value, row, index) {
+											return "<a href='#' onclick=updateChapter('"
+													+ index
+													+ "')>修改</a>   |  "
+													+ "<a href='#' onclick=deleteChapter("
+													+ "'"
+													+ value
+													+ "'"
+													+ ","
+													+ "'"
+													+ row.chapterId
+													+ "'"
+													+ ")>删除</a>";
+										}
+									},
+									{
+										title : '设定节',
+										field : 'chapterId',
+										formatter : function(value, row, index) {
+											return "<a href='#' onclick=sectionsSet('"
+													+ value + "')>设定节</a></br>";
+										}
+									} ],
+							locale : 'zh-CN',//中文支持,
+							responseHandler : function(res) {
+								//在ajax获取到数据，渲染表格之前，修改数据源
+								allChapter = res.rows;
+								return res;
+							}
+						})
+	}
+
+	//显示节
+	var allSections;
+	function sectionsSet(chapterId) {
+
+		$("#sections").modal("show");
+		$("#chapterIdfor").val(chapterId);
+		$("#sectionstab").bootstrapTable('refresh');
+		//生成用户数据
+		$('#sectionstab')
+				.bootstrapTable(
+						{
+							method : 'post',
+							contentType : "application/x-www-form-urlencoded",//必须要有！！！！
+							url : "selectallsections.do",//要请求数据的文件路径
+							dataType : 'json',
+							striped : true, //是否显示行间隔色
+							pageNumber : 1, //初始化加载第一页，默认第一页
+							pageSize : 10,//单页记录数
+							pageList : [ 5, 10, 20, 30 ],//分页步进值
+							pagination : true,//是否分页
+							queryParamsType : 'limit',//查询参数组织方式
+							sidePagination : 'server',//指定服务器端分页
+							queryParams : function(p) {
+								return paramschapter(p);
+							},
+							clickToSelect : true,//是否启用点击选中行
+							toolbarAlign : 'right',//工具栏对齐方式
+							buttonsAlign : 'right',//按钮对齐方式
+							toolbar : '#toolbar',//指定工作栏
+							columns : [
+									{
+										title : '节编号',
+										field : 'sectionId'
+									},
+									{
+										title : '模型ID',
+										field : 'modelId'
+									},
+									{
+										title : '节名称',
+										field : 'sectionName'
+									},
+									{
+										title : '操作',
+										field : 'id',
+										formatter : function(value, row, index) {
+											return "<a href='#' onclick=updateSection('"
+													+ index
+													+ "')>修改</a>   |  "
+													+ "<a href='#' onclick=deleteSection('"
+													+ row.id + "')>删除</a>";
+										}
+									} ],
+							locale : 'zh-CN',//中文支持,
+							responseHandler : function(res) {
+								//在ajax获取到数据，渲染表格之前，修改数据源
+								allSections = res.rows;
+								return res;
+							}
+						})
+	}
+	//下载书籍
+	function downloadBook(index) {
+		var name = all[index].bookName;
+		var val = all[index].downloadUrl;
+		window.location.href = "downloadBook.do?name=" + name + "&val=" + val;
+	}
+	//更新章名称
+	function updateChapter(index) {
+		
+		$("#updateChapterId").val(allChapter[index].id);
+		$("#updateChapterName").val(allChapter[index].chapterName);
+		$("#updateChapter").modal("show");
+	}
+	//更新节名称
+	function updateSection(index) {
+
+		$("#updateSectionId").val(allSections[index].id);
+		$("#updateSectionName").val(allSections[index].sectionName);
+		$("#updateModelId").val(allSections[index].modelId);
+		$("#updateSections").modal("show");
+	}
+	//删除章,并删除其对应的所有节 
+	function deleteChapter(id, ChapterId) {
+		if (confirm("确认删除该章?\n该章下所有的节也会被删除!")) {
+			jQuery.ajax({
+				url : "deleteChapter.do",
+				type : 'post',
+				data : {
+					"id" : id,
+					"ChapterId" : ChapterId
+				},
+				dataType : 'json',
+				success : function(json) {
+					if (!json.success) {
+						alert(json.message);
+						return false;
+					} else {
+						alert(json.message);
+						$("#chaptertab").bootstrapTable('refresh');
+					}
+				},
+				error : function() {
+					alert("异常！");
+				}
+			});
+		}
+	}
+	//删除节 
+	function deleteSection(val) {
+		if (confirm("确认删除该节？")) {
+			jQuery.ajax({
+				url : "deleteSection.do",
+				type : 'post',
+				data : {
+					"id" : val
+				},
+				dataType : 'json',
+				success : function(json) {
+					if (!json.success) {
+						alert(json.message);
+						return false;
+					} else {
+						alert(json.message);
+						$("#sectionstab").bootstrapTable('refresh');
+					}
+				},
+				error : function() {
+					alert("异常！");
+				}
+			});
+		}
+	}
+</script>
+<script type="text/javascript">
+    $(function() {// 初始化内容
+		TableExport.init();
+    });  
+</script>
+
+</html>

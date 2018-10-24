@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+#parse("content/importBase.vm")
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style type="text/css">
+#preview>img {
+	width: 100%;
+	height: 170px;
+}
+</style>
+</head>
+<body style="width: 100%; height: 100%;">
+	<div id="page-wrapper">
+		<!--BEGIN TITLE & BREADCRUMB PAGE-->
+		<div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
+			<div class="page-header pull-left">
+				<div class="page-title">财务报表</div>
+			</div>
+			<ol class="breadcrumb page-breadcrumb pull-right">
+				<li><i class="fa fa-home"></i>&nbsp;<a href="#">财务报表</a>&nbsp;&nbsp;<i
+					class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+				<li class="active">财务报表</li>
+			</ol>
+
+			<div class="clearfix"></div>
+		</div>
+
+
+		<div style="margin-top: 2%;" id="a">
+			<div class="row">
+				<!-- <label class="col-sm-1 control-label"
+					style="text-align: right; margin-top: 5px">支付者昵称：</label>
+				<div class="col-sm-2">
+					<div class="control-group">
+						<input type="text" id="payNickName" class="form-control" /> <br />
+					</div>
+				</div> -->
+				<!-- <label class="col-sm-1 control-label"
+					style="text-align: right; margin-top: 5px">收费者昵称：</label>
+				<div class="col-sm-2">
+					<div class="control-group">
+						<input type="text" id="reciveNickName" class="form-control" /> <br />
+					</div>
+				</div> -->
+				<label class="col-sm-1 control-label"
+					style="text-align: right; margin-top: 5px">交易类型：</label>
+				<div class="col-sm-2">
+					<div class="control-group">
+						<select id="dealType" class="form-control">
+							<option value="">请选择</option>
+							<option value="RECHARGE">充值</option>
+							<option value="WITHDRAWAL">提现</option>
+							<option value="EXCHANGE">兑换</option>
+							<option value="PRESENT">赠送</option>
+							<option value="COMMISSION">佣金</option>
+						</select> <br />
+					</div>
+				</div>
+				<label class="col-sm-1 control-label"
+					style="text-align: right; margin-top: 5px">交易类型：</label>
+				<div class="col-sm-2">
+					<div class="control-group">
+						<select id="dealSubType" class="form-control">
+							<option value="">请选择</option>
+							<option value="ALIPAY_POINT">支付宝充值 学分</option>
+							<option value="ALIPAY_COIN">支付宝充值 学币</option>
+							<option value="WECHATPAY_POINT">微信充值 学分</option>
+							<option value="WECHATPAY_COIN">微信充值 学币</option>
+							<option value="APPLEPAY_POINT">苹果支付充值（学分）</option>
+							<option value="APPLEPAY_COIN">苹果支付充值（学币）</option>
+							
+							<option value="WITHDRAW_ALI_REMOVE">支付宝提现</option>
+							<option value="WITHDRAW_WECHAT_REMOVE">微信提现</option>
+							<option value="WITHDRAW_ALI_RETURN">支付宝提现回退</option>
+							<option value="WITHDRAW_WECHAT_RETURN">微信提现回退</option>
+							
+							
+							<option value="EXCHANGE_POINT">兑换（学分兑学币）</option>
+							<option value="EXCHANGE_COIN">兑换（学分兑学币）</option>
+							<option value="EXCHANGE_POINT_COIN">兑换（学币兑学分）</option>
+							<option value="EXCHANGE_COIN_COIN">兑换（学币兑学分）</option>
+							
+							<option value="CERTIFICATION">认证成功 学分</option>
+							<option value="INFO">信息完善 学分</option>
+							<option value="GIFT_PRESENT_POINT">赠送礼物 学分</option>
+							<option value="GIFT_RECEIVE_POINT">收到礼物 学分</option>
+							<option value="COIN_PRESENT">赠送学币</option>
+							<option value="COIN_RECEIVE">收到学币</option>
+							<option value="TASK_POINT">任务赠送学分</option>
+							<option value="TASK_COIN">任务赠送学币</option>
+							<option value="INVITE_POINT">邀请赠送学分</option>
+							<option value="SIGN">签到</option>
+							<option value="REGISTER_POINT">首次注册</option>
+							
+							<option value="CALLINGORDER">主叫订单 学分</option>
+							<option value="CALLEDORDER">被叫订单 学分</option>
+							<option value="PROBLEM_ASK">分答提问 学分</option>
+							<option value="PROBLEM_ANS">分答回答 学分</option>
+							<option value="PROBLEM_LIS">分答偷听 学分</option>
+							<option value="MEDIAORDER">媒体订单 学分</option>
+							<option value="PROBLEM_ONLOOK">分答围观 学分</option>
+							<option value="PROBLEM_ASK_RETURN">分答过期退还 学分</option>
+							<option value="MEDIAORDER_REWORD">媒体订单分成</option>
+						</select> <br />
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<label class="col-sm-1 control-label"
+					style="text-align: right; margin-top: 5px">开始时间：</label>
+				<div class="col-sm-2">
+					<div class="control-group">
+						<input type="text" id="starpdate"
+							class="form-control datetimepicker" readonly="readonly" /> <br />
+					</div>
+				</div>
+				<label class="col-sm-1 control-label"
+					style="text-align: right; margin-top: 5px">结束时间：</label>
+				<div class="col-sm-2">
+					<div class="control-group">
+						<input type="text" id="enddate"
+							class="form-control datetimepicker" readonly="readonly" /> <br />
+					</div>
+				</div>
+
+				<label class="col-sm-1 control-label"
+					style="text-align: right; margin-top: 5px"></label>
+				<div class="col-sm-4" style="float: right">
+					<div class="control-group">
+						<div>
+							<button onclick="exportStatements()" class="btn btn-warning"
+								value="导出" style="float: right; margin-right: 2%;">导出</button>
+						</div>
+						<div>
+							<button onclick="clean()" class="btn btn-danger" name="Name"
+								id="search_tel" value="清空"
+								style="float: right; margin-right: 2%;">清空</button>
+						</div>
+						<div>
+							<button onclick="sorce()" class="btn btn-info" name="Name"
+								id="search_tel" value="查询"
+								style="float: right; margin-right: 2%;">查询</button>
+						</div>
+					</div>
+				</div>
+				<br />
+			</div>
+		</div>
+		<table id="mytab" class="table table-hover"></table>
+	</div>
+</body>
+
+<script type="text/javascript">
+	$('.datetimepicker').datetimepicker({
+		minView : "month",//设置只显示到月份
+		format : 'yyyy-mm-dd',
+		language : 'zh-CN',
+		autoclose : true,//选中关闭
+		todayBtn : true
+	//今日按钮
+	})
+	function clean() {
+		$("#a input").val("");
+		$("#a select").val("");
+	}
+	function sorce() {
+		$('#mytab').bootstrapTable("selectPage", 1);
+	}
+	//生成用户数据
+	$('#mytab').bootstrapTable({
+		method : 'post',
+		contentType : "application/x-www-form-urlencoded",//必须要有！！！！
+		url : "selectStatements.do",//要请求数据的文件路径
+		dataType : 'json',
+		striped : true, //是否显示行间隔色
+		pageNumber : 1, //初始化加载第一页，默认第一页
+		pageSize : 10,//单页记录数
+		pageList : [ 5, 10, 20, 30 ],//分页步进值
+		pagination : true,//是否分页
+		queryParamsType : 'limit',//查询参数组织方式
+		sidePagination : 'server',//指定服务器端分页
+		queryParams : function(p) {
+			return params(p);
+		},
+
+		clickToSelect : true,//是否启用点击选中行
+		toolbarAlign : 'right',//工具栏对齐方式
+		buttonsAlign : 'right',//按钮对齐方式
+		toolbar : '#toolbar',//指定工作栏
+		columns : [ {
+			title : '订单号',
+			field : 'ORDER_NO'
+		}, {
+			title : '交易学分单价',
+			field : 'AMOUNT_STR'
+		}, {
+			title : '数量',
+			field : 'NUM'
+		}, {
+			title : '交易状态',
+			field : 'DEAL_STATUS'
+		}, {
+			title : '交易时间',
+			field : 'DEAL_TIME'
+		}, {
+			title : '审核通过时间',
+			field : 'PASS_TIME'
+		}, {
+			title : '交易类型',
+			field : 'TYPE'
+		}, 
+		{
+			title : '交易子类型',
+			field : 'SUB_TYPE'
+		}, {
+			title : '支付者',
+			field : 'PAY_NAME'
+		}, {
+			title : '收费者',
+			field : 'REC_NAME'
+		}],
+		locale : 'zh-CN',//中文支持,
+		responseHandler : function(res) {
+			return res;
+		}
+	})
+
+	//获取搜索的所有值
+	function params(params) {
+		$("#a input[type='text']").each(function() {
+			params[$(this).attr("id")] = $(this).val();
+		});
+		$("#a select").each(function() {
+			params[$(this).attr("id")] = $(this).val();
+		});
+		return params;
+	}
+
+	function exportStatements() {
+		var url = "exportStatements.do?dealSubType=" + $("#dealSubType").val()
+				+ "&dealType=" + $("#dealType").val() + "&starpdate="
+				+ $("#starpdate").val() + "&enddate=" + $("#enddate").val();
+		url = encodeURI(url);
+		url = encodeURI(url);
+		window.location.href = url;
+	}
+</script>
+</html>

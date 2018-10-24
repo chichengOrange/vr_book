@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_ad">
+
+	<operation name="selectByQuery" multiplicity="many">
+		<extraparams>
+			<param name="adTitle" javatype="java.lang.String" />
+			<param name="adType" javatype="java.lang.String" />
+			<param name="status" javatype="java.lang.String" />
+			
+			<param name="offset" javatype="java.lang.Integer" />
+			<param name="limit" javatype="java.lang.Integer" />
+		</extraparams>
+		<sql>select * from vr_ad</sql>
+		<sqlmap>
+			<![CDATA[
+				SELECT 
+					ID,
+					AD_TITLE,
+					AD_DESC,
+					AD_POSTER,
+					AD_CONTENT,
+					AD_DAY,
+					AD_TYPE,
+					STATUS,
+					GMT_CREATE,
+					GMT_MODIFIED
+				FROM vr_ad
+				where 1=1 
+				
+				<isNotEmpty prepend="and" property="adTitle"> 
+	    			 AD_TITLE like '%$adTitle$%'
+	    		</isNotEmpty>
+	    		
+				<isNotEmpty prepend="and" property="adType"> 
+				 	AD_TYPE = #adType#
+				</isNotEmpty>
+				
+				<isNotEmpty prepend="and" property="status"> 
+				 	STATUS = #status#
+				</isNotEmpty>
+	    		
+	    		order by GMT_CREATE desc 
+	    		
+	    		LIMIT $offset$, $limit$
+        	]]>
+		</sqlmap>
+	</operation>
+	
+	<operation name="selectCountByQuery" resultClass="int">
+		<extraparams>
+			<param name="adTitle" javatype="java.lang.String" />
+			<param name="adType" javatype="java.lang.String" />
+			<param name="status" javatype="java.lang.String" />
+		</extraparams>
+		<sql>select count(1) from vr_ad</sql>
+		<sqlmap>
+			<![CDATA[
+				SELECT count(1) FROM vr_ad
+				where 1=1 
+				
+				<isNotEmpty prepend="and" property="adTitle"> 
+	    			 AD_TITLE like '%$adTitle$%'
+	    		</isNotEmpty>
+	    		
+				<isNotEmpty prepend="and" property="adType"> 
+				 	AD_TYPE = #adType#
+				</isNotEmpty>
+				
+				<isNotEmpty prepend="and" property="status"> 
+				 	STATUS = #status#
+				</isNotEmpty>
+        	]]>
+		</sqlmap>
+	</operation>
+	
+	
+	<operation name="insert">
+		<sql>
+			insert into vr_ad (
+				AD_TITLE,
+				AD_DESC,
+				AD_POSTER,
+				AD_CONTENT,
+				AD_DAY,
+				AD_TYPE,
+				STATUS,
+				GMT_CREATE,
+				GMT_MODIFIED
+			) values (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+		</sql>
+	</operation>
+	
+	<operation name="selectById">
+		<sql>
+		    SELECT
+				ID,
+				AD_TITLE,
+				AD_DESC,
+				AD_POSTER,
+				AD_CONTENT,
+				AD_DAY,
+				AD_TYPE,
+				STATUS,
+				GMT_CREATE,
+				GMT_MODIFIED
+			FROM
+				vr_ad
+			WHERE ID = ?
+		</sql>
+	</operation>
+	
+	<operation name="update">
+		<sql>
+			update vr_ad 
+			set 
+				AD_TITLE = ? ,
+				AD_DESC = ? ,
+				AD_POSTER = ?,
+				AD_CONTENT = ?,
+				AD_DAY = ?,
+				AD_TYPE = ?,
+				STATUS = ?,
+				GMT_MODIFIED = CURRENT_TIMESTAMP
+			
+			where ID= ? 
+		</sql>
+	</operation>
+	
+	<operation name="deleteById">
+		<sql>
+			delete from vr_ad where ID=?
+		</sql>
+	</operation>
+</table>

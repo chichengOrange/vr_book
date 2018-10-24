@@ -1,0 +1,5 @@
+eclipse.preferences.version=1
+encoding//src/main/java=GBK
+encoding//src/main/resources/htdocs/vm/html/login.html=UTF-8
+encoding//src/main/resources/htdocs/vm/html/login.vm=UTF-8
+encoding//src/test/java=GBK

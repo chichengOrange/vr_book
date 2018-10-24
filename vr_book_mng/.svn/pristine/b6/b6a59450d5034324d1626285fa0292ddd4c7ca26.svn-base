@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_sys_config">
+
+	<!---查询系统参数 guodou -->
+	<operation name="loadAll" multiplicity="many">
+		<sql>
+			<![CDATA[
+				SELECT 
+				   id, sys_key, sys_value, status, memo, gmt_create, gmt_modified
+				FROM vr_sys_config
+        	]]>
+		</sql>
+	</operation>
+	
+	<operation name="selectallsysconfig" multiplicity="many">
+		<extraparams>
+			<param name="memo" javatype="java.lang.String" />
+			<param name="offset" javatype="java.lang.Integer" />
+			<param name="limit" javatype="java.lang.Integer" />
+		</extraparams>
+		<sql>select * from vr_sys_config</sql>
+		<sqlmap>
+			<![CDATA[
+				SELECT * FROM vr_sys_config
+				where 1=1 
+				<isNotEmpty property="memo">
+	    			AND memo like '%$memo$%'
+	    		</isNotEmpty>
+	    		order by GMT_CREATE desc 
+	    		LIMIT $offset$, $limit$
+        	]]>
+		</sqlmap>
+	</operation>
+	
+	<operation name="selectallsysconfigcount" multiplicity="many">
+		<extraparams>
+			<param name="memo" javatype="java.lang.String" />
+		</extraparams>
+		<sql>select count(1) from vr_sys_config</sql>
+		<sqlmap>
+			<![CDATA[
+				SELECT count(1) FROM vr_sys_config
+				where 1=1 
+				<isNotEmpty property="memo">
+	    			AND memo like '%$memo$%'
+	    		</isNotEmpty>
+        	]]>
+		</sqlmap>
+	</operation>
+	
+	<operation name="updatesysconfig" resultClass="int">
+		<extraparams>
+			<param name="gmtmodified" javatype="java.util.Date" />
+			<param name="key" javatype="java.lang.String" />
+			<param name="value" javatype="java.lang.String" />
+			<param name="status" javatype="java.lang.String" />
+			<param name="memo" javatype="java.lang.String" />
+			<param name="id" javatype="java.lang.String" />
+		</extraparams>
+		<sql>
+			update vr_sys_config set id=id
+		</sql>
+		<sqlmap>
+			<![CDATA[
+				update vr_sys_config set GMT_MODIFIED = #gmtmodified#
+				<isNotEmpty property="key">
+	    			, SYS_KEY = #key#
+	    		</isNotEmpty>
+	    		<isNotEmpty property="value">
+	    			, SYS_VALUE = #value#
+	    		</isNotEmpty>
+	    		<isNotEmpty property="status">
+	    			, STATUS = #status#
+	    		</isNotEmpty>
+	    		<isNotEmpty property="memo">
+	    			, memo = #memo#
+	    		</isNotEmpty>
+	    		where id = #id#
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="updateByKey" resultClass="int">
+		<extraparams>
+			<param name="key" javatype="java.lang.String" />
+			<param name="value" javatype="java.lang.String" />
+		</extraparams>
+		<sql>
+			update vr_sys_config set GMT_MODIFIED=CURRENT_TIMESTAMP
+		</sql>
+		<sqlmap>
+			<![CDATA[
+				update vr_sys_config set GMT_MODIFIED = CURRENT_TIMESTAMP
+	    		<isNotEmpty property="value">
+	    			, SYS_VALUE = #value#
+	    		</isNotEmpty>
+	    		where SYS_KEY = #key#
+			]]>
+		</sqlmap>
+	</operation>
+	
+	<operation name="insertsysconfig">
+		<sql>
+			insert into vr_sys_config (SYS_KEY,SYS_VALUE,STATUS,MEMO,GMT_CREATE) values (?,?,?,?,?)
+		</sql>
+	</operation>
+	
+	<operation name="selectSysConfigBySysKey">
+		<sql>
+			SELECT
+				ID,
+				SYS_KEY,
+				SYS_VALUE,
+				STATUS,
+				MEMO,
+				GMT_CREATE,
+				GMT_MODIFIED
+			FROM
+				vr_sys_config			
+			WHERE SYS_KEY = ?
+		</sql>
+	</operation>
+	
+</table>

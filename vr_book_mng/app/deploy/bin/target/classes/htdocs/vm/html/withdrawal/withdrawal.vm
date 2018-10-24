@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+#parse("content/importBase.vm")
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<style type="text/css">
+	#preview > img{
+		width:100%;
+		height:170px;
+	}
+</style>
+</head>
+<body style="width: 100%; height: 100%;">
+	<div id="page-wrapper">
+		<!--BEGIN TITLE & BREADCRUMB PAGE-->
+		<div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
+			<div class="page-header pull-left">
+				<div class="page-title">提现管理</div>
+			</div>
+			<ol class="breadcrumb page-breadcrumb pull-right">
+				<li><i class="fa fa-home"></i>&nbsp;<a href="#">提现管理</a></li>
+			</ol>
+			<div class="clearfix"></div>
+		</div>
+	
+
+			<div style="margin-top: 2%;" id="a">
+                <div class="row">
+    				<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px">用户姓名：</label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    						<input type="text" id="username" class="form-control"/>
+    						<br />
+    					</div>
+    				</div>
+    				<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px">用户昵称：</label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    						<input type="text" id="nickname" class="form-control"/>
+    						<br />
+    					</div>
+    				</div>
+    				<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px">用户账号：</label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    						<input type="text" id="cell" class="form-control"/>
+    						<br />
+    					</div>
+    				</div>
+    				<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px">提现方式：</label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    						<select name="type" id="type" class="form-control">
+    							<option value="">请选择</option>
+          						<option value="1">支付宝</option>
+          						<option value="2">微信</option>
+                            </select>
+    						<br />
+    					</div>
+    				</div>
+                </div>
+				<div class="row">
+					<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px">审核状态：</label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    						<select name="STATUS" id="STATUS" class="form-control">
+    							<option value="">请选择</option>
+          						<option value="0">待审核</option>
+          						<option value="1">审核通过</option>
+								<option value="2">驳回审核</option>
+								<option value="3">其他</option>
+                            </select>
+    						<br />
+    					</div>
+    				</div>
+					<label class="col-sm-1 control-label"
+        					style="text-align: right; margin-top: 5px">创建开始时间：</label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    						<input type="text" id="starpdate" class="form-control datetimepicker" readonly />
+    						<br />
+    					</div>
+    				</div>
+    				<label class="col-sm-1 control-label"
+        					style="text-align: right; margin-top: 5px">创建结束时间：</label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    						<input type="text" id="enddate" class="form-control datetimepicker" readonly />
+    						<br />
+    					</div>
+    				</div>
+					<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px"></label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    						<div >
+                                <button onclick="clean()"  class="btn btn-danger" name="Name" id="search_tel" value="清空" style="float: right;margin-right: 2%;">清空</button>
+            				</div>
+            				<div >
+                                <button onclick="sorce()"   class="btn btn-info" name="Name" id="search_tel" value="查询" style="float: right;margin-right: 2%;">查询</button>
+            				</div>
+            				<div>
+							<button onclick="exportWithdrawal()" class="btn btn-warning"
+								name="Name" value="导出" style="float: right; margin-right: 2%;">导出</button>
+							</div>
+    					</div>
+    				</div>
+                </div>
+			</div>
+			
+				
+				
+		<!--END TITLE & BREADCRUMB PAGE-->
+		<!--BEGIN CONTENT-->
+		<table id="mytab" class="table table-hover"></table>
+		<div class="modal fade" id="myModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                		<h4 class="modal-title" id="myModalLabel">审核</h4>
+            		</div>
+            		<div class="modal-body">
+            			<form class="form-horizontal" role="form" name="noticeform"  method="post">
+  							<div class="form-group">
+    							<label for="lastname" class="col-sm-2 control-label">备注：</label>
+        						<div class="col-sm-10">
+									<input type="hidden"  id="id" class="form-control"/>
+									<input type="hidden"  id="status" class="form-control"/>
+									<input type="hidden"  id="money" class="form-control"/>
+									<input type="hidden"  id="checknickname" class="form-control"/>
+									<input type="hidden"  id="userid" class="form-control"/>
+									<input type="hidden"  id="type" class="form-control"/>
+									<textarea class="form-control" id="MEMO" name="MEMO"></textarea>
+    							</div>
+							</div>
+                          
+						</form>
+            		</div>
+            		<div class="modal-footer">
+						<button type="button" class="btn btn-primary" onclick="submit()">确定</button>
+                		<button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+            		</div>
+        		</div>
+    		</div>
+		</div>
+		<div class="modal fade" id="showmenu" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                		<h4 class="modal-title" id="myModalLabel">异常信息</h4>
+            		</div>
+            		<div class="modal-body">
+            			<form class="form-horizontal" role="form" name="noticeform"  method="post">
+  							<div class="form-group">
+    							<label for="lastname" class="col-sm-2 control-label">异常信息：</label>
+        						<div class="col-sm-10">
+									<textarea class="form-control" id="erreymeno" name="erreymeno" cols="25" rows="10">
+                                    </textarea>
+    							</div>
+							</div>
+                          
+						</form>
+            		</div>
+        		</div>
+    		</div>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript">
+
+$('.datetimepicker').datetimepicker({
+	minView: "month",//设置只显示到月份
+    format: 'yyyy-mm-dd',
+    language:  'zh-CN',
+    autoclose:true,//选中关闭
+    todayBtn: true//今日按钮
+})
+
+
+function clean(){
+	$("#a input").val("");
+	$("#a select").val("");
+}
+function sorce(){
+	$('#mytab').bootstrapTable("selectPage",1);	
+}
+var all;
+//生成用户数据
+$('#mytab').bootstrapTable({
+    method: 'post',
+    contentType: "application/x-www-form-urlencoded",//必须要有！！！！
+    url:"selectwithdrawal.do",//要请求数据的文件路径
+    dataType : 'json',
+    striped: true, //是否显示行间隔色
+  	pageNumber: 1, //初始化加载第一页，默认第一页
+    pageSize:10,//单页记录数
+    pageList:[5,10,20,30],//分页步进值
+    pagination:true,//是否分页
+    queryParamsType:'limit',//查询参数组织方式
+    sidePagination:'server',//指定服务器端分页
+    queryParams: function(p){
+    	 return params(p);
+    },
+  	
+    clickToSelect: true,//是否启用点击选中行
+    toolbarAlign:'right',//工具栏对齐方式
+    buttonsAlign:'right',//按钮对齐方式
+    toolbar:'#toolbar',//指定工作栏
+    columns:[
+		 {
+            title:'用户姓名',
+            field:'USER_NAME'
+        },
+		{
+            title:'登录帐号',
+            field:'CELL'
+        },
+		{
+            title:'用户昵称',
+            field:'NICK_NAME'
+        },
+        {
+            title:'支付宝账号',
+            field:'ALI_ACCOUNT'
+        },
+        {
+            title:'微信账号',
+            field:'WECHAT_ACCOUNT'
+        },
+        {
+            title:'提现方式',
+            field:'WITHDRAWAL_WAY',
+			formatter:function (value,row,index){
+            	if(value=="1")
+					return "支付宝";
+				if(value=="2")
+					return "微信";
+            }
+			
+        },
+        {
+            title:'提现学币值',
+            field:'WITHDRAWAL_COIN'
+        },
+        {
+            title:'提现金额',
+            field:'WITHDRAWAL_MONEY'
+        },
+        {
+            title:'审核状态',
+            field:'STATUS',
+			formatter : function (value,row,index){
+				if(value=="0")
+					return "待审核";
+				if(value=="1")
+					return "审核通过";
+				if(value=="2")
+					return "驳回审核";
+				return row.MEMO;
+			}
+        },
+        {
+            title:'创建时间',
+            field:'GMT_CREATE',
+            formatter :function (value,row,index){
+				if(value == '' || value == null)
+					return "----"
+				return format(value);
+			}
+        },
+        {
+            title:'审核人',
+            field:'MODIFIER'
+        },
+        {
+            title:'审核时间',
+            field:'GMT_MODIFIED',
+            formatter :function (value,row,index){
+				if(value == '' || value == null)
+					return "----"
+				return format(value);
+			}
+        },
+        {
+            title:'操作',
+            field:'ID',
+            formatter: function (value,row,index){
+				if(row.STATUS=="0"){
+					return "<a href='#' onclick=showaccount('"+index+"','1')>通过</a> |"+
+					" <a href='#' onclick=showaccount('"+index+"','2')>驳回</a>";
+				}
+				if(row.STATUS=="3"){
+                     return "<a href='#' onclick=showmeno('"+index+"')>查看异常信息</a>";
+				}
+               
+            }
+        }
+    ],
+    locale:'zh-CN',//中文支持,
+    responseHandler:function(res){
+        //在ajax获取到数据，渲染表格之前，修改数据源
+		all = res.rows;
+        return res;
+    }
+})
+function showmeno(number){
+	$("#erreymeno").val(all[number].MEMO);
+	$("#showmenu").modal("show");
+}
+//显示审核
+function showaccount(number,type){
+	/* if(type=="1" && all[number].WITHDRAWAL_WAY=="2"){
+		alert("暂不支持微信提现！");
+		return ;
+	} */
+	
+	$("#id").val(all[number].ID);
+	$("#MEMO").val(all[number].MEMO);
+	$("#status").val(type)
+	$("#money").val(all[number].WITHDRAWAL_MONEY);
+	$("#checknickname").val(all[number].WITHDRAWAL_COIN);
+	$("#userid").val(all[number].USER_ID);
+	$("#type").val(all[number].WITHDRAWAL_WAY);
+	$("#myModal").modal("show");
+}
+//审核操作
+function submit(){
+		   jQuery.ajax({
+				 url : "checkwithdrawal.do",
+				 type : 'post',
+				 data:{"id":$("#id").val(),"memo":$("#MEMO").val(),"type":$("#type").val(),"status":$("#status").val(),"money":$("#money").val(),"coin":$("#checknickname").val(),"userid":$("#userid").val()},
+				 dataType : 'json',
+				 success : function(json) {
+				 if(!json.bizSucc){
+	                alert(json.err_msg);
+	                return false;
+	             }else{
+					alert("操作成功！");
+					$("#MEMO").val("");
+					$("#myModal").modal("hide");
+					$("#mytab").bootstrapTable('refresh');
+	             }
+				 },
+				 error : function() {  
+				            alert("异常！");  
+				     }  
+		})
+}
+//获取搜索的所有值
+function params(params){
+	 $("#a input[type='text']").each(function(){
+		    params[$(this).attr("id")] = $(this).val();
+	 });
+	 $("#a select").each(function(){
+		    params[$(this).attr("id")] = $(this).val();
+	 });
+	 return params;
+}
+
+function exportWithdrawal() {
+	var url = "exportWithdrawal.do?username="
+		+ $("#username").val() + "&nickname="
+		+ $("#nickname").val() + "&cell="
+		+ $("#cell").val() + "&type="
+		+ $("#type").val() + "&STATUS="
+		+ $("#STATUS").val()+ "&starpdate="
+		+ $("#starpdate").val()+ "&enddate="
+		+ $("#enddate").val();
+	url = encodeURI(url);
+	url = encodeURI(url);
+ 	window.location.href=url;
+}
+</script>
+</html>

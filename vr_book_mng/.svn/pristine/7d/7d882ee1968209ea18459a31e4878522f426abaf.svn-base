@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="sys_role_user">
+
+	<operation name="login" resultClass="java.util.HashMap">
+		<extraparams>
+			<param name="username" javatype="java.lang.String" />
+			<param name="password" javatype="java.lang.String" />
+		</extraparams>
+		<sql>
+			select * from sys_role_user
+		</sql>
+		<sqlmap>
+			<![CDATA[
+				SELECT 
+				   dau.id, dau.user_id, dau.username, dau.password, dr.ROLE_ID, dr.JURISDICTION  
+				FROM sys_role_user dau left join sys_role dr on dau.ROLE_ID = dr.ROLE_ID  
+				where dau.username = #username# and dau.password = #password#  and dau.DEL_FLG = 0
+				
+        	]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectalladminuser" resultClass="java.util.List&lt; Map&lt;String,Object&gt; &gt;">
+		<extraparams>
+			<param name="username" javatype="java.lang.String" />
+			<param name="offset" javatype="java.lang.Integer" />
+			<param name="limit" javatype="java.lang.Integer" />
+		</extraparams>
+		<sql>
+			select * from sys_role_user
+		</sql>
+		<sqlmap>
+			<![CDATA[
+				select dau.username username,dau.ROLE_ID roldId,dau.id id,dau.USER_ID userId,dr.name rolename 
+				from sys_role_user dau  
+				left join  sys_role dr on dau.role_id = dr.role_id
+				where dau.DEL_FLG='0' 
+				<isNotEmpty property="username">
+	    			AND dau.username like '%$username$%'
+	    		</isNotEmpty>
+	    		order by dau.GMT_CREATE desc 
+	    		LIMIT $offset$, $limit$
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="selectalladminusercount" resultClass="int">
+		<extraparams>
+			<param name="username" javatype="java.lang.String" />
+			
+		</extraparams>
+		<sql>
+			select count(*) from sys_role_user
+		</sql>
+		<sqlmap>
+			<![CDATA[
+				select count(1) from sys_role_user dau  
+				left join  sys_role dr on dau.role_id = dr.role_id
+				where dau.DEL_FLG='0'  
+				<isNotEmpty property="username">
+	    			AND dau.username like '%$username$%'
+	    		</isNotEmpty>
+	    		
+			]]>
+		</sqlmap>
+	</operation>
+	<operation name="addadminuser">
+		<sql>
+			insert into sys_role_user (USER_ID,USERNAME,PASSWORD,ROLE_ID,CREATER,GMT_CREATE) 
+			VALUES(?,?,?,?,?,?)
+		</sql>
+	</operation>
+	<operation name="updateadminuser">
+		<sql>
+			update sys_role_user set USERNAME = ? , ROLE_ID = ? ,MODIFIER = ? ,GMT_MODIFIED=? where id=?
+		</sql>
+	</operation>
+	<operation name="updatepassword">
+		<sql>
+			update sys_role_user set PASSWORD = ? where USER_ID = ?
+		</sql>
+	</operation>
+	<operation name="deleteSysUserById">
+		<sql>
+			update sys_role_user set DEL_FLG = ? , MODIFIER = ? , GMT_MODIFIED = ? where ID = ?
+		</sql>
+	</operation>
+	<operation name="resetpassword">
+		<sql>
+			update sys_role_user set PASSWORD = ? where USER_ID = ?
+		</sql>
+	</operation>
+	<operation name="selectpassword" resultClass="java.lang.String">
+		<sql>
+			select password from sys_role_user where USER_ID=?
+		</sql>
+	</operation>
+</table>

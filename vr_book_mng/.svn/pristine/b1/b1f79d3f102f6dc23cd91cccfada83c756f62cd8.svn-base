@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_functions_log">
+
+
+
+<operation name="selectFunctions" resultClass="java.util.HashMap" multiplicity="many">
+	<sql>
+		select * from vr_functions_log where 1 = 1
+	</sql>
+	<sqlmap>
+		<![CDATA[
+		SELECT FUNCTIONS  name ,sum(CLICK_COUNT) value FROM vr_functions_log  GROUP BY FUNCTIONS
+		]]>
+	</sqlmap>
+</operation>
+</table>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+#parse("content/importBase.vm")
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<style type="text/css">
+	#preview > img{
+		width:100%;
+		height:170px;
+	}
+</style>
+</head>
+<body style="width: 100%; height: 100%;">
+	<div id="page-wrapper">
+		<!--BEGIN TITLE & BREADCRUMB PAGE-->
+		<div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
+			<div class="page-header pull-left">
+				<div class="page-title">举报投诉</div>
+			</div>
+			<ol class="breadcrumb page-breadcrumb pull-right">
+				<li><i class="fa fa-home"></i>&nbsp;<a href="#">举报投诉</a>&nbsp;&nbsp;<i
+					class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+				<li class="hidden"><a href="#">举报投诉</a>&nbsp;&nbsp;<i
+					class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+					<li class="active">举报投诉帖子</li>
+			</ol>
+			
+			<div class="clearfix"></div>
+		</div>
+	
+
+			<div style="margin-top: 2%;" id="a">
+                <div class="row">
+    				<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px">投诉人姓名：</label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    						<input type="text" id="username" class="form-control"/>
+    						<br />
+    					</div>
+    				</div>
+    				<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px">被投诉发帖人姓名：</label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+    						<input type="text" id="dusername" class="form-control"/>
+    						<br />
+    					</div>
+    				</div>
+					<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px">类型：</label>
+    				<div class="col-sm-2">
+    					<div class="control-group">
+							<select name="type" id="type" class="form-control">
+    							<option value="">请选择</option>
+          						<option value="COM_DYNA">投诉</option>
+								<option value="REP_DYNA">举报</option>
+                            </select>
+    						<br />
+    					</div>
+    				</div>
+					<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px">处理状态：</label>
+    				<div class="col-sm-2">
+                        <div class="control-group">
+							<select name="status" id="status" class="form-control">
+    							<option value="">请选择</option>
+          						<option value="0">未处理</option>
+								<option value="1">已处理</option>
+                            </select>
+						</div>
+    				</div>
+                </div>
+                <div class="row">
+					<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px"></label>
+					<div class="col-sm-2">
+                        <div class="control-group">
+							
+    					</div>
+					</div>
+					<label class="col-sm-1 control-label"
+    					style="text-align: right; margin-top: 5px"></label>
+					<div class="col-sm-2">
+                        <div class="control-group">
+							
+    					</div>
+					</div>
+					<div class="control-group">
+						<div >
+            				<button  onclick="clean()"  class="btn btn-danger" style="float: right;margin-right: 2%;">清空</button>
+            			</div>
+            			<div >
+                            <button  onclick="sorce()"   class="btn btn-info"  style="float: right;margin-right: 2%;"> 查询</button>
+            			</div>
+						<br />
+					</div>
+				</div>		
+			</div>
+			
+		<!--END TITLE & BREADCRUMB PAGE-->
+		<!--BEGIN CONTENT-->
+		<table id="mytab" class="table table-hover"></table>
+		<div class="modal fade" id="myModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                		<h4 class="modal-title" id="myModalLabel">投诉举报</h4>
+            		</div>
+            		<div class="modal-body">
+            			<form class="form-horizontal" role="form" name="form"  method="post">
+      							<div class="form-group">
+        							<label for="lastname" class="col-sm-2 control-label">投诉人姓名：</label>
+            						<div class="col-sm-10">
+										<input type="hidden"  id="ID"  class="form-control" name="ID" value="0"/>
+										<input type="text" id="USER_NAME"  class="form-control" name="USER_NAME" readonly />
+        							</div>
+								</div>
+								<div class="form-group">
+        							<label for="lastname" class="col-sm-2 control-label">被投诉发帖人姓名：</label>
+            						<div class="col-sm-10">
+										<input type="text" id="DUSER_NAME"  class="form-control" name="DUSER_NAME" readonly />
+        							</div>
+								</div>
+								
+								
+							 	<div class="form-group">
+        							<label for="lastname" class="col-sm-2 control-label">帖子内容：</label>
+            						<div class="col-sm-10">
+										<span  id="DYNAMIC_WORD" name="DYNAMIC_WORD">
+                                        </span>
+									#*	 <textarea class="form-control" id="DYNAMIC_WORD" name="DYNAMIC_WORD" readonly >
+                                        </textarea> *#
+										
+        							</div>
+								</div>  
+								<div class="form-group">
+        							<label for="lastname" class="col-sm-2 control-label">帖子图片：</label>
+            						<div class="col-sm-10">
+                                        <div id="DYNAMIC_IMG" name="DYNAMIC_IMG"></div>
+        							</div>
+								</div>
+								<div class="form-group">
+        							<label for="lastname" class="col-sm-2 control-label">处理意见：</label>
+            						<div class="col-sm-10">
+										<textarea class="form-control" id="MEMO" name="MEMO">
+                                        </textarea>
+        							</div>
+								</div>
+								
+						</form>
+            		</div>
+            		<div class="modal-footer"> 
+						<button type="button" class="btn btn-primary"  onclick="submit()" id="subbut">确定</button>
+                		<button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+            		</div>
+        		</div>
+    		</div>
+		</div>
+		
+		<div class="modal fade" id="myModalWord" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                		<h4 class="modal-title" id="myModalLabel">查看详情</h4>
+            		</div>
+            		<div class="modal-body">
+            			<form class="form-horizontal" role="form" name="noticeform"  method="post">
+								<div class="form-group">
+        							<label for="lastname" class="col-sm-2 control-label">发布内容：</label>
+            						<div class="col-sm-10">
+										<span  id="DYNAMIC_WORD_SHOW" >
+                                        </span>
+        							</div>
+								</div>
+						</form>
+            		</div>
+            		<div class="modal-footer">
+                		<button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+            		</div>
+        		</div>
+    		</div>
+		</div>
+		
+		<div class="modal fade" id="imgbig" data-backdrop="static"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal"  aria-hidden="true">&times;</button>
+                		<h4 class="modal-title"  id="myModalLabel">查看图片</h4>
+            		</div>
+            		<div class="modal-body">
+            			<img alt="" src="" id="bigbis" style="width: 100%;height: 100%;"/>
+            		</div>
+        		</div>
+    		</div>
+		</div>
+	</div>
+</body>
+<script src="js/emoji.js"></script>
+<script type="text/javascript">
+function submit(){
+     jQuery.ajax({
+		 url : "updatestatuscomplantreporting.do",
+		 type : 'post',
+		 data:{"id":$("#ID").val(),"memo":$("#MEMO").val()},
+		 dataType : 'json',
+		 success : function(json) {
+		 if(!json.bizSucc){
+            alert(json.err_msg);
+            return false;
+         }else{
+			alert("处理成功！");
+        	window.location.reload(true);
+         }
+		 },
+		 error : function() {  
+		            alert("异常！");  
+		     }  
+	});
+}
+function clean(){
+	$("#a input").val("");
+	$("#a select").val("");
+}
+function sorce(){
+	$('#mytab').bootstrapTable("selectPage",1);	
+}
+var all;
+//生成用户数据
+$('#mytab').bootstrapTable({
+    method: 'post',
+    contentType: "application/x-www-form-urlencoded",//必须要有！！！！
+    url:"selectallcomplantreportingdynamic.do",//要请求数据的文件路径
+    dataType : 'json',
+    striped: true, //是否显示行间隔色
+  	pageNumber: 1, //初始化加载第一页，默认第一页
+    pageSize:10,//单页记录数
+    pageList:[5,10,20,30],//分页步进值
+    pagination:true,//是否分页
+    queryParamsType:'limit',//查询参数组织方式
+    sidePagination:'server',//指定服务器端分页
+    queryParams: function(p){
+    	 return params(p);
+    },
+    clickToSelect: true,//是否启用点击选中行
+    toolbarAlign:'right',//工具栏对齐方式
+    buttonsAlign:'right',//按钮对齐方式
+    toolbar:'#toolbar',//指定工作栏
+    columns:[
+		{
+            title:'投诉人姓名',
+            field:'USER_NAME'
+        },
+		{
+            title:'被投诉发帖人姓名',
+            field:'DUSER_NAME'
+        },
+		{
+            title:'类型',
+            field:'TYPE',
+			formatter : function (value,row,index){
+				if(value=="COM_DYNA") return "投诉";
+				if(value=="REP_DYNA") return "举报";
+			}
+        },
+        {
+            title:'帖子编号',
+            field:'DYNAMIC_ID'
+        },
+        {
+            title:'文字',
+            field:'DYNAMIC_WORD',
+            formatter:function (value,row,index){
+				if(strlen(value) > 20){
+					return value.substring(0,20)+'...'+"| <a href='#' onclick=showAllWord('"+index+"')>详情</a>";
+				}
+				return value+"| <a href='#' onclick=showAllWord('"+index+"')>详情</a>";
+			}
+        },
+        {
+            title:'内容',
+            field:'DYNAMIC_IMG',
+			formatter:function (value,row,index){
+				if(value == '' || value == null){
+					return "暂无信息";
+				}
+				if(row.DYNAMIC_TYPE == 'WORD_VIDEO'){
+					a = "<video src='"+value+"' controls='controls' width='240' height='120'/>";
+				}else if(row.DYNAMIC_TYPE == 'WORD_VOICE'){
+					a = "<audio src='"+value+"' controls='controls'/>";
+				}else{
+					var strs= new Array(); //定义一数组 
+					strs=value.split(","); //字符分割 
+					var a = "";
+					for (i=0;i<strs.length ;i++ ) 
+					{ 
+						a = "<img src='"+strs[i]+"' width='40px' height='40px' onclick=imgbig('"+strs[i]+"') />" + a;
+					} 
+				}
+				return a;
+			}
+        },
+		{
+            title:'当前状态',
+            field:'STATUS',
+			formatter : function (value,row,index){
+				if(value=="0") return "未处理";
+				if(value=="1") return "已处理";
+			}
+        },
+        {
+            title:'操作',
+            field:'id',
+            formatter: function (value,row,index){
+				if(row.STATUS=="1"){
+					return "<a href='#' onclick=updateshow('"+index+"','1')>查看</a>";
+				}else{
+					return "<a href='#' onclick=updateshow('"+index+"','0')>处理</a> ";
+				}
+            }
+        }
+    ],
+    locale:'zh-CN',//中文支持,
+    responseHandler:function(res){
+        //在ajax获取到数据，渲染表格之前，修改数据源
+		all = res.rows;
+        return res;
+    }
+})
+//显示修改框
+function updateshow(number,type){
+	for (var k in all[number]){  
+		$("#"+k).val(all[number][k]);
+    }  
+	if(type=="1"){
+		$("#subbut").addClass("hidden");
+	}else{
+		$("#subbut").removeClass("hidden");
+	}
+	$("#DYNAMIC_IMG").html("");
+	if(all[number].DYNAMIC_IMG!=null && all[number].DYNAMIC_IMG!=""){
+    	var strs= new Array();
+    	strs = all[number].DYNAMIC_IMG.split(",");
+		for (i=0;i<strs.length ;i++ ){
+			$("#DYNAMIC_IMG").append("<img src='"+strs[i]+"' style='width:60px;heigth:60px;'/>");
+    	} 
+	}else{
+		$("#DYNAMIC_IMG").html("暂无图片！");
+	}
+	$("#DYNAMIC_WORD").html(all[number].DYNAMIC_WORD);	
+//	$("#DYNAMIC_WORD").val(all[number].DYNAMIC_WORD);
+	$('#DYNAMIC_WORD').emoji();
+	$("#myModal").modal('show');
+}
+
+//获取搜索的所有值
+function params(params){
+	 $("#a input[type='text']").each(function(){
+		    params[$(this).attr("id")] = $(this).val();
+	 });
+	 $("#a select").each(function(){
+		    params[$(this).attr("id")] = $(this).val();
+	 });
+	 return params;
+}
+</script>
+<script type="text/javascript">
+
+function strlen(str){
+    var len = 0;
+    for (var i=0; i<str.length; i++) { 
+     var c = str.charCodeAt(i); 
+    //单字节加1 
+     if ((c >= 0x0001 && c <= 0x007e) || (0xff60<=c && c<=0xff9f)) { 
+       len++; 
+     } 
+     else { 
+      len+=2; 
+     } 
+    } 
+    return len;
+}
+
+function showAllWord(number){
+	$("#DYNAMIC_WORD_SHOW").html(all[number].DYNAMIC_WORD);
+	$('#DYNAMIC_WORD_SHOW').emoji();
+	
+	showallmodal('myModalWord','show');
+}
+
+//显示添加框
+function showallmodal(id,type){
+	$("#"+id).modal(type);
+}
+
+//显示放大图片
+function imgbig(url){
+	$('#imgbig').modal('show');
+	$("#bigbis").attr('src',url);
+}
+</script>
+</html>

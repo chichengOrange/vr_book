@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_book_version">
+
+	<operation name="loadAllVersion" multiplicity="many">
+		<sql>
+			<![CDATA[
+				SELECT 
+				  ID,BOOK_VERSION_ID,BOOK_ID,REVISE_NUM,CHANGE_LOG,STATUS,MEMO,GMT_CREATE,GMT_MODIFIED
+				  FROM vr_book_version
+        	]]>
+		</sql>
+	</operation>
+	
+	<operation name="selectBookVersionByBookId"  >
+		<extraparams>
+			<param name="bookId" javatype="java.lang.String" />
+		</extraparams>
+		<sql>select * from vr_book_version</sql>
+		<sqlmap>
+			<![CDATA[
+				SELECT * FROM vr_book_version
+				where 1=1 
+				<isNotEmpty property="bookId">
+	    			AND BOOK_ID = '$bookId$'
+	    		</isNotEmpty>
+        	]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="updateBookVersionByBookId">
+		<sql>
+			update vr_book_version set REVISE_NUM=?,CHANGE_LOG=?,STATUS=?,MEMO=?,GMT_MODIFIED = ? where ID= ? 
+		</sql>
+	</operation>
+	<operation name="insertBookVersion">
+		<sql>
+			insert into vr_book_version (BOOK_VERSION_ID,BOOK_ID,REVISE_NUM,CHANGE_LOG,
+			STATUS,MEMO,GMT_CREATE) values (?,?,?,?,?,?,?)
+		</sql>
+	</operation>
+</table>

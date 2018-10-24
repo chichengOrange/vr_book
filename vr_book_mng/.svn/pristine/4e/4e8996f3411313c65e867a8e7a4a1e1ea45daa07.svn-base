@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_sms_log">
+
+
+
+<operation name="selectSms" resultClass="java.util.HashMap" multiplicity="many">
+	<sql>
+		select * from vr_sms_log where 1 = 1
+	</sql>
+	<sqlmap>
+		<![CDATA[
+		SELECT INTERFACES  name ,COUNT(1)  value FROM vr_sms_log  GROUP BY INTERFACES  
+		]]>
+	</sqlmap>
+</operation>
+</table>
