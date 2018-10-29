@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_user_login_log">
+
+	<operation name="insert">
+		<sql>
+			INSERT INTO vr_user_login_log(
+				ID,
+				USER_ID,
+				LOGIN_TYPE,
+				LOGIN_COUNT,
+				IP,
+				GMT_CREATE,
+				GMT_MODIFIED
+			)VALUES(
+				?,?,?,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP
+			)
+		</sql>
+	</operation>
+	
+	<operation name="updateByUserId">
+		<sql>
+			UPDATE vr_user_login_log SET 
+			GMT_MODIFIED = CURRENT_TIMESTAMP,
+			LOGIN_COUNT = LOGIN_COUNT + 1
+			WHERE USER_ID = ? AND LOGIN_TYPE = ?
+		</sql>
+	</operation>
+
+	<operation name="queryByUserIdAndType">
+		<sql>
+			SELECT 
+			ID,
+			USER_ID,
+			LOGIN_TYPE,
+			LOGIN_COUNT,
+			IP,
+			GMT_CREATE
+			GMT_MODIFIED
+			FROM vr_user_login_log
+			WHERE USER_ID = ? AND LOGIN_TYPE = ?
+		</sql>
+	</operation>
+</table>

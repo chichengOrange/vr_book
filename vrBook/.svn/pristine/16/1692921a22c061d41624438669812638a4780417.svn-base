@@ -1,0 +1,89 @@
+package com.onway.model.conver;
+
+import com.onway.common.lang.StringUtils;
+import com.onway.fyapp.common.dal.dataobject.AccountDO;
+import com.onway.fyapp.common.dal.dataobject.AccountLogDO;
+import com.onway.fyapp.common.dal.dataobject.UserDO;
+import com.onway.model.enums.AccountLogFlgEnum;
+import com.onway.model.enums.DelFlgEnum;
+import com.onway.utils.DateUtil;
+import com.onway.utils.EmojiFilter;
+import com.onway.utils.NumUtil;
+import com.onway.utils.UserInfo;
+import com.onway.web.controller.result.AccountLogResult;
+import com.onway.web.controller.result.AccountResult;
+import com.onway.web.controller.result.UserInfoResult;
+
+/**
+ * 
+* <p>Title: UserConver</p>  
+* <p>Description: 用户实体类转换工具类</p>  
+* @author yugang.ni  
+* @date 2018年6月27日  下午2:18:48
+ */
+public class UserConver{
+
+	public static UserDO buildUserDO( UserInfo userInfo ,String userId) {
+        UserDO user = new UserDO();
+        user.setUserId(userId);
+        user.setOpenId(userInfo.getOpenid());
+        user.setHeadUrl(userInfo.getHeadimgurl());
+        //对特殊名称的过滤，比如emoji表情
+        String nickName=EmojiFilter.filterEmoji(userInfo.getNickname());
+        user.setNickName(nickName);
+        user.setSex(userInfo.getSex());
+        user.setDelFlg(DelFlgEnum.NOT_DEL.getCode());
+		return user;
+    }
+	
+	public static UserDO buildUserDOOnlyOpenId( String openId, String userId) {
+        UserDO user = new UserDO();
+        user.setUserId(userId);
+        user.setOpenId(openId);
+        user.setDelFlg(DelFlgEnum.NOT_DEL.getCode());
+		return user;
+    }
+	
+	public static UserInfoResult buildUserInfo( UserDO userDO) {
+		if(null == userDO)
+			return null;
+		
+		UserInfoResult infoResult = new UserInfoResult();
+		infoResult.setHeadImg(userDO.getHeadUrl());
+		infoResult.setCell(NumUtil.getHidePhone(userDO.getCell()));
+		infoResult.setNickName(userDO.getNickName());
+		infoResult.setSex(userDO.getSex());
+		infoResult.setAge(userDO.getAge());
+		infoResult.setIdCard(NumUtil.getHideCard(userDO.getCertNo()));
+		infoResult.setComName(userDO.getComName());
+		infoResult.setLevel(userDO.getUserLevel());
+		return infoResult;
+    }
+	
+	public static AccountResult buildAccountInfo( AccountDO accountDO) {
+		if(null == accountDO)
+			return null;
+		
+		AccountResult infoResult = new AccountResult();
+		infoResult.setDevoteAmount(accountDO.getDevoteAmount());
+		infoResult.setHuBalance(accountDO.getHuBalance());
+		infoResult.setHuPoint(accountDO.getHuPoint());
+		return infoResult;
+    }
+	
+	public static AccountLogResult buildAccountLogList( AccountLogDO accountLogDO) {
+		if(null == accountLogDO)
+			return null;
+		
+		AccountLogResult infoResult = new AccountLogResult();
+		infoResult.setTypeMsg(AccountLogFlgEnum.getByCode(accountLogDO.getFlg()).message());
+		infoResult.setTime(DateUtil.dateToString(accountLogDO.getGmtCreate(), DateUtil.webFormat));
+		String IO = "+";
+		if(StringUtils.equals(accountLogDO.getFlg(), AccountLogFlgEnum.COST.getCode())){
+			IO = "-";
+		}
+		infoResult.setAmountStr(IO + accountLogDO.getAmount().toSimpleString());
+		infoResult.setLeftStr(accountLogDO.getAfterBalance().toSimpleString());
+		return infoResult;
+    }
+}

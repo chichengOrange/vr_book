@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_search">
+
+	<operation name="insert">
+		<sql>
+			INSERT INTO vr_search(
+				ID,
+				USER_ID,
+				KEY_WORDS,
+				TYPE,
+				GMT_CREATE
+			)VALUES(
+				?,?,?,?,CURRENT_TIMESTAMP
+			)
+		</sql>
+	</operation>
+</table>

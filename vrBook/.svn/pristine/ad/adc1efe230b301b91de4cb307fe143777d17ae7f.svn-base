@@ -1,0 +1,32 @@
+package com.onway.model.conver;
+
+import com.onway.fyapp.common.dal.dataobject.ActivityDO;
+import com.onway.utils.DateUtil;
+import com.onway.web.controller.result.ActivityResult;
+
+/**
+ * 
+* <p>Title: ActivityConver</p>  
+* <p>Description: 活动实体类转换</p>  
+* @author yugang.ni  
+* @date 2018年6月28日  下午3:32:18
+ */
+public class ActivityConver {
+
+	public static ActivityResult buildActivityListResult( ActivityDO activityDO) {
+		if (null == activityDO)
+			return null;
+
+		ActivityResult activityResult = new ActivityResult();
+		activityResult.setActivityType(activityDO.getType());
+		activityResult.setActivityImg(activityDO.getBackImg());
+		activityResult.setActivityTitle(activityDO.getTitle());
+		activityResult.setActivityInfo(activityDO.getInfo());
+		activityResult.setActivityUrl(activityDO.getUrl());
+		activityResult.setTime(DateUtil.dateToString(activityDO.getGmtCreate(), DateUtil.pointFormat));
+		
+		return activityResult;
+	}
+
+	
+}

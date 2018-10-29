@@ -1,0 +1,276 @@
+package com.onway.fyapp.common.dal.dataobject.returnObj;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 
+ * @author lishuaikai
+ * @Description 	商品
+ * @data 2018年6月28日 上午9:21:19
+ */
+public class ProductInfo {
+
+	private String productId;
+	
+	private String teamId;
+	
+	private String productName;
+	
+	private String productPrice;
+	
+	private String oldPrice;
+	
+	private int stock;
+	
+	private int sales;
+	
+	private String brand;
+	
+	//生产厂商
+	private String manufacturer;
+	
+	//批准文号
+	private String licenseNo;
+	
+	private String type;
+	
+	//商品分类 大类
+	private String fatherCate;
+	
+	//商品分类 小类
+	private String childCate;
+	
+	//功效分类 大类
+	private String fatherEfectCate;
+	
+	//功效分类 小类
+	private String childEfectCate;
+	
+	private String delFlg;
+	
+	private String createTime;
+	
+	//列表图片
+	private String imgList;
+	
+	//头部展示图片
+	private List<String> headImgList;
+	
+	//详情图片
+	private String imgDetails;
+
+	  /*价格库存*/
+    private List<StockPriceDOExt> priceStocks;
+    
+    /*属性属性值*/
+    private List<GoodsAttrValueDOExt> attrAndValuees;
+    
+    private String proType;
+    
+    private String planId;
+    
+	public String getProType() {
+		return proType;
+	}
+
+	public void setProType(String proType) {
+		this.proType = proType;
+	}
+
+	public String getPlanId() {
+		return planId;
+	}
+
+	public void setPlanId(String planId) {
+		this.planId = planId;
+	}
+
+	public String getProductId() {
+		return productId;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+
+
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public String getProductPrice() {
+		return productPrice;
+	}
+
+	public void setProductPrice(String productPrice) {
+		this.productPrice = productPrice;
+	}
+
+	public String getOldPrice() {
+		return oldPrice;
+	}
+
+	public void setOldPrice(String oldPrice) {
+		this.oldPrice = oldPrice;
+	}
+
+	
+
+	public String getBrand() {
+		return brand;
+	}
+
+	public void setBrand(String brand) {
+		this.brand = brand;
+	}
+
+	public String getManufacturer() {
+		return manufacturer;
+	}
+
+	public void setManufacturer(String manufacturer) {
+		this.manufacturer = manufacturer;
+	}
+
+	public String getLicenseNo() {
+		return licenseNo;
+	}
+
+	public void setLicenseNo(String licenseNo) {
+		this.licenseNo = licenseNo;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getFatherCate() {
+		return fatherCate;
+	}
+
+	public void setFatherCate(String fatherCate) {
+		this.fatherCate = fatherCate;
+	}
+
+	public String getChildCate() {
+		return childCate;
+	}
+
+	public void setChildCate(String childCate) {
+		this.childCate = childCate;
+	}
+
+	
+
+	public String getDelFlg() {
+		return delFlg;
+	}
+
+	public void setDelFlg(String delFlg) {
+		this.delFlg = delFlg;
+	}
+
+	public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getImgList() {
+		return imgList;
+	}
+
+	public void setImgList(String imgList) {
+		this.imgList = imgList;
+	}
+
+	public List<String> getHeadImgList() {
+		return headImgList;
+	}
+
+	public void setHeadImgList(List<String> headImgList) {
+		this.headImgList = headImgList;
+	}
+
+	public String getImgDetails() {
+		return imgDetails;
+	}
+
+	public void setImgDetails(String imgDetails) {
+		this.imgDetails = imgDetails;
+	}
+
+	public int getStock() {
+		return stock;
+	}
+
+	public void setStock(int stock) {
+		this.stock = stock;
+	}
+
+	public int getSales() {
+		return sales;
+	}
+
+	public void setSales(int sales) {
+		this.sales = sales;
+	}
+
+	public String getFatherEfectCate() {
+		return fatherEfectCate;
+	}
+
+	public void setFatherEfectCate(String fatherEfectCate) {
+		this.fatherEfectCate = fatherEfectCate;
+	}
+
+	public String getChildEfectCate() {
+		return childEfectCate;
+	}
+
+	public void setChildEfectCate(String childEfectCate) {
+		this.childEfectCate = childEfectCate;
+	}
+
+	public List<StockPriceDOExt> getPriceStocks() {
+		return priceStocks;
+	}
+
+	public void setPriceStocks(List<StockPriceDOExt> priceStocks) {
+		this.priceStocks = priceStocks;
+	}
+
+	public List<GoodsAttrValueDOExt> getAttrAndValuees() {
+		return attrAndValuees;
+	}
+
+	public void setAttrAndValuees(List<GoodsAttrValueDOExt> attrAndValuees) {
+		this.attrAndValuees = attrAndValuees;
+	}
+
+	public String getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(String teamId) {
+		this.teamId = teamId;
+	}
+	
+	
+	
+	
+
+	
+}

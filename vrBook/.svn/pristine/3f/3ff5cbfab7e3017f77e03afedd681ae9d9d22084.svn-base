@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_phone">
+
+	<operation name="insert">
+		<sql>
+			INSERT INTO vr_phone(
+				ID,
+				USER_ID,
+				PHONE_TYPE,
+				IMEI,
+				SYS_VERSION,
+				PROVINCE,
+				CITY,
+				AREA,
+				GMT_CREATE
+			)VALUES(
+				?,?,?,
+				?,?,?,
+				?,?,CURRENT_TIMESTAMP
+			)
+		</sql>
+	</operation>
+	
+
+</table>

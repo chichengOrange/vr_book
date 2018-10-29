@@ -1,0 +1,131 @@
+/**
+ * 
+ */
+package com.onway.core.service.impl;
+
+import com.onway.core.service.KnowledgeOperationService;
+import com.onway.fyapp.common.dal.daointerface.KnowledgeCommentDAO;
+import com.onway.fyapp.common.dal.daointerface.KnowledgeDAO;
+import com.onway.fyapp.common.dal.daointerface.KnowledgeLikeDAO;
+import com.onway.fyapp.common.dal.dataobject.KnowledgeCommentDO;
+import com.onway.fyapp.common.dal.dataobject.KnowledgeLikeDO;
+import com.onway.platform.common.base.BaseResult;
+import com.onway.platform.common.service.template.AbstractServiceImpl;
+import com.onway.platform.common.service.template.ServiceCheckCallback;
+import com.onway.platform.common.service.util.AssertUtil;
+import com.onway.utils.emoji.EmojiUtil;
+
+public class KnowledgeOperationServiceImpl extends AbstractServiceImpl
+		implements KnowledgeOperationService {
+
+	private KnowledgeDAO knowledgeDAO;
+
+	private KnowledgeCommentDAO knowledgeCommentDAO;
+
+	private KnowledgeLikeDAO knowledgeLikeDAO;
+
+	public void setKnowledgeDAO(KnowledgeDAO knowledgeDAO) {
+		this.knowledgeDAO = knowledgeDAO;
+	}
+
+	public void setKnowledgeCommentDAO(KnowledgeCommentDAO knowledgeCommentDAO) {
+		this.knowledgeCommentDAO = knowledgeCommentDAO;
+	}
+
+	public void setKnowledgeLikeDAO(KnowledgeLikeDAO knowledgeLikeDAO) {
+		this.knowledgeLikeDAO = knowledgeLikeDAO;
+	}
+
+	/**
+	 * 新增评论
+	 */
+	public BaseResult addComment(final String knowId, final String commnetWord,
+			final String userId) {
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userId, "用户未登录");
+						AssertUtil.notBlank(knowId, "评论编号为空");
+						AssertUtil.notBlank(commnetWord, "评论内容为空");
+					}
+
+					@Override
+					public void executeService() {
+						String emojiConvert1 = EmojiUtil
+								.emojiConvert1(commnetWord);
+
+						KnowledgeCommentDO knowledgeComment = new KnowledgeCommentDO();
+						knowledgeComment.setCommentUserId(userId);
+						knowledgeComment.setKnowId(knowId);
+						knowledgeComment.setCommentWord(emojiConvert1);
+
+						if (knowledgeCommentDAO.newCommnet(knowledgeComment) > 0) {
+							knowledgeDAO.addCommentCount(knowId);
+							result.setSuccess(true);
+						}
+					}
+				});
+		return result;
+	}
+
+	/**
+	 * 新增点赞
+	 */
+	public BaseResult addLike(final String knowId, final String userId) {
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userId, "用户未登录");
+						AssertUtil.notBlank(knowId, "评论编号为空");
+					}
+
+					@Override
+					public void executeService() {
+						if (null != knowledgeLikeDAO.checkLike(userId, knowId)) {
+							result.setSuccess(true);
+							return;
+						}
+						KnowledgeLikeDO knowledgeLike = new KnowledgeLikeDO();
+						knowledgeLike.setKnowId(knowId);
+						knowledgeLike.setLikeUserId(userId);
+						if (knowledgeLikeDAO.newLike(knowledgeLike) > 0) {
+							knowledgeDAO.addPraiseCount(knowId);
+							result.setSuccess(true);
+						}
+					}
+				});
+		return result;
+	}
+	
+	/**
+	 * 取消点赞
+	 */
+	public BaseResult cancleLike(final String knowId, final String userId) {
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userId, "用户未登录");
+						AssertUtil.notBlank(knowId, "评论编号为空");
+					}
+
+					@Override
+					public void executeService() {
+						if (knowledgeLikeDAO.cancleLike(knowId, userId) > 0) {
+							knowledgeDAO.canclePraiseCount(knowId);
+							result.setSuccess(true);
+						}
+					}
+				});
+		return result;
+	}
+
+}

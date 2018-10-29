@@ -1,0 +1,56 @@
+package com.onway.model.conver;
+
+import java.text.ParseException;
+import java.util.Date;
+
+import com.onway.common.lang.DateUtils;
+import com.onway.fyapp.common.dal.dataobject.MsgDO;
+import com.onway.utils.DateUtil;
+import com.onway.web.controller.result.MsgResult;
+
+/**
+ * 
+ * <p>
+ * Title: MsgConver
+ * </p>
+ * <p>
+ * Description: 消息实体转换
+ * </p>
+ * 
+ * @author yugang.ni
+ * @date 2018年6月27日 下午5:59:44
+ */
+public class MsgConver {
+
+	public static MsgResult buildMsgResult(MsgDO msgDO) {
+		if (null == msgDO)
+			return null;
+		try {
+			MsgResult msgResult = new MsgResult();
+			msgResult.setMsgId(msgDO.getId());
+			msgResult.setMsgType(msgDO.getMsgType());
+			Date msgDate = msgDO.getGmtCreate();
+			String msgTime;
+
+			msgTime = DateUtil.getMsgTime(msgDate);
+
+			msgResult.setMsgTime(msgTime);
+			msgResult.setMsgTitle(msgDO.getMsgTitle());
+			msgResult.setMsgDay(DateUtil.dateToString(msgDate,
+					DateUtils.shortDateFormat));
+			msgResult.setMsgContent(msgDO.getMsgContent());
+			if (msgDO.getMsgContent().length() > 20) {
+				msgResult.setMsgContent(msgDO.getMsgContent().substring(0, 20)
+						+ "...");
+			}
+			msgResult.setStatus(msgDO.getIsRead());
+			return msgResult;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+}

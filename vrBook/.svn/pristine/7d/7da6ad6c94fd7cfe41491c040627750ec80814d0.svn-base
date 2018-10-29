@@ -1,0 +1,25 @@
+package com.onway.fyapp.common.dal.dataobject.returnObj;
+
+import java.io.Serializable;
+
+public class GoodsAttrValueSubDOExt implements Serializable{
+    
+    /**  */
+    private static final long serialVersionUID = 1L;
+    private int attrId;
+    private String value;
+    
+    public int getAttrId() {
+        return attrId;
+    }
+    public void setAttrId(int attrId) {
+        this.attrId = attrId;
+    }
+    public String getValue() {
+        return value;
+    }
+    public void setValue(String value) {
+        this.value = value;
+    }
+    
+}

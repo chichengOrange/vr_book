@@ -1,0 +1,75 @@
+package com.onway.model.conver;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.alibaba.fastjson.JSONArray;
+import com.onway.common.lang.StringUtils;
+import com.onway.fyapp.common.dal.dataobject.KnowledgeDO;
+import com.onway.utils.DateUtil;
+import com.onway.web.controller.result.KnowledgeResult;
+
+/**
+ * 
+* <p>Title: KnowledgeConver</p>  
+* <p>Description: 养生知识/新闻公告表  实体转换</p>  
+* @author yugang.ni  
+* @date 2018年6月28日  下午4:15:58
+ */
+public class KnowledgeConver {
+
+	public static KnowledgeResult buildKnowledgeListResult( KnowledgeDO knowledgeDO) {
+		if (null == knowledgeDO)
+			return null;
+
+		KnowledgeResult knowledgeResult = new KnowledgeResult();
+		knowledgeResult.setKnowId(knowledgeDO.getKnowId());
+		knowledgeResult.setType(knowledgeDO.getType());
+		knowledgeResult.setPraiseCount(knowledgeDO.getPraiseCount());
+		knowledgeResult.setCommnetCount(knowledgeDO.getCommentCount());
+		knowledgeResult.setTitle(knowledgeDO.getTitle());
+		knowledgeResult.setSubTitle(knowledgeDO.getSubTitle());
+		
+		String headImgUrl = knowledgeDO.getHeadImgUrl();
+		if(StringUtils.isNotBlank(headImgUrl)){
+			List<String> imgList = new ArrayList<String>();
+			JSONArray parseArray = JSONArray.parseArray(headImgUrl);
+			for (Object object : parseArray) {
+				if(null != object)
+					imgList.add(object.toString());
+			}
+			knowledgeResult.setImgList(imgList);
+		}
+		knowledgeResult.setTime(DateUtil.dateToString(knowledgeDO.getGmtCreate(), DateUtil.pointFormat));
+		
+		return knowledgeResult;
+	}
+
+	public static KnowledgeResult buildKnowledgeDetailResult( KnowledgeDO knowledgeDO) {
+		if (null == knowledgeDO)
+			return null;
+
+		KnowledgeResult knowledgeResult = new KnowledgeResult();
+		knowledgeResult.setKnowId(knowledgeDO.getKnowId());
+		knowledgeResult.setType(knowledgeDO.getType());
+		knowledgeResult.setPraiseCount(knowledgeDO.getPraiseCount());
+		knowledgeResult.setCommnetCount(knowledgeDO.getCommentCount());
+		knowledgeResult.setTitle(knowledgeDO.getTitle());
+		knowledgeResult.setSubTitle(knowledgeDO.getSubTitle());
+		knowledgeResult.setContent(knowledgeDO.getContent());
+		
+		String headImgUrl = knowledgeDO.getHeadImgUrl();
+		if(StringUtils.isNotBlank(headImgUrl)){
+			List<String> imgList = new ArrayList<String>();
+			JSONArray parseArray = JSONArray.parseArray(headImgUrl);
+			for (Object object : parseArray) {
+				if(null != object)
+					imgList.add(object.toString());
+			}
+			knowledgeResult.setImgList(imgList);
+		}
+		knowledgeResult.setTime(DateUtil.dateToString(knowledgeDO.getGmtCreate(), DateUtil.pointFormat));
+		
+		return knowledgeResult;
+	}
+}

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_book_user">
+	<!-- 添加到书架 -->
+	<operation name="insert">
+		<sql>
+			INSERT INTO vr_book_user(
+				ID,
+				USER_ID,
+				BOOK_ID,
+				DELETE_FLG,
+				GMT_CREATE,
+				GMT_MODIFIED
+			)VALUES(
+			?,?,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP
+			)
+		</sql>
+	</operation>
+	
+	<!-- 根据用户id查询 -->
+	<operation name="queryShelfByUserId" multiplicity="many">
+		<sql>
+		    SELECT
+				BOOK_ID
+			FROM vr_book_user
+			WHERE USER_ID = ? AND DELETE_FLG = ? ORDER BY GMT_MODIFIED DESC
+		</sql>
+	</operation>
+	
+	<operation name ="updateStatus">
+		<extraparams>
+			<param name="userId" javatype="java.lang.String"/>
+			<param name="bookIds" javatype="java.util.List"/>
+		</extraparams>
+		<sql>
+			UPDATE vr_book_user SET
+			GMT_MODIFIED = CURRENT_TIMESTAMP
+		</sql>
+		<sqlmap>
+			<![CDATA[
+				UPDATE vr_book_user SET
+				DELETE_FLG = '1',
+				GMT_MODIFIED = CURRENT_TIMESTAMP
+				WHERE 1 = 1
+				<isNotEmpty property="userId" prepend="and">
+					USER_ID = #userId#
+				</isNotEmpty>
+				<iterate property="bookIds" open="and BOOK_ID in (" close=")" conjunction=",">
+					${cdata-start}
+						#bookIds[]#
+					${cdata-end}
+				</iterate>
+				
+			]]>
+		</sqlmap>
+	</operation>
+	
+	<operation name ="updateSort">
+		<sql>
+			UPDATE vr_book_user SET
+			GMT_MODIFIED = CURRENT_TIMESTAMP
+			WHERE USER_ID = ? AND BOOK_ID = ?
+		</sql>
+	</operation>
+	
+	<operation name ="updateStatusByBookIdAndUserId">
+		<sql>
+			UPDATE vr_book_user SET
+			GMT_MODIFIED = CURRENT_TIMESTAMP,
+			DELETE_FLG = ?
+			WHERE USER_ID = ? AND BOOK_ID = ?
+		</sql>
+	</operation>
+	
+	<operation name="queryShelfByUserIdAndBookId" >
+		<sql>
+		    SELECT
+				ID,
+				USER_ID,
+				BOOK_ID,
+				DELETE_FLG,
+				GMT_CREATE,
+				GMT_MODIFIED
+			FROM vr_book_user
+			WHERE USER_ID = ? AND DELETE_FLG = ? AND BOOK_ID = ?
+		</sql>
+	</operation>
+</table>

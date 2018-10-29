@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_book_sections">
+	<!-- 根据书籍id查询 -->
+	<operation name="querySectionByChapterId" multiplicity="many">
+		<sql>
+		    SELECT
+				ID,
+				MODEL_ID,
+				SECTION_ID,
+				CHAPTER_ID,
+				SECTION_NAME,
+				GMT_CREATE,
+				GMT_MODIFIED
+			FROM vr_book_sections
+			WHERE CHAPTER_ID = ?
+		</sql>
+	</operation>
+</table>

@@ -1,0 +1,119 @@
+package com.onway.core.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import com.onway.core.service.CollectService;
+import com.onway.fyapp.common.dal.daointerface.CollectDAO;
+import com.onway.fyapp.common.dal.dataobject.CollectDO;
+import com.onway.fyapp.common.dal.dataobject.returnObj.CollectInfo;
+import com.onway.model.enums.CollectTypeEnum;
+import com.onway.platform.common.base.BaseResult;
+import com.onway.platform.common.base.QueryResult;
+import com.onway.platform.common.service.template.AbstractServiceImpl;
+import com.onway.platform.common.service.template.ServiceCheckCallback;
+import com.onway.platform.common.service.util.AssertUtil;
+
+public class CollectServiceImpl extends AbstractServiceImpl implements CollectService{
+
+	@Resource
+	private CollectDAO collectDAO;
+	
+	@Override
+	public BaseResult addToCollect(final String userId, final String collectId,
+			final String collectType) {
+		// TODO Auto-generated method stub
+		final BaseResult result = new BaseResult(true);
+		serviceTemplate.execute(result,new ServiceCheckCallback() {
+			
+			@Override
+			public void check() {
+				// TODO Auto-generated method stub
+				AssertUtil.notBlank(userId, "用户ID不能为空");
+				AssertUtil.notBlank(collectId, "收藏ID不能为空");
+				AssertUtil.notBlank(collectType, "收藏类型不能为空");
+			}
+			
+			@Override
+			public void executeService() {
+				// TODO Auto-generated method stub
+				CollectDO collectDO = new CollectDO();
+				collectDO.setCollectId(collectId);
+				collectDO.setCollectType("0".equals(collectType) ? CollectTypeEnum.PRODUCT.getCode() : CollectTypeEnum.TEAM.getCode());
+				collectDO.setUserId(userId);
+				int insert = collectDAO.addToCollect(collectDO);
+				result.setSuccess(insert > 0 ? true : false);
+			}
+		});
+		return result;
+	}
+
+	@Override
+	public QueryResult<List<CollectInfo>> queryCollect(final String userId, final String type
+			, final int offset, final int limit) {
+		// TODO Auto-generated method stub
+		final QueryResult<List<CollectInfo>> result = new QueryResult<List<CollectInfo>>(true);
+		serviceTemplate.execute(result, new ServiceCheckCallback() {
+			
+			@Override
+			public void check() {
+				// TODO Auto-generated method stub
+				AssertUtil.notBlank(userId, "用户ID不能为空");
+				AssertUtil.notBlank(type, "收藏类型不能为空");
+			}
+			
+			@Override
+			public void executeService() {
+				// TODO Auto-generated method stub
+				String collectType = "";
+				List<CollectInfo> collects = new ArrayList<CollectInfo>();
+				
+				//判断店铺还是商品
+				if("1".equals(type)){
+					collectType = CollectTypeEnum.TEAM.getCode();
+					 List<Map<String, Object>> teams = collectDAO.queryTeamCollect(userId, collectType, offset, limit);
+					 for (Map<String, Object> map : teams) {
+						 CollectInfo info = new CollectInfo();
+						 info.setTeamName(getMapValue(map, "teamName"));
+						 info.setCollectId(getMapValue(map, "collectId"));
+						 info.setImage(getMapValue(map, "image"));
+						 collects.add(info);
+					}
+				}else{
+					collectType = CollectTypeEnum.PRODUCT.getCode();
+					 List<Map<String, Object>> product = collectDAO.queryProductCollect(userId, collectType, offset, limit);
+					 for (Map<String, Object> map : product) {
+						 CollectInfo info = new CollectInfo();
+						 info.setProductName(getMapValue(map, "productName"));
+						 info.setCollectId(getMapValue(map, "collectId"));
+						 info.setImage(getMapValue(map, "image"));
+						 collects.add(info);
+					}
+				}
+				
+			}
+		});
+		return result;
+	}
+
+	public String getMapValue(Map<String, Object> map, String key){
+		String resultStr = map.get(key) == null ? "" :  map.get(key)+"";
+		return resultStr;
+	}
+}

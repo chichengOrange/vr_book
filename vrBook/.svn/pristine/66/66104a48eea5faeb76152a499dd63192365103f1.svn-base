@@ -1,0 +1,70 @@
+/**
+ * onway.com Inc.
+ * Copyright (c) 2013-2013 All Rights Reserved.
+ */
+package com.onway.web.controller.home;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.onway.common.lang.StringUtils;
+import com.onway.model.enums.StatusEnum;
+import com.onway.platform.common.base.QueryResult;
+import com.onway.web.controller.AbstractController;
+import com.onway.web.controller.result.BannerResult;
+import com.onway.web.controller.result.JsonQueryResult;
+
+/**
+ * 
+ * <p>
+ * Title: IndexController
+ * </p>
+ * <p>
+ * Description:
+ * </p>
+ * 
+ * @author yugang.ni
+ * @date 2018年6月27日 下午4:10:23
+ */
+@Controller
+public class BannerController extends AbstractController {
+
+	/**
+	 * banner查询
+	 * 
+	 * bannerPosition   banner位置   0  1  2  3
+	 * status           banner状态  ENABLED UNABLED
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/bannerQuery.do")
+	@ResponseBody
+	public Object bannerQuery(HttpServletRequest request){
+
+		String bannerPosition = request.getParameter("bannerPosition");
+		String status = request.getParameter("status");
+		
+		if(StringUtils.isBlank(status))
+			status = StatusEnum.ENABLED.getCode();
+
+		QueryResult<List<BannerResult>> queryBanner = bannerQueryService
+				.queryBanner(bannerPosition, status);
+		
+		JsonQueryResult<List<BannerResult>> result = new JsonQueryResult<List<BannerResult>>(
+				false);
+
+		result.setBizSucc(queryBanner.isSuccess());
+		result.setErrMsg(queryBanner.getMessage());
+		result.setErrCode(queryBanner.getCode());
+		result.setObj(queryBanner.getResultObject());
+
+		return result;
+	}
+
+}

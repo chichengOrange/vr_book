@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_sms">
+
+<operation name="insert">
+		<sql>
+			insert into vr_sms(
+			CELL, VERIFY_CODE, SMS_STATUS, GMT_CREATE, MEMO
+			)values(
+			?,?,?,CURRENT_TIMESTAMP,?
+			)
+		</sql>
+	</operation>
+	<operation name="selectSmsBycell">
+		<extraparams>
+			<param name="cell" javatype="java.lang.String" />
+		</extraparams>
+		<sql>
+			select * from vr_sms 
+		</sql>
+        <sqlmap>
+		<![CDATA[
+            SELECT 
+            ID,CELL,VERIFY_CODE,SMS_STATUS,
+            GMT_CREATE,MEMO
+            FROM 
+            vr_sms 
+            WHERE CELL=#cell# 
+            order by GMT_CREATE DESC 
+            limit 0,1
+            ]]>
+        </sqlmap>
+    </operation>
+</table>

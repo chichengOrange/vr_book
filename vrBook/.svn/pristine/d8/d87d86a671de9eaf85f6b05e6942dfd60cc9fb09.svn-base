@@ -1,0 +1,63 @@
+/**
+ * 
+ */
+package com.onway.core.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.onway.core.service.BannerQueryService;
+import com.onway.fyapp.common.dal.daointerface.BannerDAO;
+import com.onway.fyapp.common.dal.dataobject.BannerDO;
+import com.onway.model.conver.BannerConver;
+import com.onway.model.enums.BannerPositionEnum;
+import com.onway.platform.common.base.QueryResult;
+import com.onway.platform.common.service.template.AbstractServiceImpl;
+import com.onway.platform.common.service.template.ServiceCheckCallback;
+import com.onway.platform.common.service.util.AssertUtil;
+import com.onway.web.controller.result.BannerResult;
+
+
+public class BannerQueryServiceImpl extends AbstractServiceImpl implements BannerQueryService {
+
+	private BannerDAO bannerDAO;
+	
+	public void setBannerDAO(BannerDAO bannerDAO) {
+		this.bannerDAO = bannerDAO;
+	}
+
+	//userId  openId 查询用户信息 
+	public QueryResult<List<BannerResult>> queryBanner( final String bannerPosition, final String status){
+		final QueryResult<List<BannerResult>> result = new QueryResult<List<BannerResult>>(true);
+		serviceTemplate.executeWithoutTransaction(result, new ServiceCheckCallback() {
+
+            @Override
+            public void check() {
+            	AssertUtil.notBlank(bannerPosition, "banner位置为空");
+            	AssertUtil.notBlank(status, "banner状态为空");
+            }
+
+            @Override
+            public void executeService() {
+            	
+            	BannerPositionEnum positionEnum = BannerPositionEnum.getByValue(Integer.parseInt(bannerPosition));
+            	if(null == positionEnum){
+            		result.setSuccess(false);
+            		return;
+            	}
+            	
+            	List<BannerDO> queryBanner = bannerDAO.queryBanner(positionEnum.getCode(), status);
+            	List<BannerResult> bannResults = new ArrayList<BannerResult>();
+            	for (BannerDO bannerDO : queryBanner) {
+            		BannerResult bannerResult = BannerConver.buildBannerResult(bannerDO);
+            		if(null != bannerResult)
+            			bannResults.add(bannerResult);
+				}
+            	
+            	result.setResultObject(bannResults);
+            }
+        });
+		return result;
+	}
+
+}

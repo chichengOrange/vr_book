@@ -1,0 +1,388 @@
+/**
+ * 
+ */
+package com.onway.core.service.impl;
+
+import com.onway.common.lang.Money;
+import com.onway.core.service.UserOperationService;
+import com.onway.core.service.code.CodeGenerateComponent;
+import com.onway.fyapp.common.dal.daointerface.AccountDAO;
+import com.onway.fyapp.common.dal.daointerface.UserDAO;
+import com.onway.fyapp.common.dal.dataobject.AccountDO;
+import com.onway.fyapp.common.dal.dataobject.UserDO;
+import com.onway.model.conver.UserConver;
+import com.onway.model.enums.BizTypeEnum;
+import com.onway.model.enums.DelFlgEnum;
+import com.onway.platform.common.base.BaseResult;
+import com.onway.platform.common.service.template.AbstractServiceImpl;
+import com.onway.platform.common.service.template.ServiceCheckCallback;
+import com.onway.platform.common.service.util.AssertUtil;
+import com.onway.utils.UserInfo;
+
+public class UserOperationServiceImpl extends AbstractServiceImpl implements
+		UserOperationService {
+
+	private UserDAO userDAO;
+
+	private AccountDAO accountDAO;
+
+	private CodeGenerateComponent codeGenerateComponent;
+
+	public void setUserDAO(UserDAO userDAO) {
+		this.userDAO = userDAO;
+	}
+
+	public void setAccountDAO(AccountDAO accountDAO) {
+		this.accountDAO = accountDAO;
+	}
+
+	public void setCodeGenerateComponent(
+			CodeGenerateComponent codeGenerateComponent) {
+		this.codeGenerateComponent = codeGenerateComponent;
+	}
+
+	// 微信 新增用户
+	public BaseResult newUser(final UserInfo userInfo) {
+
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userInfo.getOpenid(), "openId为空");
+					}
+
+					@Override
+					public void executeService() {
+						UserDO userDO = UserConver.buildUserDO(userInfo,
+								codeGenerateComponent
+										.nextCodeByType(BizTypeEnum.USER_ID));
+						if (userDAO.creat(userDO) > 0) {
+							result.setSuccess(true);
+						}
+					}
+				});
+		return result;
+	}
+
+	public BaseResult newUser(final String openId) {
+
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(openId, "openId为空");
+					}
+
+					@Override
+					public void executeService() {
+						UserDO userDO = UserConver.buildUserDOOnlyOpenId(
+								openId, codeGenerateComponent
+										.nextCodeByType(BizTypeEnum.USER_ID));
+						if (userDAO.creat(userDO) > 0) {
+							result.setSuccess(true);
+						}
+					}
+				});
+		return result;
+	}
+
+	// 新增户用户账户
+	public BaseResult newUserAccount(final String userId) {
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userId, "userId为空");
+					}
+
+					@Override
+					public void executeService() {
+						if (null == accountDAO.searchByUserIdOrAccountNo(
+								userId, null)) {
+							AccountDO accountDO = new AccountDO();
+							accountDO.setAccountNo(codeGenerateComponent
+									.nextCodeByType(BizTypeEnum.ACCOUNT_NO));
+							accountDO.setUserId(userId);
+							accountDO.setDevoteAmount(new Money());
+							accountDO.setHuBalance(new Money());
+							accountDO.setHuPoint(new Money());
+							accountDO.setDelFlg(DelFlgEnum.NOT_DEL.getCode());
+							if (accountDAO.creat(accountDO) > 0)
+								result.setSuccess(true);
+						} else {
+							result.setSuccess(true);
+						}
+					}
+				});
+		return result;
+	}
+
+	/**
+	 * 修改用户头像
+	 */
+	public BaseResult updateHeadUrl(final String userId, final String headUrl) {
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userId, "userId为空");
+						AssertUtil.notBlank(headUrl, "头像链接为空");
+					}
+
+					@Override
+					public void executeService() {
+						if (userDAO.updateHeadUrl(headUrl, userId) > 0)
+							result.setSuccess(true);
+					}
+				});
+		return result;
+	}
+
+	/**
+	 * 修改用户手机号
+	 */
+	public BaseResult updateCell(final String userId, final String cell) {
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userId, "userId为空");
+						AssertUtil.notBlank(cell, "手机号为空");
+					}
+
+					@Override
+					public void executeService() {
+						// 检查手机唯一性
+						UserDO checkCell = userDAO.checkCell(userId, cell);
+						if (null != checkCell) {
+							result.setSuccess(false);
+							result.setMessage("改手机号已经注册");
+							return;
+						}
+
+						if (userDAO.updateCell(cell, userId) > 0)
+							result.setSuccess(true);
+					}
+				});
+		return result;
+	}
+
+	/**
+	 * 修改用户昵称
+	 */
+	public BaseResult updateNickName(final String userId, final String nickName) {
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userId, "userId为空");
+						AssertUtil.notBlank(nickName, "昵称为空");
+					}
+
+					@Override
+					public void executeService() {
+						if (userDAO.updateNickName(nickName, userId) > 0)
+							result.setSuccess(true);
+					}
+				});
+		return result;
+	}
+
+	/**
+	 * 修改用户性别
+	 */
+	public BaseResult updateSex(final String userId, final String sex) {
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userId, "userId为空");
+						AssertUtil.notBlank(sex, "性别为空");
+					}
+
+					@Override
+					public void executeService() {
+						if (userDAO.updateNickName(sex, userId) > 0)
+							result.setSuccess(true);
+					}
+				});
+		return result;
+	}
+
+	/**
+	 * 修改用户年龄
+	 */
+	public BaseResult updateAge(final String userId, final String age) {
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userId, "userId为空");
+						AssertUtil.notBlank(age, "年龄为空");
+					}
+
+					@Override
+					public void executeService() {
+						if (userDAO.updateAge(Integer.valueOf(age), userId) > 0)
+							result.setSuccess(true);
+					}
+				});
+		return result;
+	}
+
+	/**
+	 * 修改用户身份证号
+	 */
+	public BaseResult updateCertNo(final String userId, final String certNo) {
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userId, "userId为空");
+						AssertUtil.notBlank(certNo, "身份证号为空");
+					}
+
+					@Override
+					public void executeService() {
+						if (userDAO.updateCertNo(certNo, userId) > 0)
+							result.setSuccess(true);
+					}
+				});
+		return result;
+	}
+
+	/**
+	 * 修改用户公司名
+	 */
+	public BaseResult updateComName(final String userId, final String comName) {
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userId, "userId为空");
+						AssertUtil.notBlank(comName, "公司名称为空");
+					}
+
+					@Override
+					public void executeService() {
+						if (userDAO.updateComName(comName, userId) > 0)
+							result.setSuccess(true);
+					}
+				});
+		return result;
+	}
+
+	/**
+	 * 修改用户登录密码
+	 */
+	public BaseResult updateLoginPwd(final String userId, final String loginPwd) {
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userId, "userId为空");
+						AssertUtil.notBlank(loginPwd, "登录密码为空");
+					}
+
+					@Override
+					public void executeService() {
+						if (userDAO.updateLoginPwd(loginPwd, userId) > 0)
+							result.setSuccess(true);
+					}
+				});
+		return result;
+	}
+
+	/**
+	 * 验证手机系统唯一性
+	 */
+	public BaseResult checkCell(final String userId, final String cell) {
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(cell, "手机号为空");
+					}
+
+					@Override
+					public void executeService() {
+						if (null == userDAO.checkCell(cell, userId))
+							result.setSuccess(true);
+					}
+				});
+		return result;
+	}
+
+	// 更新用户信息
+	public BaseResult updateUserInfo(final UserInfo userInfo,
+			final String userId) {
+
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userInfo.getOpenid(), "openId为空");
+					}
+
+					@Override
+					public void executeService() {
+						UserDO userDO = UserConver
+								.buildUserDO(userInfo, userId);
+						if (userDAO.updateUserInfo(userDO) > 0) {
+							result.setSuccess(true);
+						}
+					}
+				});
+		return result;
+	}
+	
+	/**
+	 * 修改用户登录密码
+	 */
+	public BaseResult updateLoginPwdByCell(final String cell, final String loginPwd) {
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(cell, "手机号为空");
+						AssertUtil.notBlank(loginPwd, "登录密码为空");
+					}
+
+					@Override
+					public void executeService() {
+						if (userDAO.updateLoginPwdByCell(loginPwd, cell) > 0)
+							result.setSuccess(true);
+					}
+				});
+		return result;
+	}
+
+}

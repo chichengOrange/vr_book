@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_register">
+
+	<operation name="insert">
+		<sql>
+			INSERT INTO vr_register(
+				ID,
+				USER_ID,
+				TYPE,
+				GMT_CREATE
+			)VALUES(
+				?,?,?,CURRENT_TIMESTAMP
+			)
+		</sql>
+	</operation>
+	
+
+</table>

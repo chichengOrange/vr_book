@@ -1,0 +1,237 @@
+package com.onway.web.controller.mine;
+
+import java.text.MessageFormat;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.onway.common.lang.StringUtils;
+import com.onway.fyapp.common.dal.dataobject.UserDO;
+import com.onway.model.enums.SendVerifyCodeTypeEnum;
+import com.onway.model.enums.SysMsgEnum;
+import com.onway.platform.common.base.BaseResult;
+import com.onway.platform.common.base.QueryResult;
+import com.onway.platform.common.exception.BaseRuntimeException;
+import com.onway.platform.common.utils.LogUtil;
+import com.onway.utils.SysUtils;
+import com.onway.utils.des3.Des3;
+import com.onway.utils.md5.Md5Encrypt;
+import com.onway.web.controller.AbstractController;
+import com.onway.web.controller.result.JsonQueryResult;
+import com.onway.web.controller.result.JsonResult;
+import com.onway.web.controller.result.UserBaseResult;
+
+/**
+ * 
+ * <p>
+ * Title: LoginController
+ * </p>
+ * <p>
+ * Description: 登录 验证码 控制类
+ * </p>
+ * 
+ * @author yugang.ni
+ * @date 2018年7月4日 上午11:51:42
+ */
+@Controller
+public class LoginController extends AbstractController {
+
+	private static final Logger log = Logger.getLogger(LoginController.class);
+
+	/**
+	 * 用户登录
+	 * 
+	 * @param request
+	 * @param modelMap
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/userLogin.do")
+	@ResponseBody
+	public Object userLogin(HttpServletRequest request, ModelMap modelMap)
+			throws Exception {
+		String cell = "";
+		try {
+			JsonQueryResult<UserBaseResult> result = new JsonQueryResult<UserBaseResult>(
+					true, SysMsgEnum.LOGIN_SUCCESS.getCode(),
+					SysMsgEnum.LOGIN_SUCCESS.message());
+
+			cell = StringUtils.trim(request.getParameter("cell"));
+
+			String token = request.getParameter(TOKEN);
+
+			if (StringUtils.isBlank(token)) {
+				return new JsonResult(false, "",
+						SysMsgEnum.INVALID_REQUEST.message());
+			}
+
+			String loginPwd = request.getParameter("loginPwd");
+
+			String sourceLoginPwd = Des3.decode(loginPwd);
+
+			QueryResult<UserDO> userInfo = userQueryService.getUserInfo(cell);
+
+			if (!userInfo.isSuccess() || null == userInfo.getResultObject()) {
+				log.error(SysMsgEnum.INEXISTENCE.message() + cell);
+				return new JsonResult(false, SysMsgEnum.INEXISTENCE.getCode(),
+						SysMsgEnum.INEXISTENCE.message());
+			} else {
+				UserDO userDO = userInfo.getResultObject();
+				// 密码不正确
+				if (StringUtils.notEquals(userDO.getLoginPsw(),
+						Md5Encrypt.toMD5High(sourceLoginPwd))) {
+					return new JsonResult(false,
+							SysMsgEnum.ERROR_LOGIN.getCode(),
+							SysMsgEnum.ERROR_LOGIN.message());
+				}
+				// 登录成功，返回相关信息
+				UserBaseResult baseResult = new UserBaseResult();
+				baseResult.setUserId(userDO.getUserId());
+				baseResult.setOpenId(userDO.getOpenId());
+				baseResult.setCell(userDO.getCell());
+				baseResult.setUserRole(userDO.getRole());
+				result.setObj(baseResult);
+			}
+			return result;
+		} catch (BaseRuntimeException e) {
+			LogUtil.error(log, MessageFormat.format(
+					"用户登录失败，cell:{0},message:{1}",
+					new Object[] { cell, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		} catch (Exception e) {
+			LogUtil.error(log, MessageFormat.format(
+					"用户登录异常！cell:{0},message:{1}",
+					new Object[] { cell, e.getCause() }));
+			return new JsonResult(false, "", e.getMessage());
+		}
+	}
+
+	/**
+	 * 发送验证码
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/sendVerifyCode.do")
+	@ResponseBody
+	public Object sendVerifyCode(final HttpServletRequest request,
+			final HttpServletResponse response) {
+
+		String cell = request.getParameter("cell");// 登陆账号
+		String type = request.getParameter("type");// 1 注册 2忘记密码
+
+		if (!SysUtils.isPhoneLegal(cell)) {
+			return new JsonResult(false, SysMsgEnum.ERROR_CELL.getCode(),
+					SysMsgEnum.ERROR_CELL.message());
+		}
+		JsonResult result = new JsonResult(true,
+				SysMsgEnum.SEND_VERCODE_SUCCESS.getCode(),
+				SysMsgEnum.SEND_VERCODE_SUCCESS.message());
+
+		QueryResult<UserDO> userInfo = userQueryService.getUserInfo(cell);
+		// 【注册新账户】
+		if (StringUtils.equals(type, SendVerifyCodeTypeEnum.REGISTER.getCode())) {
+			// 注册新用户发送验证码 判断手机号是否已注册
+			if (userInfo.isSuccess() || null != userInfo.getResultObject()) {
+				return new JsonResult(false, SysMsgEnum.REGIST_AGAIN.getCode(),
+						SysMsgEnum.REGIST_AGAIN.message());
+			}
+		}
+		// 【忘记密码】
+		if (StringUtils.equals(type, SendVerifyCodeTypeEnum.LOSTPWD.getCode())) {
+			if (!userInfo.isSuccess() || null == userInfo.getResultObject()) {
+				return new JsonResult(false,
+						SysMsgEnum.NO_REGIST_CELL.getCode(),
+						SysMsgEnum.NO_REGIST_CELL.message());
+			}
+		}
+		BaseResult sendVerifyCode = smsComponent.sendVerifyCode(cell);
+		result.setBizSucc(sendVerifyCode.isSuccess());
+		result.setErrCode(sendVerifyCode.getCode());
+		result.setErrMsg(sendVerifyCode.getMessage());
+		return result;
+	}
+
+	/**
+	 * 修改登录密码
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/updatePwd.do")
+	@ResponseBody
+	public Object register(final HttpServletRequest request,
+			final HttpServletResponse response) {
+		String userId = request.getParameter("userId");// 用户编号
+		String newPwd = request.getParameter("newPwd");// 新密码
+		String confirmPwd = request.getParameter("confirmPwd");// 确认密码
+
+		JsonResult result = new JsonResult(true);
+
+		if (!StringUtils.equals(newPwd, confirmPwd)) {
+			return new JsonResult(false, SysMsgEnum.TWICE_PWD.getCode(),
+					SysMsgEnum.TWICE_PWD.message());
+		}
+
+		if ((newPwd.length() <= 30 && newPwd.length() >= 6)) {
+			return new JsonResult(false, SysMsgEnum.ERROR_PWD_LENGTH.getCode(),
+					SysMsgEnum.ERROR_PWD_LENGTH.message());
+		}
+
+		BaseResult baseResult = userOperationService.updateLoginPwd(userId,
+				Md5Encrypt.toMD5High(newPwd));
+		result.setBizSucc(baseResult.isSuccess());
+		result.setErrCode(baseResult.getCode());
+		result.setErrMsg(baseResult.getMessage());
+
+		return result;
+	}
+
+	/**
+	 * 忘记密码 修改密码
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/forgetPwd.do")
+	@ResponseBody
+	public Object forgetPwd(final HttpServletRequest request,
+			final HttpServletResponse response) {
+		JsonResult result = new JsonResult(true);
+
+		String cell = request.getParameter("cell");// 用户手机号码
+		String checkCode = request.getParameter("checkCode");// 验证码
+		String newPwd = request.getParameter("newPwd");// 新密码
+
+		// 校验验证码
+		BaseResult verifyCode = smsComponent.verifyCode(cell, checkCode);
+		if (!verifyCode.isSuccess()) {
+			return new JsonResult(false, verifyCode.getCode(),
+					verifyCode.getMessage());
+		}
+		// 检验新密码正确性
+		if ((newPwd.length() <= 30 && newPwd.length() >= 6)) {
+			return new JsonResult(false, SysMsgEnum.ERROR_PWD_LENGTH.getCode(),
+					SysMsgEnum.ERROR_PWD_LENGTH.message());
+		}
+
+		// 通过手机号码 修改用户密码
+		BaseResult baseResult = userOperationService.updateLoginPwdByCell(cell,
+				Md5Encrypt.toMD5High(newPwd));
+		result.setBizSucc(baseResult.isSuccess());
+		result.setErrCode(baseResult.getCode());
+		result.setErrMsg(baseResult.getMessage());
+
+		return result;
+	}
+
+}

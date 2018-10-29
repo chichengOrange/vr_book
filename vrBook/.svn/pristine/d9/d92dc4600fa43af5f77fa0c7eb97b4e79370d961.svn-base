@@ -1,0 +1,30 @@
+package com.onway.fyapp.common.dal.dataobject.returnObj;
+
+import java.io.Serializable;
+import java.util.List;
+
+public class GoodsAttrValueSingleInfo implements Serializable{
+    
+    /**  */
+    private static final long serialVersionUID = 1L;
+
+    private String attrName;
+    
+    private String values;
+    
+    
+   
+
+    public String getAttrName() {
+        return attrName;
+    }
+    public void setAttrName(String attrName) {
+        this.attrName = attrName;
+    }
+	public String getValues() {
+		return values;
+	}
+	public void setValues(String values) {
+		this.values = values;
+	}
+}

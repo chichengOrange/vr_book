@@ -1,0 +1,120 @@
+/**
+ * onway.com Inc.
+ * Copyright (c) 2016-2016 All Rights Reserved.
+ */
+package com.onway.core.service;
+
+import java.util.List;
+
+import com.onway.fyapp.common.dal.dataobject.UserDO;
+import com.onway.fyapp.common.dal.dataobject.returnObj.UserTeamResult;
+import com.onway.platform.common.base.QueryResult;
+import com.onway.web.controller.result.AccountLogResult;
+import com.onway.web.controller.result.AccountResult;
+import com.onway.web.controller.result.UserInfoResult;
+
+/**
+ * 
+* <p>Title: UserQueryService</p>  
+* <p>Description: 用户查询服务类</p>  
+* @author yugang.ni  
+* @date 2018年6月27日  下午2:05:48
+ */
+public interface UserQueryService {
+
+	/**
+	 * userId  openId 查询用户信息  
+	 * @param userId
+	 * @param openId
+	 * @return
+	 */
+	public QueryResult<UserDO> searchByUserIdOrOpenId( String userId, String openId);
+	
+	/**
+	 * 获取用户个人信息
+	 * @param userId
+	 * @return
+	 */
+	public QueryResult<UserInfoResult> getUserAllInfo( String userId);
+	
+	
+	/**
+	 * 获取用户单个信息
+	 * @param userId
+	 * @param type
+	 * @return
+	 */
+	public QueryResult<String> getUserSingleInfo( String userId, String type);
+	
+	/**
+	 * 获取用户账户信息
+	 * @param userId
+	 * @return
+	 */
+	public QueryResult<AccountResult> getUserAccountInfo( String userId, String type);
+	
+	
+	/**
+	 * 获取用户账户流水
+	 * @param userId
+	 * @return
+	 */
+	public QueryResult<List<AccountLogResult>> getUserAccountListInfo( final String userId, final String logType, final int startRow, final int pageSize);
+	
+	/**
+	 * 获取用户账户流水总数
+	 * @param userId
+	 * @param logType
+	 * @return
+	 */
+	public int getUserAccountListInfoCount( final String userId, final String logType);
+	
+	/**
+	 * 手机号查询用户信息
+	 * @param cell
+	 * @return
+	 */
+	public QueryResult<UserDO> getUserInfo( final String cell);
+	
+	/**
+	 * 查询组成员
+	 * @param userId
+	 * @return
+	 */
+	public QueryResult<List<UserTeamResult>> getUserTeamUserInfo( final String userId);
+
+	/**
+	 * 组成员总数量
+	 * @param userId
+	 * @return
+	 */
+	public int getUserTeamUserInfoCount( final String userId);
+
+	/**
+	 * 团队账户流水
+	 * @param userId
+	 * @param logType
+	 * @param startRow
+	 * @param pageSize
+	 * @return
+	 */
+	public QueryResult<List<AccountLogResult>> getUserAccountTeamInfo( final String userId, final String logType, final int startRow, final int pageSize);
+
+	/**
+	 * 团队账户流水总记录数
+	 * @param userId
+	 * @param logType
+	 * @return
+	 */
+	public int getUserAccountTeamInfoCount( final String userId, final String logType);
+	
+
+	/**
+	 * 获取团队账户信息
+	 * @param userId
+	 * @param type
+	 * @return
+	 */
+	public QueryResult<AccountResult> getTeamAccountInfo(final String userId, final String type);
+	
+}

@@ -1,0 +1,88 @@
+/**
+ * onway.com Inc.
+ * Copyright (c) 2016-2016 All Rights Reserved.
+ */
+package com.onway.core.service;
+
+import java.util.List;
+
+import com.onway.fyapp.common.dal.dataobject.AddressDO;
+import com.onway.platform.common.base.BaseResult;
+import com.onway.platform.common.base.QueryResult;
+import com.onway.web.controller.result.AddressResult;
+
+/**
+ * 
+* <p>Title: AddressService</p>  
+* <p>Description: 地址查询  操作  服务类</p>  
+* @author yugang.ni  
+* @date 2018年6月29日  下午4:24:33
+ */
+public interface AddressService {
+
+	/**
+	 * 查询用户地址列表
+	 * @param userId
+	 * @param delFlg
+	 * @param startRow
+	 * @param pageSize
+	 * @return
+	 */
+	public QueryResult<List<AddressResult>> queryAddressList( final String userId, final String delFlg, final int startRow, final int pageSize);
+	
+	/**
+	 * 地址数量
+	 * @param userId
+	 * @param delFlg
+	 * @return
+	 */
+	public int queryAddressListCount( final String userId, final String delFlg);
+	
+	
+	/**
+	 * 新增地址信息
+	 * @param addressDO
+	 * @return
+	 */
+	public BaseResult newAddress( final AddressDO addressDO);
+	
+	
+	/**
+	 * 查询地址详情
+	 * @param userId
+	 * @param addressId
+	 * @return
+	 */
+	public QueryResult<AddressResult> getAddressDetails( final String userId, final String addressId);
+	
+	
+	/**
+	 * 修改地址信息
+	 * @param addressDO
+	 * @return
+	 */
+	public BaseResult updateAddressMsg( final AddressDO addressDO);
+	
+	/**
+	 * 删除地址信息
+	 * @param addressDO
+	 * @return
+	 */
+	public BaseResult delAddressMsg( final String delFlg, final String userId, final String addressId);
+	
+	
+	/**
+	 * 设置或者取消 默认地址信息
+	 * @param addressDO
+	 * @return
+	 */
+	public BaseResult setDefaultAddress( final String isDefault, final String userId, final String addressId);
+	
+	/**
+	 * 将用户所有地址改为非默认
+	 * @param addressDO
+	 * @return
+	 */
+	public BaseResult cancleAllDefault( final String isDefault, final String userId);
+	
+}

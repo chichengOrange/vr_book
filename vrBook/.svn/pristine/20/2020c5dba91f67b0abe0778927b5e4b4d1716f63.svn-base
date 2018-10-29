@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans default-autowire="byName">
+    <!-- ======================================================================== -->
+    <!--  DAO定义。                                                               -->
+    <!-- ======================================================================== -->
+    <bean id="bookDAO" class="com.onway.fyapp.common.dal.ibatis.IbatisBookDAO" parent="sqlMapClientDAO"/>
+    <bean id="bookUserDAO" class="com.onway.fyapp.common.dal.ibatis.IbatisBookUserDAO" parent="sqlMapClientDAO"/>
+    <bean id="sequenceDAO" class="com.onway.fyapp.common.dal.ibatis.IbatisSequenceDAO" parent="sqlMapClientDAO"/>
+    <bean id="smDAO" class="com.onway.fyapp.common.dal.ibatis.IbatisSmDAO" parent="sqlMapClientDAO"/>
+    <bean id="sysConfigDAO" class="com.onway.fyapp.common.dal.ibatis.IbatisSysConfigDAO" parent="sqlMapClientDAO"/>
+    <bean id="userDAO" class="com.onway.fyapp.common.dal.ibatis.IbatisUserDAO" parent="sqlMapClientDAO"/>
+
+	<!--
+   <bean id="extraDAO" class="com.yylc.settlecore.common.dal.ibatis.IbatisExtraDAO" parent="sqlMapClientDAO"/>
+   -->
+</beans>

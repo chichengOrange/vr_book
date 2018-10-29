@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_ad">
+
+	
+	<!-- 查询最新广告 -->
+	<operation name="queryAd">
+		<extraparams>
+			<param name="status" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+		    SELECT
+				*
+			FROM vr_ad
+		</sql>
+		<sqlmap>
+			SELECT
+				ID,
+				AD_TITLE,
+				AD_DESC,
+				AD_POSTER,
+				AD_CONTENT,
+				AD_DAY,
+				AD_TYPE,
+				STATUS,
+				GMT_CREATE,
+				GMT_MODIFIED
+			FROM vr_ad
+			WHERE 1=1
+			<isNotEmpty property="status" prepend="and">
+					STATUS = #status#
+			</isNotEmpty>
+			ORDER BY GMT_MODIFIED DESC
+			LIMIT 0,1
+		</sqlmap>
+	</operation>
+</table>

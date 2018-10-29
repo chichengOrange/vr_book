@@ -1,0 +1,94 @@
+package com.onway.fyapp.common.dal.dataobject.returnObj;
+
+/**
+ * 
+ * @author lishuaikai
+ * @Description 收藏	
+ * @data 2018年7月4日 上午11:41:56
+ */
+public class CollectInfo {
+
+	private String userId;
+	
+	private String collectId;
+	
+	private String collectType;
+	
+	private String productName;
+	
+	private String productPrice;
+	
+	private String teamName;
+	
+	private String image;
+	
+	private String createTime;
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+
+	public String getCollectId() {
+		return collectId;
+	}
+
+	public void setCollectId(String collectId) {
+		this.collectId = collectId;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public String getProductPrice() {
+		return productPrice;
+	}
+
+	public void setProductPrice(String productPrice) {
+		this.productPrice = productPrice;
+	}
+
+	
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public String getCollectType() {
+		return collectType;
+	}
+
+	public void setCollectType(String collectType) {
+		this.collectType = collectType;
+	}
+
+	public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getTeamName() {
+		return teamName;
+	}
+
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
+	}
+	
+	
+}

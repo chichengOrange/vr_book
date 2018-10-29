@@ -1,0 +1,55 @@
+/**
+ * 
+ */
+package com.onway.core.service.impl;
+
+import java.util.List;
+
+import com.onway.core.service.OrderQueryService;
+import com.onway.fyapp.common.dal.daointerface.OrderDAO;
+import com.onway.fyapp.common.dal.dataobject.OrderDO;
+import com.onway.platform.common.base.QueryResult;
+import com.onway.platform.common.service.template.AbstractServiceImpl;
+import com.onway.platform.common.service.template.ServiceCheckCallback;
+import com.onway.web.controller.result.OrderListResult;
+
+
+public class OrderQueryServiceImpl extends AbstractServiceImpl implements OrderQueryService {
+
+	private OrderDAO orderDAO;
+	
+	public void setOrderDAO(OrderDAO orderDAO) {
+		this.orderDAO = orderDAO;
+	}
+	
+	/**
+	 * 获取订单列表信息
+	 */
+	public QueryResult<OrderListResult> queryUserOrderList( final String userId, final String payStatus, final String orderStatus, final int startRow, final int pageSize){
+		final QueryResult<OrderListResult> result = new QueryResult<OrderListResult>(false);
+		serviceTemplate.executeWithoutTransaction(result, new ServiceCheckCallback() {
+
+            @Override
+            public void check() {
+            }
+
+            @Override
+            public void executeService() {
+            	List<OrderDO> orderList = orderDAO.searchByUserIdAndStatus(userId, payStatus, orderStatus, startRow, pageSize);
+            	
+            	OrderListResult orderListResult = new OrderListResult();
+            	result.setSuccess(true);
+            	result.setResultObject(orderListResult);
+            }
+        });
+		return result;
+	}
+	
+	/**
+	 * 获取订单总数
+	 */
+	public int queryUserOrderListCount( final String userId, final String payStatus, final String orderStatus){
+		return orderDAO.searchByUserIdAndStatusCount(userId, payStatus, orderStatus);
+	}
+
+}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_sms_log">
+
+	<operation name="insert">
+		<sql>
+			INSERT INTO vr_sms_log(
+				ID,
+				USER_ID,
+				IMEI,
+				CELL,
+				INTERFACES,
+				GMT_CREATE
+
+			)VALUES(
+				?,?,?,?,?,CURRENT_TIMESTAMP
+			)
+		</sql>
+	</operation>
+	
+
+</table>

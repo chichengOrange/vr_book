@@ -1,0 +1,107 @@
+/**
+ * 
+ */
+package com.onway.core.service.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.onway.common.lang.StringUtils;
+import com.onway.core.service.ReduceQueryService;
+import com.onway.fyapp.common.dal.daointerface.ReduceDAO;
+import com.onway.fyapp.common.dal.daointerface.TeamDAO;
+import com.onway.fyapp.common.dal.dataobject.ReduceDO;
+import com.onway.fyapp.common.dal.dataobject.TeamDO;
+import com.onway.model.conver.ReduceConver;
+import com.onway.platform.common.base.QueryResult;
+import com.onway.platform.common.service.template.AbstractServiceImpl;
+import com.onway.platform.common.service.template.ServiceCheckCallback;
+import com.onway.platform.common.service.util.AssertUtil;
+import com.onway.web.controller.result.ReduceResult;
+
+public class ReduceQueryServiceImpl extends AbstractServiceImpl implements
+		ReduceQueryService {
+
+	private ReduceDAO reduceDAO;
+
+	private TeamDAO teamDAO;
+	
+	public void setReduceDAO(ReduceDAO reduceDAO) {
+		this.reduceDAO = reduceDAO;
+	}
+
+	public void setTeamDAO(TeamDAO teamDAO) {
+		this.teamDAO = teamDAO;
+	}
+
+	public QueryResult<List<ReduceResult>> queryReduce(final String type,
+			final Date today, final String delFlg, final int startRow,
+			final int pageSize) {
+		final QueryResult<List<ReduceResult>> result = new QueryResult<List<ReduceResult>>(
+				false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+
+					}
+
+					@Override
+					public void executeService() {
+						List<ReduceDO> queryReduce = reduceDAO.queryReduce(
+								type, today, delFlg, startRow, pageSize);
+						List<ReduceResult> reduceResults = new ArrayList<ReduceResult>();
+						for (ReduceDO reduceDO : queryReduce) {
+							ReduceResult buildReduceListResult = ReduceConver
+									.buildReduceListResult(reduceDO);
+							if (null != buildReduceListResult)
+								reduceResults.add(buildReduceListResult);
+						}
+						result.setSuccess(true);
+						result.setResultObject(reduceResults);
+					}
+				});
+		return result;
+	}
+
+	public int queryReduceCount(final String type, final Date today,
+			final String delFlg) {
+
+		return reduceDAO.queryReduceCount(type, today, delFlg);
+	}
+
+	public QueryResult<ReduceResult> queryReduceDetails(final String reduceId) {
+
+		final QueryResult<ReduceResult> result = new QueryResult<ReduceResult>(
+				false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(reduceId, "È¯±àºÅÎª¿Õ");
+					}
+
+					@Override
+					public void executeService() {
+						ReduceDO reduceDO = reduceDAO
+								.queryReduceDetails(Integer.valueOf(reduceId));
+						if (null != reduceDO) {
+							TeamDO teamDO = null;
+							if (StringUtils.isNotBlank(reduceDO.getTeamId())) {
+								teamDO = teamDAO.queryTeamByTeamId(reduceDO.getTeamId());
+							}
+							// ·â×°
+							ReduceResult reduceResult = ReduceConver
+									.buildReduceDetailResult(reduceDO,
+											teamDO);
+							result.setSuccess(true);
+							result.setResultObject(reduceResult);
+						}
+					}
+				});
+		return result;
+	}
+}

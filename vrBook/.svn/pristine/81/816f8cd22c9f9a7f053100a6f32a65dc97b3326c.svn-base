@@ -1,0 +1,44 @@
+run_mode=DEV
+app_name=fyapp
+
+logging_root=/home/logs/fyapp
+sys_loggingLevel=INFO
+sys_loggingLevel_info=INFO
+sys_logging_encoding=UTF-8
+sys_logging_bug=debug
+
+# templates
+distribution_templates=..\\htdocs\\vm
+
+# service_url
+
+#file upload_path_test
+user_img_path= http://jzsc8888.com/image/
+#user_img_upload_realpath = /usr/local/tomcat_0/webapps/fyappimage/
+#D:/Java/tomcat_nyh/tomcat8083/wtpwebapps/jiume/WEB-INF/classes/htdocs/templates/img/
+user_img_upload_realpath =/usr/local/tomcat8083/webapps/image/
+#user_img_upload_realpath =D:/Java/tomcat_nyh/tomcat8083/wtpwebapps/jiume/WEB-INF/classes/htdocs/templates/img/
+
+head_url_file=D:/Java/tomcat_nyh/tomcat8105/webapps/headImage/
+head_url_path=http://192.168.0.105:8015/headImage/
+
+
+fyapp_image_file=E:/
+
+
+upload_realpath= D:/apache-tomcat-7.0.78/webapps/image
+visit_url = http://localhost:8080/image
+
+#msgSend
+dl.account=hzts
+dl.pswd=hzts0709
+dl.url=http://m.5c.com.cn/api/send/index.php
+dl.appkey=b6cf014eb95b754ae21d572cd81b928e
+
+# share data 
+cert_img_file_path = /tmp/nfs/fyapp/nciic
+
+##
+fx_server_url =http://tkb.puyueinfo.cn/fyapp/
+fx_app_id = wx5cae60e6af155c85
+

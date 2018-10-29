@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_book">
+	<column name="PRICE" javatype="com.onway.common.lang.Money" />
+	<!-- 搜索书籍 -->
+	<operation name="queryBook" multiplicity="many">
+		<extraparams>
+			<param name="searchValue" javatype="java.lang.String"/>
+			<param name="type" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			SELECT * FROM vr_book
+		</sql>
+		<sqlmap>
+			<![CDATA[
+				SELECT
+					ID,
+					BOOK_ID,
+					BOOK_NAME,
+					BOOK_IMG,
+					BOOK_AUTHOR,
+					BOOK_PUBLISH,
+					BOOK_SIZE,
+					BOOK_HEAT,
+					NOW_NETWORK,
+					DOWNLOAD_URL,
+					DOWNLOAD_COUNT,
+					CAN_DOWNLOAD,
+					SORT,
+					PRICE,
+					DISTRIBUTOR,
+					GMT_CREATE,
+					GMT_MODIFIED
+				FROM vr_book
+				WHERE 1=1
+				<isEqual property="type" compareValue="book">
+					AND BOOK_NAME like '%$searchValue$%'
+				</isEqual>
+				<isEqual property="type" compareValue="press">
+					AND BOOK_PUBLISH like '%$searchValue$%'
+				</isEqual>
+				
+			]]>
+		</sqlmap>
+	</operation>
+	
+	<!-- 根据书籍id查询 -->
+	<operation name="queryBookById">
+		<sql>
+		    SELECT
+				ID,
+				BOOK_ID,
+				BOOK_NAME,
+				BOOK_IMG,
+				BOOK_AUTHOR,
+				BOOK_PUBLISH,
+				BOOK_SIZE,
+				BOOK_HEAT,
+				NOW_NETWORK,
+				DOWNLOAD_URL,
+				DOWNLOAD_COUNT,
+				CAN_DOWNLOAD,
+				SORT,
+				PRICE,
+				DISTRIBUTOR,
+				GMT_CREATE,
+				GMT_MODIFIED
+			FROM vr_book
+			WHERE BOOK_ID = ?
+		</sql>
+	</operation>
+	
+	<!-- 根据书籍id查询 -->
+	<operation name="updateDownCount">
+		<sql>
+		    update vr_book set DOWNLOAD_COUNT = DOWNLOAD_COUNT + 1
+			WHERE BOOK_ID = ?
+		</sql>
+	</operation>
+	
+	<!-- 推荐书籍-->
+	<operation name="recommendBook" multiplicity="many">
+		<extraparams>
+			<param name="offset" javatype="int"/>
+			<param name="limit" javatype="int"/>
+		</extraparams>
+		<sql>
+		    SELECT * FROM vr_book
+
+		</sql>
+		<sqlmap>
+			SELECT
+				ID,
+				BOOK_ID,
+				BOOK_NAME,
+				BOOK_IMG,
+				BOOK_AUTHOR,
+				BOOK_PUBLISH,
+				BOOK_SIZE,
+				BOOK_HEAT,
+				NOW_NETWORK,
+				DOWNLOAD_URL,
+				DOWNLOAD_COUNT,
+				CAN_DOWNLOAD,
+				SORT,
+				PRICE,
+				DISTRIBUTOR,
+				GMT_CREATE,
+				GMT_MODIFIED
+			FROM vr_book
+			ORDER BY SORT DESC
+			LIMIT #offset#,#limit#
+		</sqlmap>
+	</operation>
+	
+	<!-- count 供分页查询使用 -->
+	<operation name="bookCount" resultClass="int">
+		<sql>
+		    SELECT
+				COUNT(1)
+			FROM vr_book
+		</sql>
+	</operation>
+</table>

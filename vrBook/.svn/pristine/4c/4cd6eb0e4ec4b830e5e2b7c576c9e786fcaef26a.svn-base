@@ -1,0 +1,144 @@
+/**
+ * onway.com Inc.
+ * Copyright (c) 2013-2013 All Rights Reserved.
+ */
+package com.onway.web.controller.home;
+
+import java.text.MessageFormat;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.onway.model.enums.DelFlgEnum;
+import com.onway.model.enums.ReduceTypeEnum;
+import com.onway.platform.common.base.QueryResult;
+import com.onway.platform.common.exception.BaseRuntimeException;
+import com.onway.platform.common.utils.LogUtil;
+import com.onway.utils.DateUtil;
+import com.onway.web.controller.AbstractController;
+import com.onway.web.controller.result.JsonPageResult;
+import com.onway.web.controller.result.JsonQueryResult;
+import com.onway.web.controller.result.JsonResult;
+import com.onway.web.controller.result.ReduceResult;
+
+/**
+ * 
+* <p>Title: ReduceController</p>  
+* <p>Description: 优惠券 代金券</p>  
+* @author yugang.ni  
+* @date 2018年6月28日  上午11:50:49
+ */
+@Controller
+public class ReduceController extends AbstractController {
+	
+	private static final Logger log = Logger.getLogger(ReduceController.class);
+
+	/**
+	 * 首页代金券查询
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/voucherQueryHome.do")
+	@ResponseBody
+	public Object voucherQueryHome(HttpServletRequest request){
+		
+		JsonQueryResult<ReduceResult> result = new JsonQueryResult<ReduceResult>(
+				false);
+		try {
+			
+			QueryResult<List<ReduceResult>> queryReduce = reduceQueryService.queryReduce(ReduceTypeEnum.VOUCHER.getCode(), DateUtil.getToday(), DelFlgEnum.NOT_DEL.getCode(), 0, 1);
+			
+			result.setBizSucc(queryReduce.isSuccess());
+			result.setObj(queryReduce.getResultObject().get(0));
+		} catch (BaseRuntimeException e) {
+			LogUtil.error(log, MessageFormat.format(
+					"首页代金券查询失败，message:{0}", new Object[] {e.getMessage()}));
+			return new JsonResult(false, "", e.getMessage());
+		} catch (Exception e) {
+			LogUtil.error(log, MessageFormat.format(
+					"首页代金券查询异常！message:{0}", new Object[] {e.getMessage()}));
+			return new JsonResult(false, "", e.getMessage());
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * 代金券列表查询
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/voucherQuery.do")
+	@ResponseBody
+	public Object voucherQuery(HttpServletRequest request){
+		
+		int pageSize = adjustPageSize(request);
+		int pageNum = adjustPageNo(request);
+		
+		JsonPageResult<ReduceResult> jsonPageResult = new JsonPageResult<ReduceResult>(
+				false);
+		try {
+
+			Integer startRow = (pageNum - 1) * pageSize;
+			Date today = DateUtil.getToday();
+			
+			QueryResult<List<ReduceResult>> queryReduce = reduceQueryService.queryReduce(ReduceTypeEnum.VOUCHER.getCode(), today, DelFlgEnum.NOT_DEL.getCode(), startRow, pageSize);
+			
+			int count = reduceQueryService.queryReduceCount(ReduceTypeEnum.VOUCHER.getCode(), today, DelFlgEnum.NOT_DEL.getCode());
+
+			// 【2】分页判断
+			jsonPageResult.setNext(count > pageSize * pageNum ? true : false);
+			jsonPageResult.setTotalPages(calculatePage(count, pageSize));
+			jsonPageResult.setListObject(queryReduce.getResultObject());
+			jsonPageResult.setPageNum(pageNum);
+			jsonPageResult.setBizSucc(queryReduce.isSuccess());
+			
+		} catch (BaseRuntimeException e) {
+			LogUtil.error(log, MessageFormat.format(
+					"代金券列表查询失败，message:{0}", new Object[] { e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		} catch (Exception e) {
+			LogUtil.error(log, MessageFormat.format(
+					"代金券列表查询异常！message:{0}", new Object[] { e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		}
+		return jsonPageResult;
+	}
+
+	/**
+	 * 代金券查询详情
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/voucherQueryDetails.do")
+	@ResponseBody
+	public Object voucherQueryDetails(HttpServletRequest request){
+		
+		String reduceId = "";
+		JsonQueryResult<ReduceResult> result = new JsonQueryResult<ReduceResult>(
+				false);
+		try {
+			reduceId = request.getParameter("reduceId");
+			
+			QueryResult<ReduceResult> queryReduceDetails = reduceQueryService.queryReduceDetails(reduceId);
+			
+			result.setBizSucc(queryReduceDetails.isSuccess());
+			result.setObj(queryReduceDetails.getResultObject());
+		} catch (BaseRuntimeException e) {
+			LogUtil.error(log, MessageFormat.format(
+					"代金券查询详情失败，reduceId{0},message:{1}", new Object[] { reduceId, e.getMessage()}));
+			return new JsonResult(false, "", e.getMessage());
+		} catch (Exception e) {
+			LogUtil.error(log, MessageFormat.format(
+					"代金券查询详情异常！reduceId{0},message:{1}", new Object[] { reduceId, e.getMessage()}));
+			return new JsonResult(false, "", e.getMessage());
+		}
+		return result;
+	}
+}

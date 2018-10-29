@@ -1,0 +1,171 @@
+/**
+ * 
+ */
+package com.onway.core.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.onway.common.lang.StringUtils;
+import com.onway.core.service.KnowledgeQueryService;
+import com.onway.fyapp.common.dal.daointerface.KnowledgeCommentDAO;
+import com.onway.fyapp.common.dal.daointerface.KnowledgeDAO;
+import com.onway.fyapp.common.dal.daointerface.KnowledgeLikeDAO;
+import com.onway.fyapp.common.dal.dataobject.KnowledgeDO;
+import com.onway.fyapp.common.dal.dataobject.returnObj.KnowCommentResult;
+import com.onway.model.conver.KnowledgeConver;
+import com.onway.platform.common.base.BaseResult;
+import com.onway.platform.common.base.QueryResult;
+import com.onway.platform.common.service.template.AbstractServiceImpl;
+import com.onway.platform.common.service.template.ServiceCheckCallback;
+import com.onway.platform.common.service.util.AssertUtil;
+import com.onway.utils.DateUtil;
+import com.onway.utils.emoji.EmojiUtil;
+import com.onway.web.controller.result.KnowledgeResult;
+
+public class KnowledgeQueryServiceImpl extends AbstractServiceImpl implements
+		KnowledgeQueryService {
+
+	private KnowledgeDAO knowledgeDAO;
+	
+	private KnowledgeCommentDAO knowledgeCommentDAO;
+	
+	private KnowledgeLikeDAO knowledgeLikeDAO;
+
+	public void setKnowledgeDAO(KnowledgeDAO knowledgeDAO) {
+		this.knowledgeDAO = knowledgeDAO;
+	}
+	
+	public void setKnowledgeCommentDAO(KnowledgeCommentDAO knowledgeCommentDAO) {
+		this.knowledgeCommentDAO = knowledgeCommentDAO;
+	}
+
+	public void setKnowledgeLikeDAO(KnowledgeLikeDAO knowledgeLikeDAO) {
+		this.knowledgeLikeDAO = knowledgeLikeDAO;
+	}
+
+	
+	public QueryResult<List<KnowledgeResult>> queryKnowledge(final String type,
+			final String delFlg, final int startRow, final int pageSize) {
+		final QueryResult<List<KnowledgeResult>> result = new QueryResult<List<KnowledgeResult>>(
+				false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+
+						AssertUtil.notBlank(delFlg, "删除标识为空");
+					}
+
+					@Override
+					public void executeService() {
+						List<KnowledgeDO> queryKnowledge = knowledgeDAO
+								.queryKnowledge(type, delFlg, startRow,
+										pageSize);
+
+						List<KnowledgeResult> knowledgeResults = new ArrayList<KnowledgeResult>();
+						for (KnowledgeDO knowledgeDO : queryKnowledge) {
+							KnowledgeResult buildKnowledgeListResult = KnowledgeConver
+									.buildKnowledgeListResult(knowledgeDO);
+							if (null != buildKnowledgeListResult)
+								knowledgeResults.add(buildKnowledgeListResult);
+						}
+						result.setSuccess(true);
+						result.setResultObject(knowledgeResults);
+					}
+				});
+		return result;
+	}
+
+	public int queryKnowledgeCount(final String type, final String delFlg) {
+
+		return knowledgeDAO.queryKnowledgeCount(type, delFlg);
+	}
+ 
+	public QueryResult<KnowledgeResult> queryKnowledgeDetails(
+			final String knowId) {
+
+		final QueryResult<KnowledgeResult> result = new QueryResult<KnowledgeResult>(
+				false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(knowId, "编号为空");
+					}
+
+					@Override
+					public void executeService() {
+						KnowledgeDO knowledgeDO = knowledgeDAO
+								.queryKnowledgeDetails(knowId);
+
+						KnowledgeResult knowledgeResult = KnowledgeConver
+								.buildKnowledgeDetailResult(knowledgeDO);
+
+						result.setSuccess(true);
+						result.setResultObject(knowledgeResult);
+					}
+				});
+		return result;
+	}
+	
+	/**
+	 * 查询评论列表
+	 */
+	public QueryResult<List<KnowCommentResult>> queryKnowledgeCommnet(final String knowId, final int startRow, final int pageSize) {
+		final QueryResult<List<KnowCommentResult>> result = new QueryResult<List<KnowCommentResult>>(
+				false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(knowId, "编号为空");
+					}
+
+					@Override
+					public void executeService() {
+						List<KnowCommentResult> queryKnowledgeCommnetList = knowledgeCommentDAO.queryKnowledgeCommnetList(knowId, startRow, pageSize);
+						for (KnowCommentResult knowCommentResult : queryKnowledgeCommnetList) {
+							knowCommentResult.setDateStr(DateUtil.dateToString(knowCommentResult.getDate(), DateUtil.webFormat));
+							knowCommentResult.setCommentWord(EmojiUtil.emojiRecovery2(knowCommentResult.getCommentWord()));
+						}
+						result.setSuccess(true);
+						result.setResultObject(queryKnowledgeCommnetList);
+					}
+				});
+		return result;
+	}
+
+	public int queryKnowledgeCommnetCount(final String knowId) {
+		if(StringUtils.isBlank(knowId))
+			return 0;
+		return knowledgeCommentDAO.queryKnowledgeCommnetListCount(knowId);
+	}
+	
+	/**
+	 * 判断是否点过赞
+	 */
+	public BaseResult checkZanOrNot(final String knowId, final String userId) {
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(knowId, "编号为空");
+						AssertUtil.notBlank(userId, "用户未登录");
+					}
+
+					@Override
+					public void executeService() {
+						if(null != knowledgeLikeDAO.checkLike(userId, knowId)){
+							result.setSuccess(true);
+						}
+					}
+				});
+		return result;
+	}
+}

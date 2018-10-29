@@ -1,0 +1,27 @@
+/**
+ * onway.com Inc.
+ * Copyright (c) 2016-2016 All Rights Reserved.
+ */
+package com.onway.core.service;
+
+import com.onway.platform.common.base.BaseResult;
+
+/**
+ * 
+* <p>Title: OptionOperationService</p>  
+* <p>Description: 意见反馈  操作服务类</p>  
+* @author yugang.ni  
+* @date 2018年6月28日  下午4:08:54
+ */
+public interface OptionOperationService {
+	
+	/**
+	 * 新增反馈
+	 * @param userId
+	 * @param title
+	 * @param content
+	 * @return
+	 */
+	public BaseResult newOption( final String userId, final String title, final String content);
+	
+}

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_book_handle">
+
+	<operation name="insert">
+		<sql>
+			INSERT INTO vr_book_handle(
+				ID,
+				USER_ID,
+				BOOK_ID,
+				TYPE,
+				HAND_COUNT,
+				GMT_CREATE,
+				GMT_MODIFIED
+
+			)VALUES(
+				?,?,?,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP
+			)
+		</sql>
+	</operation>
+	
+	<operation name="updateByUserId">
+		<sql>
+
+				UPDATE vr_book_handle SET 
+				GMT_MODIFIED = CURRENT_TIMESTAMP,
+				HAND_COUNT = HAND_COUNT + 1
+				WHERE USER_ID = ? AND BOOK_ID = ? AND TYPE = ?
+					
+		</sql>
+	</operation>
+
+	<operation name="queryByUserIdAndBookIdAndType">
+		<sql>
+			SELECT 
+			ID,
+			USER_ID,
+			BOOK_ID,
+			TYPE,
+			HAND_COUNT,
+			GMT_CREATE,
+			GMT_MODIFIED
+			FROM vr_book_handle
+			WHERE USER_ID = ? AND BOOK_ID = ? AND TYPE = ?
+		</sql>
+	</operation>
+</table>

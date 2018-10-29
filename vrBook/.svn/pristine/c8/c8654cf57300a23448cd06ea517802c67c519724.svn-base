@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_user">
+
+    <!-- 插入用户 -->
+	<operation name="insertUser">
+		<sql>
+			INSERT INTO vr_user (
+				ID,
+				USER_ID,
+				USER_NAME,
+				OPEN_ID,
+				HEAD_URL,
+				CELL,
+				PSW,
+				PROVINCE,
+				CITY,
+				AREA,
+				STATUS,
+				STUDENT_NO,
+				GMT_CREATE,
+				GMT_MODIFIED
+			)VALUES(
+				?,?,?,
+				?,?,?,
+				?,?,?,
+				?,?,?,
+				CURRENT_TIMESTAMP,
+				CURRENT_TIMESTAMP
+			)
+		</sql>
+	</operation>
+
+	<!-- 用户登录 -->
+	<operation name="userLogin">
+		<extraparams>
+			<param name="account" javatype="java.lang.String"/>
+			<param name="passWord" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+			SELECT * FROM vr_user
+		</sql>
+		<sqlmap>
+			<![CDATA[
+				SELECT
+					ID,
+					USER_ID,
+					USER_NAME,
+					OPEN_ID,
+					HEAD_URL,
+					CELL,
+					PSW,
+					PROVINCE,
+					CITY,
+					AREA,
+					STATUS,
+					STUDENT_NO,
+					GMT_CREATE,
+					GMT_MODIFIED
+				FROM vr_user
+				WHERE 1=1
+				<isNotEmpty property="account" prepend="or">
+					CELL = #account#
+				</isNotEmpty>
+				<isNotEmpty property="account" prepend="or">
+					USER_NAME = #account#
+				</isNotEmpty>
+				<isNotEmpty property="account" prepend="or">
+					STUDENT_NO = #account#
+				</isNotEmpty>
+				<isNotEmpty property="passWord" prepend="and">
+					PSW = #passWord#
+				</isNotEmpty>
+				
+			]]>
+		</sqlmap>
+	</operation>
+	
+	<!-- 通过手机号查询用户 -->
+	<operation name="selectUserByCell">
+		<sql>
+			SELECT
+				ID,
+				USER_ID,
+				USER_NAME,
+				OPEN_ID,
+				HEAD_URL,
+				CELL,
+				PSW,
+				PROVINCE,
+				CITY,
+				AREA,
+				STATUS,
+				STUDENT_NO,
+				GMT_CREATE,
+				GMT_MODIFIED
+			FROM vr_user
+			WHERE 1=1 AND CELL=?
+		</sql>
+	</operation>
+	
+	<!-- 通过userid查询用户 -->
+	<operation name="selectUserByUserId">
+		<sql>
+			SELECT
+				ID,
+				USER_ID,
+				USER_NAME,
+				OPEN_ID,
+				HEAD_URL,
+				CELL,
+				PSW,
+				PROVINCE,
+				CITY,
+				AREA,
+				STATUS,
+				STUDENT_NO,
+				GMT_CREATE,
+				GMT_MODIFIED
+			FROM vr_user
+			WHERE 1=1 AND USER_ID=?
+		</sql>
+	</operation>
+	
+	<operation name="updatePswByCell">
+		<sql>
+			UPDATE vr_user SET PSW=? WHERE CELL=?
+		</sql>
+	</operation>
+	
+</table>

@@ -1,0 +1,251 @@
+/**
+ * onway.com Inc.
+ * Copyright (c) 2013-2013 All Rights Reserved.
+ */
+package com.onway.web.controller.home;
+
+import java.text.MessageFormat;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.onway.common.lang.StringUtils;
+import com.onway.fyapp.common.dal.dataobject.returnObj.KnowCommentResult;
+import com.onway.model.enums.DelFlgEnum;
+import com.onway.platform.common.base.BaseResult;
+import com.onway.platform.common.base.QueryResult;
+import com.onway.platform.common.exception.BaseRuntimeException;
+import com.onway.platform.common.utils.LogUtil;
+import com.onway.web.controller.AbstractController;
+import com.onway.web.controller.result.JsonPageResult;
+import com.onway.web.controller.result.JsonQueryResult;
+import com.onway.web.controller.result.JsonResult;
+import com.onway.web.controller.result.KnowledgeResult;
+
+/**
+ * 
+* <p>Title: KnowledgeController</p>  
+* <p>Description: 养生知识/新闻公告</p>  
+* @author yugang.ni  
+* @date 2018年6月28日  下午4:34:41
+ */
+@Controller
+public class KnowledgeController extends AbstractController {
+	
+	private static final Logger log = Logger.getLogger(KnowledgeController.class);
+	
+	/**
+	 * 养生知识/新闻公告查询
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/knowledgeQuery.do")
+	@ResponseBody
+	public Object knowledgeQuery(HttpServletRequest request){
+		
+		String type = "";
+		
+		int pageSize = adjustPageSize(request);
+		int pageNum = adjustPageNo(request);
+		
+		JsonPageResult<KnowledgeResult> jsonPageResult = new JsonPageResult<KnowledgeResult>(
+				false);
+		try {
+			type = request.getParameter("type");
+
+			Integer startRow = (pageNum - 1) * pageSize;
+			
+			QueryResult<List<KnowledgeResult>> queryKnowledge = knowledgeQueryService.queryKnowledge(type, DelFlgEnum.NOT_DEL.getCode(), startRow, pageSize);
+			
+			int count = knowledgeQueryService.queryKnowledgeCount(type, DelFlgEnum.NOT_DEL.getCode());
+
+			// 【2】分页判断
+			jsonPageResult.setNext(count > pageSize * pageNum ? true : false);
+			jsonPageResult.setTotalPages(calculatePage(count, pageSize));
+			jsonPageResult.setListObject(queryKnowledge.getResultObject());
+			jsonPageResult.setPageNum(pageNum);
+			jsonPageResult.setBizSucc(queryKnowledge.isSuccess());
+			
+		} catch (BaseRuntimeException e) {
+			LogUtil.error(log, MessageFormat.format(
+					"养生知识/新闻公告查询失败，message:{0}", new Object[] { e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		} catch (Exception e) {
+			LogUtil.error(log, MessageFormat.format(
+					"养生知识/新闻公告查询异常！message:{0}", new Object[] { e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		}
+		return jsonPageResult;
+	}
+
+	/**
+	 * 养生知识/新闻公告详情
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/knowledgeDetailsQuery.do")
+	@ResponseBody
+	public Object knowledgeDetailsQuery(HttpServletRequest request){
+		
+		String knowId = "";
+		String userId = "";
+		
+		JsonQueryResult<KnowledgeResult> result = new JsonQueryResult<KnowledgeResult>(
+				false);
+		try {
+			knowId = request.getParameter("knowId");
+			userId = request.getParameter("userId");
+			
+			QueryResult<KnowledgeResult> queryKnowledgeDetails = knowledgeQueryService.queryKnowledgeDetails(knowId);
+			
+			BaseResult baseResult = knowledgeQueryService.checkZanOrNot(knowId, userId);
+			if(baseResult.isSuccess())
+				queryKnowledgeDetails.getResultObject().setZanOrNot(true);
+			
+			result.setBizSucc(queryKnowledgeDetails.isSuccess());
+			result.setObj(queryKnowledgeDetails.getResultObject());
+
+		} catch (BaseRuntimeException e) {
+			LogUtil.error(log, MessageFormat.format(
+					"养生知识/新闻公告详情查询失败，knowId:{0},message:{1}", new Object[] {
+							knowId, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		} catch (Exception e) {
+			LogUtil.error(log, MessageFormat.format(
+					"养生知识/新闻公告详情查询异常！knowId:{0},message:{1}", new Object[] {
+							knowId, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		}
+		return result;
+	}
+	
+	/**
+	 * 养生知识/新闻公告评论 列表
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/knowledgeCommentQuery.do")
+	@ResponseBody
+	public Object knowledgeCommentQuery(HttpServletRequest request){
+		
+		String knowId = "";
+		
+		int pageSize = adjustPageSize(request);
+		int pageNum = adjustPageNo(request);
+		
+		JsonPageResult<KnowCommentResult> jsonPageResult = new JsonPageResult<KnowCommentResult>(
+				false);
+		try {
+			knowId = request.getParameter("knowId");
+
+			Integer startRow = (pageNum - 1) * pageSize;
+			
+			QueryResult<List<KnowCommentResult>> queryKnowledgeCommnet = knowledgeQueryService.queryKnowledgeCommnet(knowId, startRow, pageSize);
+			
+			int count = knowledgeQueryService.queryKnowledgeCommnetCount(knowId);
+
+			// 【2】分页判断
+			jsonPageResult.setNext(count > pageSize * pageNum ? true : false);
+			jsonPageResult.setTotalPages(calculatePage(count, pageSize));
+			jsonPageResult.setListObject(queryKnowledgeCommnet.getResultObject());
+			jsonPageResult.setPageNum(pageNum);
+			jsonPageResult.setBizSucc(queryKnowledgeCommnet.isSuccess());
+			
+		} catch (BaseRuntimeException e) {
+			LogUtil.error(log, MessageFormat.format(
+					"养生知识/新闻公告评论查询失败，message:{0}", new Object[] { e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		} catch (Exception e) {
+			LogUtil.error(log, MessageFormat.format(
+					"养生知识/新闻公告评论查询异常！message:{0}", new Object[] { e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		}
+		return jsonPageResult;
+	}
+	
+	/**
+	 * 赞 操作
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/knowledgeZan.do")
+	@ResponseBody
+	public Object knowledgeZan(HttpServletRequest request){
+		
+		String knowId = "";
+		String userId = "";
+		String type = "";//0 点赞  1取消赞
+		
+		JsonResult result = new JsonResult(false);
+		try {
+			knowId = request.getParameter("knowId");
+			userId = request.getParameter("userId");
+			type = request.getParameter("type");
+			BaseResult addLike = new BaseResult(false);
+			if(StringUtils.equals(type, "0")){
+				addLike = knowledgeOperationService.addLike(knowId, userId);
+			}
+			if(StringUtils.equals(type, "1")){
+				addLike = knowledgeOperationService.cancleLike(knowId, userId);
+			}
+			result.setBizSucc(addLike.isSuccess());
+			result.setErrMsg(addLike.getMessage());
+		} catch (BaseRuntimeException e) {
+			LogUtil.error(log, MessageFormat.format(
+					"养生知识/新闻公告赞操作失败，knowId:{0},message:{1},type{2}", new Object[] {
+							knowId, e.getMessage() ,type}));
+			return new JsonResult(false, "", e.getMessage());
+		} catch (Exception e) {
+			LogUtil.error(log, MessageFormat.format(
+					"养生知识/新闻公告赞操作异常！knowId:{0},message:{1}", new Object[] {
+							knowId, e.getMessage() ,type}));
+			return new JsonResult(false, "", e.getMessage());
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * 评论 操作
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/knowledgeCommnet.do")
+	@ResponseBody
+	public Object knowledgeCommnet(HttpServletRequest request){
+		
+		String knowId = "";
+		String userId = "";
+		String commentWord = "";
+		
+		JsonResult result = new JsonResult(false);
+		try {
+			knowId = request.getParameter("knowId");
+			userId = request.getParameter("userId");
+			commentWord = request.getParameter("commentWord");
+			
+			BaseResult baseResult = knowledgeOperationService.addComment(knowId, commentWord, userId);
+			
+			result.setBizSucc(baseResult.isSuccess());
+			result.setErrMsg(baseResult.getMessage());
+		} catch (BaseRuntimeException e) {
+			LogUtil.error(log, MessageFormat.format(
+					"养生知识/新闻公告评论操作失败，knowId:{0},message:{1}", new Object[] {
+							knowId, e.getMessage()}));
+			return new JsonResult(false, "", e.getMessage());
+		} catch (Exception e) {
+			LogUtil.error(log, MessageFormat.format(
+					"养生知识/新闻公告评论操作异常！knowId:{0}", new Object[] {
+							knowId, e.getMessage()}));
+			return new JsonResult(false, "", e.getMessage());
+		}
+		return result;
+	}
+	
+	
+}

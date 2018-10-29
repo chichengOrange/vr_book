@@ -1,0 +1,132 @@
+package com.onway.model;
+
+public class InterviewModel {
+    private int    id;
+    private String name;
+    private String sex;
+    private String phone;
+    private String school;
+    private String profession;
+    private String db;
+    private String am;
+    private String recom_Person;
+    private String resume_Atta;
+    private String remark;
+    private String customer_Type;
+    private String status_Tracking;
+    private String audition_Class;
+    private String gmt_Create;
+    private String gmt_Modified;
+    private String person_Create;
+    private String person_Modififd;
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getSex() {
+        return sex;
+    }
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+    public String getPhone() {
+        return phone;
+    }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    public String getSchool() {
+        return school;
+    }
+    public void setSchool(String school) {
+        this.school = school;
+    }
+    public String getProfession() {
+        return profession;
+    }
+    public void setProfession(String profession) {
+        this.profession = profession;
+    }
+    public String getDb() {
+        return db;
+    }
+    public void setDb(String db) {
+        this.db = db;
+    }
+    public String getAm() {
+        return am;
+    }
+    public void setAm(String am) {
+        this.am = am;
+    }
+    public String getRecom_Person() {
+        return recom_Person;
+    }
+    public void setRecom_Person(String recom_Person) {
+        this.recom_Person = recom_Person;
+    }
+    public String getResume_Atta() {
+        return resume_Atta;
+    }
+    public void setResume_Atta(String resume_Atta) {
+        this.resume_Atta = resume_Atta;
+    }
+    public String getRemark() {
+        return remark;
+    }
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+    public String getCustomer_Type() {
+        return customer_Type;
+    }
+    public void setCustomer_Type(String customer_Type) {
+        this.customer_Type = customer_Type;
+    }
+    public String getStatus_Tracking() {
+        return status_Tracking;
+    }
+    public void setStatus_Tracking(String status_Tracking) {
+        this.status_Tracking = status_Tracking;
+    }
+    public String getAudition_Class() {
+        return audition_Class;
+    }
+    public void setAudition_Class(String audition_Class) {
+        this.audition_Class = audition_Class;
+    }
+    public String getGmt_Create() {
+        return gmt_Create;
+    }
+    public void setGmt_Create(String gmt_Create) {
+        this.gmt_Create = gmt_Create;
+    }
+    public String getGmt_Modified() {
+        return gmt_Modified;
+    }
+    public void setGmt_Modified(String gmt_Modified) {
+        this.gmt_Modified = gmt_Modified;
+    }
+    public String getPerson_Create() {
+        return person_Create;
+    }
+    public void setPerson_Create(String person_Create) {
+        this.person_Create = person_Create;
+    }
+    public String getPerson_Modififd() {
+        return person_Modififd;
+    }
+    public void setPerson_Modififd(String person_Modififd) {
+        this.person_Modififd = person_Modififd;
+    }
+    
+
+}

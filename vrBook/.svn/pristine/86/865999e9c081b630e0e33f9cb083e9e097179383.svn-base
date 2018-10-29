@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="sys_config">
+
+	<!---查询系统参数 guodou -->
+	<operation name="loadAll" multiplicity="many">
+		<sql>
+			<![CDATA[
+				SELECT 
+				   id, sys_key, sys_value, status, memo, gmt_create, gmt_modified
+				FROM sys_config
+        	]]>
+		</sql>
+	</operation>
+	
+	
+	<!--根据key搜索-->
+	<operation name="selectByKey">
+		<sql>
+			<![CDATA[
+				SELECT 
+				    ID,sys_key, sys_value, status, memo, gmt_create, gmt_modified
+				FROM sys_config
+				where sys_key=?
+        	]]>
+		</sql>
+	</operation>
+	
+	<operation name="updateSYSValue">
+		<sql>
+			UPDATE sys_config
+			SET sys_value = ?, GMT_MODIFIED = CURRENT_TIMESTAMP
+			WHERE sys_key = ?
+		</sql>
+	</operation>
+	
+	
+</table>

@@ -1,0 +1,130 @@
+package com.onway.web.controller.book;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.onway.fyapp.common.dal.daointerface.BookDAO;
+import com.onway.fyapp.common.dal.daointerface.BookUserDAO;
+import com.onway.fyapp.common.dal.dataobject.BookDO;
+import com.onway.fyapp.common.dal.dataobject.BookUserDO;
+import com.onway.fyapp.common.dal.dataobject.returnObj.BookInfo;
+import com.onway.model.conver.BookConver;
+import com.onway.model.enums.DelEnum;
+import com.onway.platform.common.exception.BaseRuntimeException;
+import com.onway.platform.common.service.util.AssertUtil;
+import com.onway.web.controller.result.JsonQueryResult;
+import com.onway.web.controller.result.JsonResult;
+/**
+ * 用户书架
+ * @author lishuaikai
+ *
+ * 2018年7月12日 下午1:46:37
+ */
+@Controller
+public class UserBookShelfController {
+
+	@Resource
+	private BookDAO bookDAO;
+	
+	@Resource
+	private BookUserDAO bookUserDAO;
+	
+	
+	/**
+	 * 我的书架，最近阅读
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "bookShelf.do")
+	@ResponseBody
+	public Object bookShelf(HttpServletRequest request){
+		JsonQueryResult<List<BookInfo>> result = new JsonQueryResult<List<BookInfo>>(true);
+		String userId = request.getParameter("userId");
+		try {
+			List<String> bookIds = bookUserDAO.queryShelfByUserId(userId, DelEnum.NOTDELETE.getCode());
+			List<BookInfo> list = new ArrayList<BookInfo>();
+			for (String bookId : bookIds) {
+				BookDO bookDO = bookDAO.queryBookById(bookId);
+				BookInfo info = BookConver.buildBookInfo(bookDO);
+				list.add(info);
+			}
+			result.setObj(list);
+		} catch (BaseRuntimeException e) {
+			// TODO: handle exception
+			return new JsonResult(false, "", MessageFormat.format("操作失败：{0}", new Object[]{e.getMessage()}));
+		}catch (Exception e) {
+			// TODO: handle exception
+			return new JsonResult(false, "", MessageFormat.format("操作异常：{0}", new Object[]{e.getMessage()}));
+		}
+		return result;
+	}
+	
+	/**
+	 * 我的书架，最近阅读     删除
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "delBookShelf.do")
+	@ResponseBody
+	public Object delBookShelf(HttpServletRequest request){
+		JsonQueryResult<List<BookInfo>> result = new JsonQueryResult<List<BookInfo>>(true);
+		String userId = request.getParameter("userId");
+		String bookId = request.getParameter("bookId");
+		try {
+			List<String> bookIds = bookUserDAO.queryShelfByUserId(userId, DelEnum.NOTDELETE.getCode());
+			List<BookInfo> list = new ArrayList<BookInfo>();
+			for (String id : bookIds) {
+				BookDO bookDO = bookDAO.queryBookById(bookId);
+				BookInfo info = BookConver.buildBookInfo(bookDO);
+				list.add(info);
+			}
+			result.setObj(list);
+		} catch (BaseRuntimeException e) {
+			// TODO: handle exception
+			return new JsonResult(false, "", MessageFormat.format("操作失败：{0}", new Object[]{e.getMessage()}));
+		}catch (Exception e) {
+			// TODO: handle exception
+			return new JsonResult(false, "", MessageFormat.format("操作异常：{0}", new Object[]{e.getMessage()}));
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * 添加到我的书架
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "addBookShelf.do")
+	@ResponseBody
+	public Object addBookShelf(HttpServletRequest request){
+		
+		JsonResult result = new JsonResult(true);
+		String userId = request.getParameter("userId");
+		String bookId = request.getParameter("bookId");
+		try {
+			AssertUtil.notBlank(userId, "用户ID不能为空");
+			AssertUtil.notBlank(bookId, "书籍编号不能为空");
+			BookUserDO bookUser = new BookUserDO();
+			bookUser.setBookId(bookId);
+			bookUser.setUserId(userId);
+			bookUser.setDeleteFlg(DelEnum.NOTDELETE.getCode());
+			bookUserDAO.insert(bookUser);
+		} catch (BaseRuntimeException e) {
+			// TODO: handle exception
+			return new JsonResult(false, "", MessageFormat.format("添加失败：{0}", new Object[]{e.getMessage()}));
+		} catch (Exception e) {
+			// TODO: handle exception
+			return new JsonResult(false, "", MessageFormat.format("添加异常：{0}", new Object[]{e.getMessage()}));
+		}
+		return result;
+	}
+}

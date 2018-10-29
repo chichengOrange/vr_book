@@ -1,0 +1,79 @@
+/**
+ * onway.com Inc.
+ * Copyright (c) 2016-2016 All Rights Reserved.
+ */
+package com.onway.fyapp.common.dal.dataobject.returnObj;
+
+import java.util.Date;
+
+
+
+/**
+ * 
+* <p>Title: KnowCommentResult</p>  
+* <p>Description: </p>  
+* @author yugang.ni  
+* @date 2018年7月5日  上午10:02:06
+ */
+public class KnowCommentResult {
+	
+	private String headImg = "";
+
+	private String nickName = "";
+	
+	private String commentWord = "";
+	
+	private String commnetUserId = "";
+	
+	private Date date;
+	
+	private String dateStr = "";
+
+	public String getHeadImg() {
+		return headImg;
+	}
+
+	public void setHeadImg(String headImg) {
+		this.headImg = headImg;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getCommentWord() {
+		return commentWord;
+	}
+
+	public void setCommentWord(String commentWord) {
+		this.commentWord = commentWord;
+	}
+
+	public String getCommnetUserId() {
+		return commnetUserId;
+	}
+
+	public void setCommnetUserId(String commnetUserId) {
+		this.commnetUserId = commnetUserId;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public String getDateStr() {
+		return dateStr;
+	}
+
+	public void setDateStr(String dateStr) {
+		this.dateStr = dateStr;
+	}
+}

@@ -1,0 +1,180 @@
+/**
+ * 
+ */
+package com.onway.core.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.onway.common.lang.Money;
+import com.onway.common.lang.StringUtils;
+import com.onway.core.service.WithdrawService;
+import com.onway.core.service.code.CodeGenerateComponent;
+import com.onway.core.service.localcache.enums.SysConfigCacheKeyEnum;
+import com.onway.core.service.localcache.manager.SysConfigCacheManager;
+import com.onway.fyapp.common.dal.daointerface.AccountDAO;
+import com.onway.fyapp.common.dal.daointerface.UserDAO;
+import com.onway.fyapp.common.dal.daointerface.WithdrawDAO;
+import com.onway.fyapp.common.dal.dataobject.AccountDO;
+import com.onway.fyapp.common.dal.dataobject.UserDO;
+import com.onway.fyapp.common.dal.dataobject.WithdrawDO;
+import com.onway.model.conver.WithdrawConver;
+import com.onway.model.enums.BizTypeEnum;
+import com.onway.model.enums.DelFlgEnum;
+import com.onway.model.enums.PayTypeEnum;
+import com.onway.model.enums.WithdrawStatusEnum;
+import com.onway.platform.common.base.BaseResult;
+import com.onway.platform.common.base.QueryResult;
+import com.onway.platform.common.service.template.AbstractServiceImpl;
+import com.onway.platform.common.service.template.ServiceCheckCallback;
+import com.onway.platform.common.service.util.AssertUtil;
+import com.onway.web.controller.result.WithdrawResult;
+
+
+public class WithdrawServiceImpl extends AbstractServiceImpl implements WithdrawService {
+
+	private WithdrawDAO withdrawDAO;
+	
+	private AccountDAO accountDAO;
+	
+	private UserDAO userDAO;
+	
+	private SysConfigCacheManager sysConfigCacheManager;
+	
+	private CodeGenerateComponent codeGenerateComponent;
+
+	public void setWithdrawDAO(WithdrawDAO withdrawDAO) {
+		this.withdrawDAO = withdrawDAO;
+	}
+	
+	public void setAccountDAO(AccountDAO accountDAO) {
+		this.accountDAO = accountDAO;
+	}
+
+	public void setUserDAO(UserDAO userDAO) {
+		this.userDAO = userDAO;
+	}
+
+	public void setSysConfigCacheManager(SysConfigCacheManager sysConfigCacheManager) {
+		this.sysConfigCacheManager = sysConfigCacheManager;
+	}
+
+	public void setCodeGenerateComponent(CodeGenerateComponent codeGenerateComponent) {
+		this.codeGenerateComponent = codeGenerateComponent;
+	}
+
+	/**
+	 * 查询提现记录
+	 * @param userId
+	 * @param startRow
+	 * @param pageSize
+	 * @return
+	 */
+	public QueryResult<List<WithdrawResult>> queryWithdrawLogList( final String userId, final int startRow, final int pageSize){
+		final QueryResult<List<WithdrawResult>> result = new QueryResult<List<WithdrawResult>>(
+				false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userId, "用户未登录");
+					}
+
+					@Override
+					public void executeService() {
+						AccountDO accountDO = accountDAO.queryByUserId(userId, DelFlgEnum.NOT_DEL.getCode());
+						if(null == accountDO){
+							result.setSuccess(false);
+							result.setMessage("还未创建个人账户");
+							return;
+						}
+						UserDO userDO = userDAO.searchByUserIdOrOpenId(userId, null);
+						
+						List<WithdrawDO> myWithdrawLog = withdrawDAO.searchMyWithdrawLog(accountDO.getAccountNo(), startRow, pageSize);
+						List<WithdrawResult> withdrawResults = new ArrayList<WithdrawResult>();
+						for (WithdrawDO withdrawDO : myWithdrawLog) {
+							WithdrawResult withdrawResult = WithdrawConver.buildWithdrawListResult(withdrawDO, userDO);
+							if(null != withdrawResult)
+								withdrawResults.add(withdrawResult);
+						}
+						result.setSuccess(true);
+						result.setResultObject(withdrawResults);
+					}
+				});
+		return result;
+	}
+	
+	/**
+	 * 提现总数量
+	 * @param userId
+	 * @param delFlg
+	 * @return
+	 */
+	public int queryWithdrawLogListCount( final String userId){
+		AccountDO accountDO = accountDAO.queryByUserId(userId, DelFlgEnum.NOT_DEL.getCode());
+		if(null == accountDO){
+			return 0;
+		}
+		return withdrawDAO.searchMyWithdrawLogCount(accountDO.getAccountNo());
+	}
+	
+	
+	/**
+	 * 新增提现申请
+	 * @param withdrawDO
+	 * @return
+	 */
+	public BaseResult applyWithdraw( final String userId, final String amount, final String withdrawType){
+		final BaseResult result = new BaseResult(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userId, "用户未登录");
+						AssertUtil.notBlank(amount, "提现胡币值为空");
+						AssertUtil.notBlank(withdrawType, "提现类型为空");
+					}
+
+					@Override
+					public void executeService() {
+						AccountDO accountDO = accountDAO.queryByUserId(userId, DelFlgEnum.NOT_DEL.getCode());
+						if(null == accountDO){
+							result.setSuccess(false);
+							result.setMessage("还未创建个人账户");
+							return;
+						}
+						Money withdrawAmount = new Money(amount);
+						//判断输入的提现胡币值是否正确
+						if(withdrawAmount.lessEqualThan(new Money()) || withdrawAmount.greaterThan(accountDO.getHuBalance())){
+							result.setSuccess(false);
+							result.setMessage("请输入正确账户胡币值");
+							return;
+						}
+						
+						WithdrawDO withdraw = new WithdrawDO();
+						withdraw.setWithdrawNo(codeGenerateComponent.nextCodeByType(BizTypeEnum.WITHDRAW_NO));
+						withdraw.setAccountNo(accountDO.getAccountNo());
+						//计算提现金额
+						double withRate = Double.parseDouble(sysConfigCacheManager.getConfigValue(SysConfigCacheKeyEnum.HU_WITHDRAW_RATE));
+						Money realAmount = withdrawAmount.multiply(withRate);
+						withdraw.setAmount(realAmount);
+						withdraw.setStatus(WithdrawStatusEnum.APPLY.getCode());
+						String type = "";
+						if(StringUtils.equals(withdrawType, "1")){
+							type = PayTypeEnum.ALIPAY.getCode();
+						}
+						if(StringUtils.equals(withdrawType, "2")){
+							type = PayTypeEnum.WEIXIN.getCode();
+						}
+						withdraw.setWithdrawType(type);
+						if(withdrawDAO.applyWithdraw(withdraw) > 0){
+							result.setSuccess(true);
+						}
+					}
+				});
+		return result;
+	}
+
+}

@@ -1,0 +1,85 @@
+/**
+ * 
+ */
+package com.onway.core.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.onway.core.service.MsgQueryService;
+import com.onway.fyapp.common.dal.daointerface.MsgDAO;
+import com.onway.fyapp.common.dal.dataobject.MsgDO;
+import com.onway.model.conver.MsgConver;
+import com.onway.model.enums.BooleanEnum;
+import com.onway.platform.common.base.QueryResult;
+import com.onway.platform.common.service.template.AbstractServiceImpl;
+import com.onway.platform.common.service.template.ServiceCheckCallback;
+import com.onway.platform.common.service.util.AssertUtil;
+import com.onway.web.controller.result.MsgResult;
+
+public class MsgQueryServiceImpl extends AbstractServiceImpl implements
+		MsgQueryService {
+
+	private MsgDAO msgDAO;
+
+	public void setMsgDAO(MsgDAO msgDAO) {
+		this.msgDAO = msgDAO;
+	}
+
+	public QueryResult<List<MsgResult>> queryMyMsg(final String userId,
+			final String msgType, final String isRead, final int pageNo, final int pageSize) {
+		final QueryResult<List<MsgResult>> result = new QueryResult<List<MsgResult>>(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(userId, "用户编号为空");
+					}
+
+					@Override
+					public void executeService() {
+						List<MsgDO> queryMyMsg = msgDAO.queryMyMsg(userId, msgType, isRead, pageNo, pageSize);
+						List<MsgResult> msgResults = new ArrayList<MsgResult>();
+						for (MsgDO msgDO : queryMyMsg) {
+							MsgResult msgResult = MsgConver.buildMsgResult(msgDO);
+							if(null != msgResult){
+								msgResults.add(msgResult);
+								//变已读
+								msgDAO.changeRead( BooleanEnum.TRUE.getCode(), msgDO.getId());
+							}
+						}
+						result.setSuccess(true);
+						result.setResultObject(msgResults);
+					}
+				});
+		return result;
+	}
+
+	
+	public int queryMyMsgCount(String userId, String msgType, String isRead) {
+		
+		return msgDAO.queryMyMsgCount(userId, msgType, isRead);
+	}
+
+	public QueryResult<MsgResult> queryMsgDetails(final String msgId) {
+		final QueryResult<MsgResult> result = new QueryResult<MsgResult>(false);
+		serviceTemplate.executeWithoutTransaction(result,
+				new ServiceCheckCallback() {
+
+					@Override
+					public void check() {
+						AssertUtil.notBlank(msgId, "消息编号为空");
+					}
+
+					@Override
+					public void executeService() {
+						MsgDO msgDO = msgDAO.queryMsgDetails(Integer.valueOf(msgId));
+						MsgResult msgResult = MsgConver.buildMsgResult(msgDO);
+						result.setSuccess(true);
+						result.setResultObject(msgResult);
+					}
+				});
+		return result;
+	}
+}

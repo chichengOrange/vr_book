@@ -1,0 +1,89 @@
+/**
+ * onway.com Inc.
+ * Copyright (c) 2016-2016 All Rights Reserved.
+ */
+package com.onway.web.controller.result;
+
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+
+/**
+ * 
+* <p>Title: MsgResult</p>  
+* <p>Description: 消息结果集</p>  
+* @author yugang.ni  
+* @date 2018年6月27日  下午5:54:21
+ */
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+public class MsgResult {
+	
+	private int msgId;
+
+	private String msgType;
+
+	private String msgTime;
+
+	private String msgTitle;
+	
+	private String msgDay;
+	
+	private String msgContent;
+	
+	private String status;
+
+	public int getMsgId() {
+		return msgId;
+	}
+
+	public void setMsgId(int msgId) {
+		this.msgId = msgId;
+	}
+
+	public String getMsgType() {
+		return msgType;
+	}
+
+	public void setMsgType(String msgType) {
+		this.msgType = msgType;
+	}
+
+	public String getMsgTime() {
+		return msgTime;
+	}
+
+	public void setMsgTime(String msgTime) {
+		this.msgTime = msgTime;
+	}
+
+	public String getMsgTitle() {
+		return msgTitle;
+	}
+
+	public void setMsgTitle(String msgTitle) {
+		this.msgTitle = msgTitle;
+	}
+
+	public String getMsgDay() {
+		return msgDay;
+	}
+
+	public void setMsgDay(String msgDay) {
+		this.msgDay = msgDay;
+	}
+
+	public String getMsgContent() {
+		return msgContent;
+	}
+
+	public void setMsgContent(String msgContent) {
+		this.msgContent = msgContent;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+}

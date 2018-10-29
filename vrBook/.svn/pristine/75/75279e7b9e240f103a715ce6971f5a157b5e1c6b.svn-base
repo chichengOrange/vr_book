@@ -1,0 +1,84 @@
+/**
+ * 
+ */
+package com.onway.model;
+
+/**
+ * @author zhm
+ *
+ */
+public class StaffModel {
+    private int    id;
+    private String staffId;
+    private String staffName;
+    private String sex;
+    private String cell;
+    private String classNo;
+    private String job;
+    private String compay;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(String staffId) {
+        this.staffId = staffId;
+    }
+
+    public String getStaffName() {
+        return staffName;
+    }
+
+    public void setStaffName(String staffName) {
+        this.staffName = staffName;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getCell() {
+        return cell;
+    }
+
+    public void setCell(String cell) {
+        this.cell = cell;
+    }
+
+    public String getClassNo() {
+        return classNo;
+    }
+
+    public void setClassNo(String classNo) {
+        this.classNo = classNo;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
+    }
+
+    public String getCompay() {
+        return compay;
+    }
+
+    public void setCompay(String compay) {
+        this.compay = compay;
+    }
+
+}

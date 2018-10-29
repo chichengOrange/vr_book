@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+    <settings cacheModelsEnabled="true" enhancementEnabled="false" lazyLoadingEnabled="false" maxRequests="3000" maxSessions="3000" maxTransactions="3000" useStatementNamespaces="false"/>
+    
+    <sqlMap resource="sqlmap/common-sqlmap-mapping.xml"/>
+    <!-- 
+    <sqlMap resource="sqlmap/Extra-sqlmap-mapping.xml"/>
+    -->
+    <sqlMap resource="sqlmap/CacheManager-sqlmap-mapping.xml"/>
+	    
+		    <sqlMap resource="sqlmap/Account-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/AccountLog-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Activity-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Address-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Banner-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Cart-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Collect-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Evaluate-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/GoodsAttr-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/GoodsAttrValue-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Img-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Knowledge-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/KnowledgeComment-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/KnowledgeLike-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Msg-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Option-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Order-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Product-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Reduce-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Sequence-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Sm-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/StockPrice-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/SysConfig-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Team-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/TeamUser-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/User-sqlmap-mapping.xml"/>
+		    <sqlMap resource="sqlmap/Withdraw-sqlmap-mapping.xml"/>
+	
+</sqlMapConfig>

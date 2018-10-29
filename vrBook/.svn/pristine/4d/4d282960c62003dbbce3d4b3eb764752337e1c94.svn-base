@@ -1,0 +1,288 @@
+package com.onway.web.controller.mine;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.MessageFormat;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.onway.common.lang.StringUtils;
+import com.onway.model.enums.BooleanEnum;
+import com.onway.model.enums.DelFlgEnum;
+import com.onway.model.enums.OrderStatusEnum;
+import com.onway.model.enums.PayStatusEnum;
+import com.onway.platform.common.base.BaseResult;
+import com.onway.platform.common.base.QueryResult;
+import com.onway.platform.common.exception.BaseRuntimeException;
+import com.onway.platform.common.utils.LogUtil;
+import com.onway.utils.ImageUploadUtil;
+import com.onway.web.controller.AbstractController;
+import com.onway.web.controller.result.AccountResult;
+import com.onway.web.controller.result.JsonQueryResult;
+import com.onway.web.controller.result.JsonResult;
+import com.onway.web.controller.result.MineInfoResult;
+import com.onway.web.controller.result.UserInfoResult;
+
+/**
+ * 
+ * @author lishuaikai
+ * @Description 用户信息控制类
+ * @data 2018年6月28日 下午12:03:44
+ */
+@Controller
+public class UserInfoController extends AbstractController {
+
+	private static final Logger log = Logger
+			.getLogger(UserInfoController.class);
+
+	/**
+	 * 获取用户个人信息
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/getUserAllInfo.do")
+	@ResponseBody
+	public Object getUserAllInfo(HttpServletRequest request) {
+		String userId = "";
+
+		JsonQueryResult<UserInfoResult> result = new JsonQueryResult<UserInfoResult>(
+				false);
+		try {
+			userId = request.getParameter("userId");
+
+			QueryResult<UserInfoResult> userAllInfo = userQueryService
+					.getUserAllInfo(userId);
+
+			result.setBizSucc(userAllInfo.isSuccess());
+			result.setObj(userAllInfo.getResultObject());
+			result.setErrMsg(userAllInfo.getMessage());
+
+		} catch (BaseRuntimeException e) {
+			LogUtil.error(log, MessageFormat.format(
+					"个人信息查询失败，userId{0},message:{1}",
+					new Object[] { userId, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		} catch (Exception e) {
+			LogUtil.error(log, MessageFormat.format(
+					"个人信息查询异常！userId{0},message:{1}",
+					new Object[] { userId, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		}
+		return result;
+	}
+
+	/**
+	 * 获取用户个人单个信息
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/getUserSingleInfo.do")
+	@ResponseBody
+	public Object getUserSingleInfo(HttpServletRequest request) {
+		String userId = "";
+		String type = "";
+
+		JsonQueryResult<String> result = new JsonQueryResult<String>(false);
+		try {
+			userId = request.getParameter("userId");
+			type = request.getParameter("type");
+
+			QueryResult<String> userSingleInfo = userQueryService
+					.getUserSingleInfo(userId, type);
+
+			result.setBizSucc(userSingleInfo.isSuccess());
+			result.setObj(userSingleInfo.getResultObject());
+			result.setErrMsg(userSingleInfo.getMessage());
+
+		} catch (BaseRuntimeException e) {
+			LogUtil.error(log, MessageFormat.format(
+					"个人单个信息查询失败，userId{0},type{1},message:{2}", new Object[] {
+							userId, type, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		} catch (Exception e) {
+			LogUtil.error(log, MessageFormat.format(
+					"个人单个信息查询异常！userId{0},type{1},message:{2}", new Object[] {
+							userId, type, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		}
+		return result;
+	}
+
+	/**
+	 * 修改用户信息
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/changeUserInfo.do")
+	@ResponseBody
+	public Object changeUserInfo(HttpServletRequest request) {
+		String userId = "";
+		String changeMsg = "";
+		String type = "";
+
+		JsonResult result = new JsonResult(false);
+		try {
+			userId = request.getParameter("userId");
+			type = request.getParameter("type");
+			changeMsg = request.getParameter("changeMsg");
+
+			BaseResult baseResult = new BaseResult(false);
+			// 修改用户头像1
+			if (StringUtils.equals(type, "1")) {
+				baseResult = userOperationService.updateHeadUrl(userId,
+						changeMsg);
+			}
+			if (StringUtils.equals(type, "2")) {
+				baseResult = userOperationService.updateCell(userId, changeMsg);
+			}
+			if (StringUtils.equals(type, "3")) {
+				baseResult = userOperationService.updateNickName(userId,
+						changeMsg);
+			}
+			if (StringUtils.equals(type, "4")) {
+				baseResult = userOperationService.updateSex(userId, changeMsg);
+			}
+			if (StringUtils.equals(type, "5")) {
+				baseResult = userOperationService.updateAge(userId, changeMsg);
+			}
+			if (StringUtils.equals(type, "6")) {
+				baseResult = userOperationService.updateCertNo(userId,
+						changeMsg);
+			}
+			if (StringUtils.equals(type, "7")) {
+				baseResult = userOperationService.updateComName(userId,
+						changeMsg);
+			}
+
+			result.setBizSucc(baseResult.isSuccess());
+			result.setErrMsg(baseResult.getMessage());
+
+		} catch (BaseRuntimeException e) {
+			LogUtil.error(log, MessageFormat.format(
+					"修改用户信息失败，userId{0},type{1},message:{2}", new Object[] {
+							userId, type, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		} catch (Exception e) {
+			LogUtil.error(log, MessageFormat.format(
+					"修改用户信息异常！userId{0},type{1},message:{2}", new Object[] {
+							userId, type, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		}
+		return result;
+	}
+
+	/**
+	 * 上传图片
+	 * 
+	 * @param request
+	 * @param imgFile
+	 * @return
+	 */
+	@RequestMapping("uploadImg.do")
+	@ResponseBody
+	public Object imgUpload(HttpServletRequest request,
+			@RequestParam MultipartFile imgFile) {
+
+		JsonQueryResult<String> result = new JsonQueryResult<String>(true);
+
+		String realpathPex = HEAD_URL_FILE; // 物理地址前缀
+		String visitPathPrex = HEAD_URL_PATH; // 访问地址前缀
+
+		try {
+			File file = ImageUploadUtil.getFile(imgFile, realpathPex);
+
+			result.setObj(visitPathPrex + file.getName());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/**
+	 * 我的页面
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/mineInfo.do")
+	@ResponseBody
+	public Object mineInfo(HttpServletRequest request) {
+
+		String userId = "";
+
+		JsonQueryResult<MineInfoResult> result = new JsonQueryResult<MineInfoResult>(
+				false);
+		try {
+			userId = request.getParameter("userId");
+
+			// 用户基础信息
+			QueryResult<UserInfoResult> userAllInfo = userQueryService
+					.getUserAllInfo(userId);
+			// 用户账户信息
+			QueryResult<AccountResult> userAccountInfo = userQueryService
+					.getUserAccountInfo(userId, DelFlgEnum.NOT_DEL.getCode());
+			// 订单数量
+			int waitPayCount = orderQueryService.queryUserOrderListCount(
+					userId, PayStatusEnum.WAIT_PAY.getCode(),
+					OrderStatusEnum.WAIT_PAY.getCode());
+			int waitSendCount = orderQueryService.queryUserOrderListCount(
+					userId, PayStatusEnum.PAY_SUCCESS.getCode(),
+					OrderStatusEnum.NOT_SEND.getCode());
+			int waitReceiveCount = orderQueryService.queryUserOrderListCount(
+					userId, PayStatusEnum.PAY_SUCCESS.getCode(),
+					OrderStatusEnum.HAS_SEND.getCode());
+			int waitCommentCount = orderQueryService.queryUserOrderListCount(
+					userId, PayStatusEnum.PAY_SUCCESS.getCode(),
+					OrderStatusEnum.HAS_RECEIVE.getCode());
+
+			// 未读消息数量
+			int msgCount = msgQueryService.queryMyMsgCount(userId, null,
+					BooleanEnum.FALSE.getCode());
+
+			MineInfoResult infoResult = new MineInfoResult();
+			infoResult.setUserAllInfo(userAllInfo.isSuccess()
+					&& userAllInfo.getResultObject() != null ? userAllInfo
+					.getResultObject() : null);
+			infoResult
+					.setUserAccountInfo(userAccountInfo.isSuccess()
+							&& userAccountInfo.getResultObject() != null ? userAccountInfo
+							.getResultObject() : null);
+			infoResult.setWaitPayCount(waitPayCount);
+			infoResult.setWaitSendCount(waitSendCount);
+			infoResult.setWaitReceiveCount(waitReceiveCount);
+			infoResult.setWaitCommentCount(waitCommentCount);
+			infoResult.setMsgCount(msgCount);
+
+			// 用户角色
+			infoResult.setUserRole("9");
+
+			result.setBizSucc(userAllInfo.isSuccess());
+			result.setObj(infoResult);
+			result.setErrMsg(userAllInfo.getMessage());
+
+		} catch (BaseRuntimeException e) {
+			LogUtil.error(log, MessageFormat.format(
+					"我的页面查询失败，userId{0},message:{1}",
+					new Object[] { userId, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		} catch (Exception e) {
+			LogUtil.error(log, MessageFormat.format(
+					"我的页面查询异常！userId{0},message:{1}",
+					new Object[] { userId, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		}
+		return result;
+	}
+	
+}

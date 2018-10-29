@@ -1,0 +1,92 @@
+package com.onway.web.controller.mine;
+
+import java.text.MessageFormat;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.onway.fyapp.common.dal.daointerface.CollectDAO;
+import com.onway.fyapp.common.dal.dataobject.CollectDO;
+import com.onway.fyapp.common.dal.dataobject.returnObj.CollectInfo;
+import com.onway.model.enums.CollectTypeEnum;
+import com.onway.platform.common.base.BaseResult;
+import com.onway.platform.common.base.QueryResult;
+import com.onway.platform.common.exception.BaseRuntimeException;
+import com.onway.platform.common.service.util.AssertUtil;
+import com.onway.web.controller.AbstractController;
+import com.onway.web.controller.result.JsonPageResult;
+import com.onway.web.controller.result.JsonQueryResult;
+import com.onway.web.controller.result.JsonResult;
+
+/**
+ * 
+ * @author lishuaikai
+ * @Description 收藏控制类	
+ * @data 2018年6月28日 下午12:03:44
+ */
+@Controller
+public class CollectController extends AbstractController{
+
+	@Resource
+	private CollectDAO collectDAO;
+	
+	/**
+	 * 添加收藏
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "addToCollect.do")
+	@ResponseBody
+	public Object addToCollect(HttpServletRequest request){
+		JsonResult result = new JsonResult(true);
+		String userId = request.getParameter("userId");
+		String collectId = request.getParameter("collectId");
+		//0 商品,1 店铺
+		String collectType = request.getParameter("collectType");
+		try {
+			
+			BaseResult baseResult = collectService.addToCollect(userId, collectId, collectType);
+			result.setBizSucc(baseResult.isSuccess());
+			
+		} catch (BaseRuntimeException e) {
+			// TODO: handle exception
+			return new JsonResult(false, "", MessageFormat.format("收藏失败：{0}", new Object[]{e.getMessage()}));
+		}
+		return result;
+		
+	}
+	
+	/**
+	 * 我的收藏
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "myCollect.do")
+	@ResponseBody
+	public Object queryCollect(HttpServletRequest request){
+		JsonPageResult<CollectInfo> result = new JsonPageResult<CollectInfo>(true);
+		String userId = request.getParameter("userId");
+		String type = request.getParameter("type");
+		try {
+			int pageNum = adjustPageNo(request);
+			int pageSize = adjustPageSize(request);
+			int offset = (pageNum - 1) * pageSize;
+			int count = collectDAO.queryCollectCount(userId, type);
+			QueryResult<List<CollectInfo>> queryResult = collectService.queryCollect(userId, type, offset, pageSize);
+			result.setBizSucc(queryResult.isSuccess());
+			result.setListObject(queryResult.getResultObject());
+			result.setNext(count > pageNum * pageSize);
+			result.setTotalPages(count % pageSize ==0 ? count / pageSize : (count / pageSize) + 1);
+		} catch (BaseRuntimeException e) {
+			// TODO: handle exception
+			return new JsonResult(false, "", MessageFormat.format("查看我的收藏失败：{0}", new Object[]{e.getMessage()}));
+		}
+		return result;
+		
+	}
+}

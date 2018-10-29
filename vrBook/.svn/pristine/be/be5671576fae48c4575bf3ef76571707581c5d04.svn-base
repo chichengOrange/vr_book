@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table sqlname="vr_book_version">
+
+	
+	<!-- 根据系统查询最新更新信息 -->
+	<operation name="queryByBookId">
+		<extraparams>
+			<param name="bookId" javatype="java.lang.String"/>
+			<param name="status" javatype="java.lang.String"/>
+		</extraparams>
+		<sql>
+		    SELECT
+				*
+			FROM vr_book_version
+		</sql>
+		<sqlmap>
+			SELECT
+				ID,
+				BOOK_VERSION_ID,
+				BOOK_ID,
+				REVISE_NUM,
+				CHANGE_LOG,
+				STATUS,
+				MEMO,
+				GMT_CREATE,
+				GMT_MODIFIED
+			FROM vr_book_version
+			WHERE 1=1
+			<isNotEmpty property="bookId" prepend="and">
+					BOOK_ID = #bookId#
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+					STATUS = #status#
+			</isNotEmpty>
+			ORDER BY GMT_MODIFIED DESC
+			LIMIT 0,1
+		</sqlmap>
+	</operation>
+</table>

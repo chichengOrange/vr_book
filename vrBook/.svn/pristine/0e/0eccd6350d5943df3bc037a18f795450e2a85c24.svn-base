@@ -1,0 +1,167 @@
+/**
+ * onway.com Inc.
+ * Copyright (c) 2013-2013 All Rights Reserved.
+ */
+package com.onway.web.controller.home;
+
+import java.text.MessageFormat;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.onway.platform.common.base.QueryResult;
+import com.onway.platform.common.exception.BaseRuntimeException;
+import com.onway.platform.common.utils.LogUtil;
+import com.onway.web.controller.AbstractController;
+import com.onway.web.controller.result.CountResult;
+import com.onway.web.controller.result.JsonPageResult;
+import com.onway.web.controller.result.JsonQueryResult;
+import com.onway.web.controller.result.JsonResult;
+import com.onway.web.controller.result.MsgResult;
+
+/**
+ * 
+* <p>Title: MsgController</p>  
+* <p>Description: 消息控制类</p>  
+* @author yugang.ni  
+* @date 2018年6月27日  下午6:08:39
+ */
+@Controller
+public class MsgController extends AbstractController {
+	
+	private static final Logger log = Logger.getLogger(MsgController.class);
+
+	/**
+	 * 消息列表查询
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/msgQuery.do")
+	@ResponseBody
+	public Object msgQuery(HttpServletRequest request){
+		
+		String userId = "";
+		String msgType = "";// 1 消息通知(系统消息)  2订单消息  3 其他
+		String isRead = "";
+		
+		int pageSize = adjustPageSize(request);
+		int pageNum = adjustPageNo(request);
+		
+		JsonPageResult<MsgResult> jsonPageResult = new JsonPageResult<MsgResult>(
+				false);
+		try {
+			userId = request.getParameter("userId");
+			msgType = request.getParameter("msgType");
+			isRead = request.getParameter("isRead");
+			
+			isRead = null;
+
+			Integer startRow = (pageNum - 1) * pageSize;
+			
+			QueryResult<List<MsgResult>> queryMyMsg = msgQueryService.queryMyMsg(userId, msgType, isRead, startRow, pageSize);
+			
+			int count = msgQueryService.queryMyMsgCount(userId, msgType, isRead);
+
+			// 【2】分页判断
+			jsonPageResult.setNext(count > pageSize * pageNum ? true : false);
+			jsonPageResult.setTotalPages(calculatePage(count, pageSize));
+			jsonPageResult.setListObject(queryMyMsg.getResultObject());
+			jsonPageResult.setPageNum(pageNum);
+			jsonPageResult.setBizSucc(queryMyMsg.isSuccess());
+			
+
+		} catch (BaseRuntimeException e) {
+			LogUtil.error(log, MessageFormat.format(
+					"消息列表查询失败，userId:{0},message:{1}", new Object[] {
+							userId, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		} catch (Exception e) {
+			LogUtil.error(log, MessageFormat.format(
+					"消息列表查询异常！userId:{0},message:{1}", new Object[] {
+							userId, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		}
+		return jsonPageResult;
+	}
+	
+	/**
+	 * 消息数量
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/msgCountQuery.do")
+	@ResponseBody
+	public Object msgCountQuery(HttpServletRequest request){
+		
+		String userId = "";
+		String msgType = "";// 1 消息通知(系统消息)  2订单消息  3 其他
+		String isRead = "";
+		
+		CountResult result = new CountResult(false);
+		try {
+			userId = request.getParameter("userId");
+			msgType = request.getParameter("msgType");
+			isRead = request.getParameter("isRead");
+			
+			isRead = null;
+			
+			int count = msgQueryService.queryMyMsgCount(userId, msgType, isRead);
+			
+			result.setBizSucc(true);
+			result.setCount(count);
+
+		} catch (BaseRuntimeException e) {
+			LogUtil.error(log, MessageFormat.format(
+					"消息数量查询失败，userId:{0},message:{1}", new Object[] {
+							userId, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		} catch (Exception e) {
+			LogUtil.error(log, MessageFormat.format(
+					"消息数量查询异常！userId:{0},message:{1}", new Object[] {
+							userId, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		}
+		return result;
+	}
+	
+	/**
+	 * 消息详情
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/msgDetailsQuery.do")
+	@ResponseBody
+	public Object msgDetailsQuery(HttpServletRequest request){
+		
+		String msgId = "";
+		
+		JsonQueryResult<MsgResult> result = new JsonQueryResult<MsgResult>(
+				false);
+		try {
+			msgId = request.getParameter("msgId");
+			
+			QueryResult<MsgResult> queryMyMsg = msgQueryService.queryMsgDetails(msgId);
+			
+			result.setBizSucc(queryMyMsg.isSuccess());
+			result.setObj(queryMyMsg.getResultObject());
+
+		} catch (BaseRuntimeException e) {
+			LogUtil.error(log, MessageFormat.format(
+					"消息详情查询失败，msgId:{0},message:{1}", new Object[] {
+							msgId, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		} catch (Exception e) {
+			LogUtil.error(log, MessageFormat.format(
+					"消息详情查询异常！msgId:{0},message:{1}", new Object[] {
+							msgId, e.getMessage() }));
+			return new JsonResult(false, "", e.getMessage());
+		}
+		return result;
+	}
+
+}
